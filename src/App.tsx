@@ -1,5 +1,6 @@
 import Header from './components/Header';
 import Footer from './components/Footer';
+import WelcomeBox from './components/WelcomeBox';
 
 const App = () => {
   return (
@@ -10,8 +11,7 @@ const App = () => {
     }}>
       <Header />
       <main style={{ flex: 1, padding: '20px' }}>
-        <h2>ברוכים הבאים לאתר</h2>
-        <p>כאן יבוא התוכן המרכזי של העמוד</p>
+        <WelcomeBox />
       </main>
       <Footer />
     </div>

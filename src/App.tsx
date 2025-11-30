@@ -1,6 +1,7 @@
 import Header from './components/Header';
 import Footer from './components/Footer';
 import WelcomeBox from './components/WelcomeBox';
+import CourseList from './features/courses/components/CourseList';
 
 const App = () => {
   return (
@@ -12,6 +13,7 @@ const App = () => {
       <Header />
       <main style={{ flex: 1, padding: '20px' }}>
         <WelcomeBox />
+        <CourseList />
       </main>
       <Footer />
     </div>

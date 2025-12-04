@@ -3,7 +3,7 @@ export class Course {
   name: string;
   credits: number;
   semester: string;
-  
+
   constructor(id: string, name: string, credits: number, semester: string) {
     this.id = id;
     this.name = name;

@@ -1,6 +1,12 @@
 const Footer = () => {
   return (
-    <footer>
+    <footer style={{ 
+      backgroundColor: '#333', 
+      color: 'white', 
+      padding: '20px',
+      textAlign: 'center',
+      marginTop: 'auto'
+    }}>
       <p>© 2025 כל הזכויות שמורות</p>
     </footer>
   );

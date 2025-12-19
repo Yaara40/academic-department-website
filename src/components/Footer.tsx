@@ -4,7 +4,7 @@ const Footer = () => {
       backgroundColor: '#333', 
       color: 'white', 
       padding: '20px',
-      textAlign: 'center',
+      textAlign: 'left',
       marginTop: 'auto'
     }}>
       <p>© 2025 כל הזכויות שמורות</p>

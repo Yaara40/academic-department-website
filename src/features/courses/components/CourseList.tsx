@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Course } from '../models/Course';
 import Button from '@mui/material/Button';
 import Table from '@mui/material/Table';
@@ -13,8 +14,10 @@ import AddIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
 
 function CourseList() {
+  const navigate = useNavigate();
   const [courses, setCourses] = useState<Course[]>([]);
 
+  // טעינת נתונים מ-LocalStorage בעת טעינת הקומפוננטה
   useEffect(() => {
     const loadData = () => {
       const saved = localStorage.getItem('courses');
@@ -26,12 +29,14 @@ function CourseList() {
     loadData();
   }, []);
 
+  // שמירה אוטומטית ל-LocalStorage כאשר הקורסים משתנים
   useEffect(() => {
     if (courses.length > 0) {
       localStorage.setItem('courses', JSON.stringify(courses));
     }
   }, [courses]);
 
+  // פונקציה להוספת קורס אקראי
   function addRandomCourse() {
     const names = [
       'מבוא למחשבים',
@@ -62,33 +67,55 @@ function CourseList() {
     setCourses([...courses, newCourse]);
   }
 
+  // פונקציה לשמירה ידנית ל-LocalStorage
   function saveToLocalStorage() {
     localStorage.setItem('courses', JSON.stringify(courses));
-    alert('נשמר!');
+    alert('נשמר בהצלחה!');
+  }
+
+  // פונקציה לניווט לטופס הוספת קורס חדש
+  function navigateToNewCourse() {
+    navigate('/courses/new');
   }
 
   return (
     <Box sx={{ padding: 2, direction: 'rtl' }}>
       <Box sx={{ display: 'flex', gap: 2, marginBottom: 3 }}>
+        {/* כפתור להוספת קורס חדש ידנית */}
         <Button 
           variant="contained" 
           color="primary"
           startIcon={<AddIcon />}
+          onClick={navigateToNewCourse}
+          sx={{ '& .MuiButton-startIcon': { marginLeft: '6px' } }}
+        >
+          הוסף קורס חדש
+        </Button>
+
+        {/* כפתור להוספת קורס אקראי */}
+        <Button 
+          variant="contained" 
+          color="secondary"
+          startIcon={<AddIcon />}
           onClick={addRandomCourse}
+          sx={{ '& .MuiButton-startIcon': { marginLeft: '6px' } }}
         >
           הוסף קורס אקראי
         </Button>
-        
+
+        {/* כפתור לשמירה ידנית */}
         <Button 
           variant="outlined" 
           color="success"
           startIcon={<SaveIcon />}
           onClick={saveToLocalStorage}
+          sx={{ '& .MuiButton-startIcon': { marginLeft: '6px' } }}
         >
           שמור ל-LocalStorage
         </Button>
       </Box>
-      
+
+      {/* טבלת הקורסים */}
       <TableContainer component={Paper}>
         <Table>
           <TableHead>

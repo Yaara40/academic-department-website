@@ -58,7 +58,7 @@ const Header = () => {
     position: 'fixed',
     right: 0,
     top: '72px',
-    height: 'calc(100vh - 64px)',
+    height: 'calc(100vh - 64px - 90px)', // Adjust for AppBar height and some margin
     width: '200px',
     backgroundColor: '#ffffff33',
     display: 'flex',

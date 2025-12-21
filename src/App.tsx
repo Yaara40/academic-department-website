@@ -4,10 +4,11 @@ import Footer from './components/Footer';
 import Home from './pages/Home';
 import CoursesManagement from './pages/CoursesManagement';
 import CoursesForm from './features/courses/components/CoursesForm';
-import GrowthManagement from './pages/GrowthManagement';
+import GrowthManagement from "./pages/GrowthManagement";
 import ContactManagement from './pages/ContactManagement';
 import HelpManagement from './pages/HelpManagement';
 import NavigationManagement from './pages/NavigationManagement';
+
 
 const App = () => {
   return (

@@ -10,6 +10,9 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
 import AddIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
 
@@ -35,6 +38,12 @@ function CourseList() {
       localStorage.setItem('courses', JSON.stringify(courses));
     }
   }, [courses]);
+
+  // חישוב סטטיסטיקות
+  const totalCourses = courses.length;
+  const activeCourses = courses.filter(c => c.isActive === 'yes').length;
+  const mandatoryCourses = courses.filter(c => c.isMandatory === 'yes').length;
+  const electiveCourses = courses.filter(c => c.isMandatory === 'no').length;
 
   // פונקציה להוספת קורס אקראי
   function addRandomCourse() {
@@ -80,8 +89,69 @@ function CourseList() {
 
   return (
     <Box sx={{ padding: 2, direction: 'rtl' }}>
+      {/* כותרת */}
+      <Typography variant="h4" sx={{ mb: 3, fontWeight: 'bold' }}>
+        ניהול קורסים
+      </Typography>
+
+      {/* כרטיסי סטטיסטיקה */}
+      <Box sx={{ 
+        display: 'grid', 
+        gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
+        gap: 3,
+        mb: 4 
+      }}>
+        {/* סה"כ קורסים */}
+        <Card sx={{ textAlign: 'center', backgroundColor: '#f5f5f5' }}>
+          <CardContent>
+            <Typography variant="h3" color="primary" sx={{ fontWeight: 'bold' }}>
+              {totalCourses}
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              סה"כ קורסים
+            </Typography>
+          </CardContent>
+        </Card>
+
+        {/* קורסים פעילים */}
+        <Card sx={{ textAlign: 'center', backgroundColor: '#e8f5e9' }}>
+          <CardContent>
+            <Typography variant="h3" color="success.main" sx={{ fontWeight: 'bold' }}>
+              {activeCourses}
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              קורסים פעילים
+            </Typography>
+          </CardContent>
+        </Card>
+
+        {/* קורסי חובה */}
+        <Card sx={{ textAlign: 'center', backgroundColor: '#fff3e0' }}>
+          <CardContent>
+            <Typography variant="h3" color="warning.main" sx={{ fontWeight: 'bold' }}>
+              {mandatoryCourses}
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              קורסי חובה
+            </Typography>
+          </CardContent>
+        </Card>
+
+        {/* קורסי בחירה */}
+        <Card sx={{ textAlign: 'center', backgroundColor: '#e3f2fd' }}>
+          <CardContent>
+            <Typography variant="h3" color="info.main" sx={{ fontWeight: 'bold' }}>
+              {electiveCourses}
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              קורסי בחירה
+            </Typography>
+          </CardContent>
+        </Card>
+      </Box>
+
+      {/* כפתורים */}
       <Box sx={{ display: 'flex', gap: 2, marginBottom: 3 }}>
-        {/* כפתור להוספת קורס חדש ידנית */}
         <Button 
           variant="contained" 
           color="primary"
@@ -92,7 +162,6 @@ function CourseList() {
           הוסף קורס חדש
         </Button>
 
-        {/* כפתור להוספת קורס אקראי */}
         <Button 
           variant="contained" 
           color="secondary"
@@ -103,7 +172,6 @@ function CourseList() {
           הוסף קורס אקראי
         </Button>
 
-        {/* כפתור לשמירה ידנית */}
         <Button 
           variant="outlined" 
           color="success"

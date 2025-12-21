@@ -1,33 +1,37 @@
 import React, { useState } from 'react';
-import { Box, Button, TextField, MenuItem } from '@mui/material';
+import { Box, Button, TextField, MenuItem, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { Course } from '../models/Course';
 
 interface FormValues {
+    courseId: string;
     name: string;
     description: string;
     credits: number;
     year: string;
     semester: string;
     syllabus: string;
-    type: string;
+    isMandatory: string;
+    isActive: string;
 }
 
 interface FormErrors {
-    [key: string]: boolean;
+    [key: string]: boolean | string;
 }
 
 export default function CoursesForm() {
     const navigate = useNavigate();
     
     const initialValues: FormValues = {
+        courseId: "",
         name: "",
         description: "",
         credits: 3,
         year: "",
         semester: "",
         syllabus: "",
-        type: "חובה"
+        isMandatory: "",
+        isActive: ""
     };
     
     const [values, setValues] = useState<FormValues>(initialValues);
@@ -36,18 +40,56 @@ export default function CoursesForm() {
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = event.target;
         setValues({ ...values, [name]: value });
-        const target = event.target as HTMLInputElement;
-        setErrors({ ...errors, [name]: !target.validity.valid });
+        
+        if (name === 'courseId') {
+            const isValid = /^\d{0,5}$/.test(value);
+            setErrors({ ...errors, [name]: !isValid ? 'מספר קורס חייב להיות 5 ספרות' : false });
+        } else {
+            const target = event.target as HTMLInputElement;
+            setErrors({ ...errors, [name]: !target.validity.valid });
+        }
     };
+
+    const handleToggleChange = (field: 'isMandatory' | 'isActive') => 
+        (event: React.MouseEvent<HTMLElement>, newValue: string | null) => {
+            if (newValue !== null) {
+                setValues({ ...values, [field]: newValue });
+                setErrors({ ...errors, [field]: false });
+            }
+        };
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         
+        const newErrors: FormErrors = {};
+        
+        if (values.courseId.length !== 5) {
+            newErrors.courseId = 'מספר קורס חייב להיות בדיוק 5 ספרות';
+        }
+        if (!values.isMandatory) {
+            newErrors.isMandatory = 'יש לבחור אם הקורס חובה';
+        }
+        if (!values.isActive) {
+            newErrors.isActive = 'יש לבחור אם הקורס פעיל';
+        }
+        
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            return;
+        }
+        
+        // יצירת אובייקט Course חדש - עם כל השדות! ← זה התיקון!
         const newCourse = new Course(
-            Date.now().toString(),
-            values.name,
-            values.credits,
-            values.semester
+            Date.now().toString(),  // id
+            values.name,            // name
+            values.credits,         // credits
+            values.semester,        // semester
+            values.courseId,        // courseId ← הוספתי!
+            values.description,     // description ← הוספתי!
+            values.year,            // year ← הוספתי!
+            values.syllabus,        // syllabus ← הוספתי!
+            values.isMandatory,     // isMandatory ← הוספתי!
+            values.isActive         // isActive ← הוספתי!
         );
         
         const storedCourses = localStorage.getItem("courses");
@@ -55,6 +97,7 @@ export default function CoursesForm() {
         const updatedCourses = [...existingCourses, newCourse];
         
         localStorage.setItem("courses", JSON.stringify(updatedCourses));
+        
         console.log("Course saved!", newCourse);
         
         navigate("/courses");
@@ -87,7 +130,21 @@ export default function CoursesForm() {
             
             <TextField
                 required
-                error={errors.name}
+                error={!!errors.courseId}
+                fullWidth
+                id="courseId"
+                name="courseId"
+                label="מזהה קורס (5 ספרות)"
+                placeholder="12345"
+                value={values.courseId}
+                onChange={handleChange}
+                helperText={errors.courseId || "הזן בדיוק 5 ספרות"}
+                inputProps={{ maxLength: 5, pattern: "\\d{5}" }}
+            />
+            
+            <TextField
+                required
+                error={!!errors.name}
                 fullWidth
                 id="name"
                 name="name"
@@ -113,7 +170,7 @@ export default function CoursesForm() {
             <Box sx={{ display: 'flex', gap: 2 }}>
                 <TextField
                     required
-                    error={errors.credits}
+                    error={!!errors.credits}
                     id="credits"
                     name="credits"
                     label="נקודות זכות"
@@ -129,7 +186,7 @@ export default function CoursesForm() {
                 
                 <TextField
                     required
-                    error={errors.year}
+                    error={!!errors.year}
                     select
                     id="year"
                     name="year"
@@ -141,11 +198,12 @@ export default function CoursesForm() {
                     <MenuItem value="שנה א">שנה א</MenuItem>
                     <MenuItem value="שנה ב">שנה ב</MenuItem>
                     <MenuItem value="שנה ג">שנה ג</MenuItem>
+                    <MenuItem value="שנה ד">שנה ד</MenuItem>
                 </TextField>
                 
                 <TextField
                     required
-                    error={errors.semester}
+                    error={!!errors.semester}
                     select
                     id="semester"
                     name="semester"
@@ -171,21 +229,46 @@ export default function CoursesForm() {
                 onChange={handleChange}
             />
             
-            <Box sx={{ display: 'flex', gap: 2 }}>
-                <Button
-                    variant={values.type === "חובה" ? "contained" : "outlined"}
-                    onClick={() => setValues({ ...values, type: "חובה" })}
-                    sx={{ flex: 1 }}
+            <Box>
+                <Typography variant="body1" sx={{ mb: 1, fontWeight: 'bold' }}>
+                    קורס חובה *
+                </Typography>
+                <ToggleButtonGroup
+                    value={values.isMandatory}
+                    exclusive
+                    onChange={handleToggleChange('isMandatory')}
+                    fullWidth
+                    color="primary"
                 >
-                    קורס חובה
-                </Button>
-                <Button
-                    variant={values.type === "פעיל" ? "contained" : "outlined"}
-                    onClick={() => setValues({ ...values, type: "פעיל" })}
-                    sx={{ flex: 1 }}
+                    <ToggleButton value="yes">כן</ToggleButton>
+                    <ToggleButton value="no">לא</ToggleButton>
+                </ToggleButtonGroup>
+                {errors.isMandatory && (
+                    <Typography color="error" variant="caption" sx={{ mt: 0.5, display: 'block' }}>
+                        {errors.isMandatory}
+                    </Typography>
+                )}
+            </Box>
+            
+            <Box>
+                <Typography variant="body1" sx={{ mb: 1, fontWeight: 'bold' }}>
+                    קורס פעיל *
+                </Typography>
+                <ToggleButtonGroup
+                    value={values.isActive}
+                    exclusive
+                    onChange={handleToggleChange('isActive')}
+                    fullWidth
+                    color="primary"
                 >
-                    פעיל
-                </Button>
+                    <ToggleButton value="yes">כן</ToggleButton>
+                    <ToggleButton value="no">לא</ToggleButton>
+                </ToggleButtonGroup>
+                {errors.isActive && (
+                    <Typography color="error" variant="caption" sx={{ mt: 0.5, display: 'block' }}>
+                        {errors.isActive}
+                    </Typography>
+                )}
             </Box>
             
             <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-start', mt: 2 }}>

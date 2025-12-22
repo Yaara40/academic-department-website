@@ -9,7 +9,6 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import ContactMailIcon from '@mui/icons-material/ContactMail';
 import HelpIcon from '@mui/icons-material/Help';
-import NavigationIcon from '@mui/icons-material/Navigation';
 
 const Header = () => {
   const menuItems = [
@@ -17,8 +16,7 @@ const Header = () => {
     { text: 'ניהול קורסים', icon: <MenuBookIcon />, path: '/courses' },
     { text: 'ניהול צמיחה', icon: <TrendingUpIcon />, path: '/growth' },
     { text: 'ניהול השארת פרטים', icon: <ContactMailIcon />, path: '/contact' },
-    { text: 'ניהול עזרה', icon: <HelpIcon />, path: '/help' },
-    { text: 'ניהול ניווט', icon: <NavigationIcon />, path: '/navigation' },
+    { text: 'ניהול עזרה', icon: <HelpIcon />, path: '/help' }
   ];
 
   return (

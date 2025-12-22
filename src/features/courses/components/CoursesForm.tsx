@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { Course } from "../models/Course";
+import { Course } from "../../../models/Course";
 
 interface FormValues {
   courseId: string;

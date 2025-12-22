@@ -1,21 +1,25 @@
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
+import { Box, Typography } from "@mui/material";
+import ContactList from "../features/contact/ContactList";
+import ContactForm from "../features/contact/ContactForm";
 
-const ContactManagement = () => {
+export default function ContactManagement() {
   return (
-    <Box sx={{ direction: 'rtl', padding: 2 }}>
-      <Typography variant="h4" gutterBottom>
-        ניהול השארת פרטים
-      </Typography>
-      
-      <Paper sx={{ padding: 3, marginTop: 2 }}>
-        <Typography variant="body1">
-          כאן יהיה ניהול פניות ופרטי קשר שהשאירו משתמשים
+    <Box sx={{ p: 3, direction: "rtl" }}>
+      {/* כותרת */}
+      <Box sx={{ textAlign: "right", mb: 3 }}>
+        <Typography variant="h4" fontWeight={800}>
+          ניהול השארת פרטים
         </Typography>
-      </Paper>
+        <Typography color="text.secondary">
+          צפה ונהל את הפניות מהמועמדים
+        </Typography>
+      </Box>
+
+      {/* סטטיסטיקות + טבלה */}
+      <ContactList />
+
+      {/* טופס הגדרות */}
+      <ContactForm />
     </Box>
   );
-};
-
-export default ContactManagement;
+}

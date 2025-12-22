@@ -7,7 +7,6 @@ import CoursesForm from './features/courses/components/CoursesForm';
 import GrowthManagement from "./pages/GrowthManagement";
 import ContactManagement from './pages/ContactManagement';
 import HelpManagement from './pages/HelpManagement';
-import NavigationManagement from './pages/NavigationManagement';
 
 
 const App = () => {
@@ -30,7 +29,6 @@ const App = () => {
           <Route path="/growth" element={<GrowthManagement />} />
           <Route path="/contact" element={<ContactManagement />} />
           <Route path="/help" element={<HelpManagement />} />
-          <Route path="/navigation" element={<NavigationManagement />} />
         </Routes>
       </main>
       <Footer />

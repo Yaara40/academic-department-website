@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Typography, Button, IconButton, Avatar, Chip } from "@mui/material";
+import { Box, Typography, Button, IconButton, Avatar, Chip, TextField, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import AddIcon from "@mui/icons-material/Add";
@@ -33,6 +33,52 @@ export default function TestimonialsForm() {
     },
   ]);
 
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [currentTestimonial, setCurrentTestimonial] = useState<Testimonial | null>(null);
+  const [editedName, setEditedName] = useState("");
+  const [editedCompany, setEditedCompany] = useState("");
+  const [editedText, setEditedText] = useState("");
+
+  const handleEditClick = (testimonial: Testimonial) => {
+    setCurrentTestimonial(testimonial);
+    setEditedName(testimonial.name);
+    setEditedCompany(testimonial.company);
+    setEditedText(testimonial.text);
+    setEditDialogOpen(true);
+  };
+
+  const handleSaveEdit = () => {
+    if (currentTestimonial) {
+      setTestimonials(
+        testimonials.map((t) =>
+          t.id === currentTestimonial.id
+            ? { ...t, name: editedName, company: editedCompany, text: editedText }
+            : t
+        )
+      );
+    }
+    setEditDialogOpen(false);
+  };
+
+  const handleAddNew = () => {
+    if (editedName && editedCompany && editedText) {
+      const newTestimonial: Testimonial = {
+        id: Date.now().toString(),
+        name: editedName,
+        company: editedCompany,
+        text: editedText,
+        initial: editedName.charAt(0),
+        color: "#10b981",
+      };
+      setTestimonials([...testimonials, newTestimonial]);
+      setEditedName("");
+      setEditedCompany("");
+      setEditedText("");
+      setAddDialogOpen(false);
+    }
+  };
+
   const handleDelete = (id: string) => {
     setTestimonials(testimonials.filter((t) => t.id !== id));
   };
@@ -52,7 +98,12 @@ export default function TestimonialsForm() {
         <Typography variant="h5" fontWeight={800}>
           המלצות בוגרים
         </Typography>
-        <Button variant="contained" startIcon={<AddIcon />} sx={{ '& .MuiButton-startIcon': { marginLeft: '6px' } }}>
+        <Button 
+          variant="contained" 
+          startIcon={<AddIcon />} 
+          onClick={() => setAddDialogOpen(true)}
+          sx={{ '& .MuiButton-startIcon': { marginLeft: '6px' } }}
+        >
           הוסף המלצה
         </Button>
       </Box>
@@ -87,7 +138,7 @@ export default function TestimonialsForm() {
 
           <Box sx={{ display: "flex", gap: 1 }}>
             <Chip label="מוצג" size="small" color="success" />
-            <IconButton size="small">
+            <IconButton size="small" onClick={() => handleEditClick(testimonial)}>
               <EditOutlinedIcon fontSize="small" />
             </IconButton>
             <IconButton size="small" onClick={() => handleDelete(testimonial.id)}>
@@ -96,6 +147,74 @@ export default function TestimonialsForm() {
           </Box>
         </Box>
       ))}
+
+      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
+        <DialogTitle sx={{ direction: "rtl" }}>עריכת המלצה</DialogTitle>
+        <DialogContent sx={{ direction: "rtl", minWidth: 400 }}>
+          <TextField
+            fullWidth
+            label="שם"
+            value={editedName}
+            onChange={(e) => setEditedName(e.target.value)}
+            sx={{ mt: 2, mb: 2 }}
+          />
+          <TextField
+            fullWidth
+            label="תפקיד/חברה"
+            value={editedCompany}
+            onChange={(e) => setEditedCompany(e.target.value)}
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            fullWidth
+            label="טקסט ההמלצה"
+            value={editedText}
+            onChange={(e) => setEditedText(e.target.value)}
+            multiline
+            rows={3}
+          />
+        </DialogContent>
+        <DialogActions sx={{ direction: "rtl" }}>
+          <Button onClick={() => setEditDialogOpen(false)}>ביטול</Button>
+          <Button onClick={handleSaveEdit} variant="contained">
+            שמור
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={addDialogOpen} onClose={() => setAddDialogOpen(false)}>
+        <DialogTitle sx={{ direction: "rtl" }}>הוספת המלצה חדשה</DialogTitle>
+        <DialogContent sx={{ direction: "rtl", minWidth: 400 }}>
+          <TextField
+            fullWidth
+            label="שם"
+            value={editedName}
+            onChange={(e) => setEditedName(e.target.value)}
+            sx={{ mt: 2, mb: 2 }}
+          />
+          <TextField
+            fullWidth
+            label="תפקיד/חברה"
+            value={editedCompany}
+            onChange={(e) => setEditedCompany(e.target.value)}
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            fullWidth
+            label="טקסט ההמלצה"
+            value={editedText}
+            onChange={(e) => setEditedText(e.target.value)}
+            multiline
+            rows={3}
+          />
+        </DialogContent>
+        <DialogActions sx={{ direction: "rtl" }}>
+          <Button onClick={() => setAddDialogOpen(false)}>ביטול</Button>
+          <Button onClick={handleAddNew} variant="contained">
+            הוסף
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

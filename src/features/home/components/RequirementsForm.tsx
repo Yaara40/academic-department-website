@@ -38,10 +38,13 @@ export default function RequirementsForm() {
   ]);
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [currentReq, setCurrentReq] = useState<Requirement | null>(null);
   const [editedTitle, setEditedTitle] = useState("");
   const [editedSubtitle, setEditedSubtitle] = useState("");
   const [editedValue, setEditedValue] = useState("");
+
+  const colors = ["#dbeafe", "#d1fae5", "#e9d5ff", "#fed7aa", "#fef3c7"];
 
   const handleEditClick = (req: Requirement) => {
     setCurrentReq(req);
@@ -64,6 +67,23 @@ export default function RequirementsForm() {
     setEditDialogOpen(false);
   };
 
+  const handleAddNew = () => {
+    if (editedTitle && editedSubtitle && editedValue) {
+      const newReq: Requirement = {
+        id: Date.now().toString(),
+        title: editedTitle,
+        subtitle: editedSubtitle,
+        value: editedValue,
+        color: colors[Math.floor(Math.random() * colors.length)],
+      };
+      setRequirements([...requirements, newReq]);
+      setEditedTitle("");
+      setEditedSubtitle("");
+      setEditedValue("");
+      setAddDialogOpen(false);
+    }
+  };
+
   const handleDelete = (id: string) => {
     setRequirements(requirements.filter((req) => req.id !== id));
   };
@@ -83,7 +103,12 @@ export default function RequirementsForm() {
         <Typography variant="h5" fontWeight={800}>
           דרישות התואר
         </Typography>
-        <Button variant="contained" startIcon={<AddIcon />} sx={{ '& .MuiButton-startIcon': { marginLeft: '6px' } }}>
+        <Button 
+          variant="contained" 
+          startIcon={<AddIcon />} 
+          onClick={() => setAddDialogOpen(true)}
+          sx={{ '& .MuiButton-startIcon': { marginLeft: '6px' } }}
+        >
           הוסף דרישה
         </Button>
       </Box>
@@ -142,6 +167,38 @@ export default function RequirementsForm() {
           <Button onClick={() => setEditDialogOpen(false)}>ביטול</Button>
           <Button onClick={handleSaveEdit} variant="contained">
             שמור
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={addDialogOpen} onClose={() => setAddDialogOpen(false)}>
+        <DialogTitle sx={{ direction: "rtl" }}>הוספת דרישה חדשה</DialogTitle>
+        <DialogContent sx={{ direction: "rtl", minWidth: 400 }}>
+          <TextField
+            fullWidth
+            label="כותרת"
+            value={editedTitle}
+            onChange={(e) => setEditedTitle(e.target.value)}
+            sx={{ mt: 2, mb: 2 }}
+          />
+          <TextField
+            fullWidth
+            label="תת כותרת"
+            value={editedSubtitle}
+            onChange={(e) => setEditedSubtitle(e.target.value)}
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            fullWidth
+            label="ערך"
+            value={editedValue}
+            onChange={(e) => setEditedValue(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions sx={{ direction: "rtl" }}>
+          <Button onClick={() => setAddDialogOpen(false)}>ביטול</Button>
+          <Button onClick={handleAddNew} variant="contained">
+            הוסף
           </Button>
         </DialogActions>
       </Dialog>

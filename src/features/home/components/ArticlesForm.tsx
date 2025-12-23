@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Typography, Button, IconButton, Chip } from "@mui/material";
+import { Box, Typography, Button, IconButton, Chip, TextField, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import AddIcon from "@mui/icons-material/Add";
@@ -10,22 +10,66 @@ export default function ArticlesForm() {
     {
       id: "1",
       title: "מדריך קריירה בהייטק 2025",
-      imageUrl: "https://via.placeholder.com/100",
+      imageUrl: "https://www.ecomschool.co.il/wp-content/uploads/2025/03/לימודים-הייטק-1.jpg",
       tags: ["קריירה"],
     },
     {
       id: "2",
       title: "מהפכת הבינה המלאכותית",
-      imageUrl: "https://via.placeholder.com/100",
+      imageUrl: "https://static.wixstatic.com/media/979988_7cdbeaac56b54d07bf75b8bbb710ba41~mv2.jpg/v1/fill/w_568,h_324,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/979988_7cdbeaac56b54d07bf75b8bbb710ba41~mv2.jpg",
       tags: ["AI", "חדש"],
     },
     {
       id: "3",
       title: "להקים סטארטאפ - המדריך השלם",
-      imageUrl: "https://via.placeholder.com/100",
+      imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsWfcXDo24kK9bopcycPf0uQrdqDrbUdIirQ&s",
       tags: ["יזמות"],
     },
   ]);
+
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [currentArticle, setCurrentArticle] = useState<Article | null>(null);
+  const [editedTitle, setEditedTitle] = useState("");
+  const [editedImageUrl, setEditedImageUrl] = useState("");
+  const [editedTags, setEditedTags] = useState("");
+
+  const handleEditClick = (article: Article) => {
+    setCurrentArticle(article);
+    setEditedTitle(article.title);
+    setEditedImageUrl(article.imageUrl);
+    setEditedTags(article.tags.join(", "));
+    setEditDialogOpen(true);
+  };
+
+  const handleSaveEdit = () => {
+    if (currentArticle) {
+      setArticles(
+        articles.map((article) =>
+          article.id === currentArticle.id
+            ? { ...article, title: editedTitle, imageUrl: editedImageUrl, tags: editedTags.split(",").map(t => t.trim()) }
+            : article
+        )
+      );
+    }
+    setEditDialogOpen(false);
+  };
+
+  const handleAddNew = () => {
+    if (editedTitle && editedImageUrl) {
+      const newArticle: Article = {
+        id: Date.now().toString(),
+        title: editedTitle,
+        imageUrl: editedImageUrl,
+        tags: editedTags.split(",").map(t => t.trim()).filter(Boolean),
+      };
+      setArticles([...articles, newArticle]);
+      setEditedTitle("");
+      setEditedImageUrl("");
+      setEditedTags("");
+      setAddDialogOpen(false);
+    }
+  };
 
   const handleDelete = (id: string) => {
     setArticles(articles.filter((article) => article.id !== id));
@@ -46,7 +90,12 @@ export default function ArticlesForm() {
         <Typography variant="h5" fontWeight={800}>
           מאמרים על המקצוע והתעשייה
         </Typography>
-        <Button variant="contained" startIcon={<AddIcon />} sx={{ '& .MuiButton-startIcon': { marginLeft: '6px' } }}>
+        <Button 
+          variant="contained" 
+          startIcon={<AddIcon />} 
+          onClick={() => setAddDialogOpen(true)}
+          sx={{ '& .MuiButton-startIcon': { marginLeft: '6px' } }}
+        >
           הוסף מאמר
         </Button>
       </Box>
@@ -81,7 +130,7 @@ export default function ArticlesForm() {
           </Box>
 
           <Box>
-            <IconButton size="small">
+            <IconButton size="small" onClick={() => handleEditClick(article)}>
               <EditOutlinedIcon fontSize="small" />
             </IconButton>
             <IconButton size="small" onClick={() => handleDelete(article.id)}>
@@ -90,6 +139,72 @@ export default function ArticlesForm() {
           </Box>
         </Box>
       ))}
+
+      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
+        <DialogTitle sx={{ direction: "rtl" }}>עריכת מאמר</DialogTitle>
+        <DialogContent sx={{ direction: "rtl", minWidth: 400 }}>
+          <TextField
+            fullWidth
+            label="כותרת המאמר"
+            value={editedTitle}
+            onChange={(e) => setEditedTitle(e.target.value)}
+            sx={{ mt: 2, mb: 2 }}
+          />
+          <TextField
+            fullWidth
+            label="קישור לתמונה"
+            value={editedImageUrl}
+            onChange={(e) => setEditedImageUrl(e.target.value)}
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            fullWidth
+            label="תגיות (מופרדות בפסיק)"
+            value={editedTags}
+            onChange={(e) => setEditedTags(e.target.value)}
+            placeholder="קריירה, AI, חדש"
+          />
+        </DialogContent>
+        <DialogActions sx={{ direction: "rtl" }}>
+          <Button onClick={() => setEditDialogOpen(false)}>ביטול</Button>
+          <Button onClick={handleSaveEdit} variant="contained">
+            שמור
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={addDialogOpen} onClose={() => setAddDialogOpen(false)}>
+        <DialogTitle sx={{ direction: "rtl" }}>הוספת מאמר חדש</DialogTitle>
+        <DialogContent sx={{ direction: "rtl", minWidth: 400 }}>
+          <TextField
+            fullWidth
+            label="כותרת המאמר"
+            value={editedTitle}
+            onChange={(e) => setEditedTitle(e.target.value)}
+            sx={{ mt: 2, mb: 2 }}
+          />
+          <TextField
+            fullWidth
+            label="קישור לתמונה"
+            value={editedImageUrl}
+            onChange={(e) => setEditedImageUrl(e.target.value)}
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            fullWidth
+            label="תגיות (מופרדות בפסיק)"
+            value={editedTags}
+            onChange={(e) => setEditedTags(e.target.value)}
+            placeholder="קריירה, AI, חדש"
+          />
+        </DialogContent>
+        <DialogActions sx={{ direction: "rtl" }}>
+          <Button onClick={() => setAddDialogOpen(false)}>ביטול</Button>
+          <Button onClick={handleAddNew} variant="contained">
+            הוסף
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

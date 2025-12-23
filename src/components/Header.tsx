@@ -21,7 +21,7 @@ const Header = () => {
 
   return (
     <>
-      <AppBar position="static" sx={{ backgroundColor: '#2e917aff' }}>
+      <AppBar position="static" sx={{ backgroundColor: '#49c1a5ff' }}>
         <Toolbar>
           <Box sx={{ flexGrow: 1, display: 'flex', gap: 1 }}>
             {menuItems.reverse().map((item) => (
@@ -56,9 +56,10 @@ const Header = () => {
     position: 'fixed',
     right: 0,
     top: '72px',
-    height: 'calc(100vh - 64px - 90px)', // Adjust for AppBar height and some margin
+    height: 'calc(100vh - 64px - 105px)', // Adjust for AppBar height and some margin
+    //bottom : 0,
     width: '200px',
-    backgroundColor: '#ffffff33',
+    backgroundColor: '#ffffffff',
     display: 'flex',
     flexDirection: 'column',
     gap: 1,

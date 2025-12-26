@@ -43,56 +43,76 @@ const Header = () => {
               </Button>
             ))}
           </Box>
-          
-          <Typography variant="h6" component="div" sx={{ ml: 4 }}>
-            מערכת ניהול מידע
-          </Typography>
+
+          {/* טקסט + לוגו - בסדר הפוך */}
+          <Box 
+            component={Link} 
+            to="/"
+            sx={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 1.5,
+              textDecoration: 'none',
+              color: 'inherit',
+              '&:hover': {
+                opacity: 0.8
+              }
+            }}
+          >
+            <Typography variant="h6" component="div">
+              מערכת ניהול מידע
+            </Typography>
+            <img 
+              src="https://upload.wikimedia.org/wikipedia/he/thumb/6/63/OnoAcademic.svg/1200px-OnoAcademic.svg.png" 
+              alt="לוגו המכללה האקדמית אונו" 
+              style={{ height: 35, width: 'auto' }}
+            />
+          </Box>
         </Toolbar>
       </AppBar>
 
       {/* Right Side Vertical Menu */}
       <Box 
-  sx={{ 
-    position: 'fixed',
-    right: 0,
-    top: '72px',
-    height: 'calc(100vh - 64px - 105px)', // Adjust for AppBar height and some margin
-    //bottom : 0,
-    width: '200px',
-    backgroundColor: '#ffffffff',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 1,
-    p: 2,
-    pt: 3,
-    zIndex: 1000,
-    borderLeft: '1px solid #e0e0e0',
-    boxSizing: 'border-box'
-  }}
->
-  {menuItems.reverse().map((item) => (
-    <Button
-      key={`side-${item.text}`}
-      color="inherit"
-      component={Link}
-      to={item.path}
-      sx={{ 
-        justifyContent: 'flex-start',  // Align to the right
-        width: '100%',
-        color: '#2e917a',
-        display: 'flex',
-        flexDirection: 'row',
-        gap: 1,  // Space between icon and text
-        '&:hover': {
-          backgroundColor: 'rgba(46, 145, 122, 0.1)'
-        }
-      }}
-    >
-      {item.icon}
-      <span style={{ marginRight: '8px' }}>{item.text}</span>
-    </Button>
-  ))}
-</Box>
+        sx={{ 
+          position: 'fixed',
+          right: 0,
+          top: '72px',
+          height: 'calc(100vh - 64px - 105px)',
+          width: '200px',
+          backgroundColor: '#ffffffff',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 1,
+          p: 2,
+          pt: 3,
+          zIndex: 1000,
+          borderLeft: '1px solid #e0e0e0',
+          boxSizing: 'border-box'
+        }}
+      >
+        {menuItems.reverse().map((item) => (
+          <Button
+            key={`side-${item.text}`}
+            color="inherit"
+            component={Link}
+            to={item.path}
+            sx={{ 
+              justifyContent: 'flex-start',
+              width: '100%',
+              color: '#2e917a',
+              display: 'flex',
+              flexDirection: 'row',
+              gap: 1,
+              '&:hover': {
+                backgroundColor: 'rgba(46, 145, 122, 0.1)'
+              }
+            }}
+          >
+            {item.icon}
+            <span style={{ marginRight: '8px' }}>{item.text}</span>
+          </Button>
+        ))}
+      </Box>
     </>
   );
 };

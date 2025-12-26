@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Typography, Button, IconButton, Avatar, Chip, TextField, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
@@ -39,6 +39,23 @@ export default function TestimonialsForm() {
   const [editedName, setEditedName] = useState("");
   const [editedCompany, setEditedCompany] = useState("");
   const [editedText, setEditedText] = useState("");
+
+  // טעינה מ-LocalStorage
+  useEffect(() => {
+    const loadFromLocalStorage = () => {
+      const saved = localStorage.getItem('testimonials');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          setTestimonials(parsed);
+        } catch (error) {
+          console.error('Error loading from localStorage:', error);
+        }
+      }
+    };
+    
+    loadFromLocalStorage();
+  }, []);
 
   const handleEditClick = (testimonial: Testimonial) => {
     setCurrentTestimonial(testimonial);
@@ -81,6 +98,11 @@ export default function TestimonialsForm() {
 
   const handleDelete = (id: string) => {
     setTestimonials(testimonials.filter((t) => t.id !== id));
+  };
+
+  const handleSaveToLocalStorage = () => {
+    localStorage.setItem('testimonials', JSON.stringify(testimonials));
+    alert('✅ נשמר ל-LocalStorage!');
   };
 
   return (
@@ -147,6 +169,17 @@ export default function TestimonialsForm() {
           </Box>
         </Box>
       ))}
+
+      <Box sx={{ mt: 3, display: "flex", justifyContent: "center" }}>
+        <Button 
+          variant="contained" 
+          color="success"
+          size="large"
+          onClick={handleSaveToLocalStorage}
+        >
+          שמור ל-LocalStorage
+        </Button>
+      </Box>
 
       <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
         <DialogTitle sx={{ direction: "rtl" }}>עריכת המלצה</DialogTitle>

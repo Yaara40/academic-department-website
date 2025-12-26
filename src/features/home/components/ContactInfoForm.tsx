@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Typography, Button, TextField } from "@mui/material";
 import PhoneIcon from "@mui/icons-material/Phone";
 import EmailIcon from "@mui/icons-material/Email";
@@ -20,9 +20,26 @@ export default function ContactInfoForm() {
     youtube: "https://youtube.com/...",
   });
 
+  // טעינה מ-LocalStorage
+  useEffect(() => {
+    const loadFromLocalStorage = () => {
+      const saved = localStorage.getItem('contactInfo');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          setContactInfo(parsed);
+        } catch (error) {
+          console.error('Error loading from localStorage:', error);
+        }
+      }
+    };
+    
+    loadFromLocalStorage();
+  }, []);
+
   const handleSave = () => {
     localStorage.setItem("contactInfo", JSON.stringify(contactInfo));
-    alert("✅ נשמר בהצלחה!");
+    alert("✅ נשמר ל-LocalStorage!");
   };
 
   return (
@@ -111,8 +128,13 @@ export default function ContactInfoForm() {
           />
         </Box>
 
-        <Button variant="contained" onClick={handleSave} sx={{ mt: 2 }}>
-          שמור פרטים
+        <Button 
+          variant="contained" 
+          color="success"
+          onClick={handleSave} 
+          sx={{ mt: 2 }}
+        >
+          שמור ל-LocalStorage
         </Button>
       </Box>
     </Box>

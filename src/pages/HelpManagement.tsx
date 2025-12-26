@@ -210,7 +210,7 @@ export default function AdminHelp() {
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
           <Box sx={{ textAlign: "center" }}>
             <Typography variant="h3" sx={{ fontWeight: 900, color: "#1f2937", mb: 1 }}>
-              דף עזרה למנהל מערכת (Admin)
+              דף עזרה למנהל מערכת
             </Typography>
             <Typography sx={{ fontSize: 20, color: "#6b7280" }}>
               הדרכה קצרה וברורה לשימוש נכון במערכת

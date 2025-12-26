@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Typography, Button, IconButton, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Card, CardContent } from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
@@ -46,6 +46,23 @@ export default function RequirementsForm() {
 
   const colors = ["#dbeafe", "#d1fae5", "#e9d5ff", "#fed7aa", "#fef3c7"];
 
+  // טעינה מ-LocalStorage
+  useEffect(() => {
+    const loadFromLocalStorage = () => {
+      const saved = localStorage.getItem('requirements');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          setRequirements(parsed);
+        } catch (error) {
+          console.error('Error loading from localStorage:', error);
+        }
+      }
+    };
+    
+    loadFromLocalStorage();
+  }, []);
+
   const handleEditClick = (req: Requirement) => {
     setCurrentReq(req);
     setEditedTitle(req.title);
@@ -86,6 +103,11 @@ export default function RequirementsForm() {
 
   const handleDelete = (id: string) => {
     setRequirements(requirements.filter((req) => req.id !== id));
+  };
+
+  const handleSaveToLocalStorage = () => {
+    localStorage.setItem('requirements', JSON.stringify(requirements));
+    alert('✅ נשמר ל-LocalStorage!');
   };
 
   return (
@@ -137,6 +159,17 @@ export default function RequirementsForm() {
             </CardContent>
           </Card>
         ))}
+      </Box>
+
+      <Box sx={{ mt: 3, display: "flex", justifyContent: "center" }}>
+        <Button 
+          variant="contained" 
+          color="success"
+          size="large"
+          onClick={handleSaveToLocalStorage}
+        >
+          שמור ל-LocalStorage
+        </Button>
       </Box>
 
       <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>

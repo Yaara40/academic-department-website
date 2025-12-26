@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Typography, Switch, IconButton, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
@@ -55,6 +55,34 @@ export default function ContactForm() {
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [newFieldLabel, setNewFieldLabel] = useState("");
 
+  // טעינה מ-LocalStorage
+  useEffect(() => {
+    const loadFromLocalStorage = () => {
+      const saved = localStorage.getItem('contactFormFields');
+      if (saved) {
+        try {
+          const parsedFields = JSON.parse(saved);
+          const fieldsWithIcons = parsedFields.map((field: Omit<FormField, 'icon'>) => {
+            let icon;
+            switch(field.id) {
+              case 'name': icon = <PersonOutlineIcon />; break;
+              case 'phone': icon = <PhoneOutlinedIcon />; break;
+              case 'email': icon = <EmailOutlinedIcon />; break;
+              case 'city': icon = <LocationOnOutlinedIcon />; break;
+              default: icon = <PersonOutlineIcon />;
+            }
+            return { ...field, icon };
+          });
+          setFields(fieldsWithIcons);
+        } catch (error) {
+          console.error('Error loading from localStorage:', error);
+        }
+      }
+    };
+    
+    loadFromLocalStorage();
+  }, []);
+
   const handleToggle = (id: string) => {
     setFields(
       fields.map((field) =>
@@ -98,6 +126,13 @@ export default function ContactForm() {
       setAddDialogOpen(false);
     }
   };
+
+  const handleSaveToLocalStorage = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const fieldsToSave = fields.map(({ icon, ...rest }) => rest);
+  localStorage.setItem('contactFormFields', JSON.stringify(fieldsToSave));
+  alert('✅ נשמר ל-LocalStorage!');
+};
 
   return (
     <Box
@@ -187,6 +222,17 @@ export default function ContactForm() {
           </Box>
         </Box>
       ))}
+
+      <Box sx={{ mt: 3, display: "flex", justifyContent: "center" }}>
+        <Button 
+          variant="contained" 
+          color="success"
+          size="large"
+          onClick={handleSaveToLocalStorage}
+        >
+          שמור ל-LocalStorage
+        </Button>
+      </Box>
 
       <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
         <DialogTitle sx={{ direction: "rtl" }}>עריכת שם שדה</DialogTitle>

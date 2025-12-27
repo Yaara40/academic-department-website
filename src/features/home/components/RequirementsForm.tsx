@@ -44,6 +44,8 @@ export default function RequirementsForm() {
   const [editedSubtitle, setEditedSubtitle] = useState("");
   const [editedValue, setEditedValue] = useState("");
 
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
   const colors = ["#dbeafe", "#d1fae5", "#e9d5ff", "#fed7aa", "#fef3c7"];
 
   // טעינה מ-LocalStorage
@@ -63,15 +65,37 @@ export default function RequirementsForm() {
     loadFromLocalStorage();
   }, []);
 
+  const validateFields = () => {
+    const newErrors: Record<string, string> = {};
+
+    // בדיקת כותרת - חובה, טקסט
+    if (!editedTitle.trim()) {
+      newErrors.title = 'כותרת דרישה היא שדה חובה';
+    }
+
+    // בדיקת ערך - חובה
+    if (!editedValue.trim()) {
+      newErrors.value = 'ערך הדרישה הוא שדה חובה';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleEditClick = (req: Requirement) => {
     setCurrentReq(req);
     setEditedTitle(req.title);
     setEditedSubtitle(req.subtitle);
     setEditedValue(req.value);
+    setErrors({});
     setEditDialogOpen(true);
   };
 
   const handleSaveEdit = () => {
+    if (!validateFields()) {
+      return;
+    }
+
     if (currentReq) {
       setRequirements(
         requirements.map((req) =>
@@ -82,32 +106,52 @@ export default function RequirementsForm() {
       );
     }
     setEditDialogOpen(false);
+    setErrors({});
   };
 
   const handleAddNew = () => {
-    if (editedTitle && editedSubtitle && editedValue) {
-      const newReq: Requirement = {
-        id: Date.now().toString(),
-        title: editedTitle,
-        subtitle: editedSubtitle,
-        value: editedValue,
-        color: colors[Math.floor(Math.random() * colors.length)],
-      };
-      setRequirements([...requirements, newReq]);
-      setEditedTitle("");
-      setEditedSubtitle("");
-      setEditedValue("");
-      setAddDialogOpen(false);
+    if (!validateFields()) {
+      return;
     }
+
+    const newReq: Requirement = {
+      id: Date.now().toString(),
+      title: editedTitle,
+      subtitle: editedSubtitle,
+      value: editedValue,
+      color: colors[Math.floor(Math.random() * colors.length)],
+    };
+    setRequirements([...requirements, newReq]);
+    setEditedTitle("");
+    setEditedSubtitle("");
+    setEditedValue("");
+    setAddDialogOpen(false);
+    setErrors({});
   };
 
   const handleDelete = (id: string) => {
-    setRequirements(requirements.filter((req) => req.id !== id));
+    // מניעת מחיקה אם זו הדרישה היחידה
+    if (requirements.length === 1) {
+      alert('❌ לא ניתן למחוק את הדרישה היחידה. חייבת להישאר לפחות דרישה אחת.');
+      return;
+    }
+
+    if (window.confirm('האם אתה בטוח שברצונך למחוק דרישה זו?')) {
+      setRequirements(requirements.filter((req) => req.id !== id));
+    }
   };
 
   const handleSaveToLocalStorage = () => {
     localStorage.setItem('requirements', JSON.stringify(requirements));
     alert('✅ נשמר ל-LocalStorage!');
+  };
+
+  const handleOpenAddDialog = () => {
+    setEditedTitle("");
+    setEditedSubtitle("");
+    setEditedValue("");
+    setErrors({});
+    setAddDialogOpen(true);
   };
 
   return (
@@ -128,7 +172,7 @@ export default function RequirementsForm() {
         <Button 
           variant="contained" 
           startIcon={<AddIcon />} 
-          onClick={() => setAddDialogOpen(true)}
+          onClick={handleOpenAddDialog}
           sx={{ '& .MuiButton-startIcon': { marginLeft: '6px' } }}
         >
           הוסף דרישה
@@ -172,14 +216,17 @@ export default function RequirementsForm() {
         </Button>
       </Box>
 
+      {/* Dialog עריכה */}
       <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
         <DialogTitle sx={{ direction: "rtl" }}>עריכת דרישה</DialogTitle>
         <DialogContent sx={{ direction: "rtl", minWidth: 400 }}>
           <TextField
             fullWidth
-            label="כותרת"
+            label="כותרת *"
             value={editedTitle}
             onChange={(e) => setEditedTitle(e.target.value)}
+            error={Boolean(errors.title)}
+            helperText={errors.title || ' '}
             sx={{ mt: 2, mb: 2 }}
           />
           <TextField
@@ -191,9 +238,11 @@ export default function RequirementsForm() {
           />
           <TextField
             fullWidth
-            label="ערך"
+            label="ערך *"
             value={editedValue}
             onChange={(e) => setEditedValue(e.target.value)}
+            error={Boolean(errors.value)}
+            helperText={errors.value || ' '}
           />
         </DialogContent>
         <DialogActions sx={{ direction: "rtl" }}>
@@ -204,14 +253,17 @@ export default function RequirementsForm() {
         </DialogActions>
       </Dialog>
 
+      {/* Dialog הוספה */}
       <Dialog open={addDialogOpen} onClose={() => setAddDialogOpen(false)}>
         <DialogTitle sx={{ direction: "rtl" }}>הוספת דרישה חדשה</DialogTitle>
         <DialogContent sx={{ direction: "rtl", minWidth: 400 }}>
           <TextField
             fullWidth
-            label="כותרת"
+            label="כותרת *"
             value={editedTitle}
             onChange={(e) => setEditedTitle(e.target.value)}
+            error={Boolean(errors.title)}
+            helperText={errors.title || ' '}
             sx={{ mt: 2, mb: 2 }}
           />
           <TextField
@@ -223,9 +275,11 @@ export default function RequirementsForm() {
           />
           <TextField
             fullWidth
-            label="ערך"
+            label="ערך *"
             value={editedValue}
             onChange={(e) => setEditedValue(e.target.value)}
+            error={Boolean(errors.value)}
+            helperText={errors.value || ' '}
           />
         </DialogContent>
         <DialogActions sx={{ direction: "rtl" }}>

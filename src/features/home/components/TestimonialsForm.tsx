@@ -11,22 +11,22 @@ export default function TestimonialsForm() {
       id: "1",
       name: "נועה כהן",
       company: "מפתחת בכירה ב-Google",
-      text: "הלימודים נתנו לי את הכלים והביטחון להצליח להלמל בעתיק הגלובלי",
+      text: "הלימודים נתנו לי את הכלים והביטחון להצליח בעולם הגלובלי",
       initial: "נ",
       color: "#10b981",
     },
     {
       id: "2",
       name: "דני לוי",
-      company: "מייסד ב-CEO-TechCorp",
-      text: "הידע שרכשתי כאן היו הבסיס להקמת החברה שלי",
+      company: "מייסד ו-CEO ב-TechCorp",
+      text: "הידע שרכשתי כאן היה הבסיס להקמת החברה שלי",
       initial: "ד",
       color: "#10b981",
     },
     {
       id: "3",
       name: "מיכל שפירא",
-      company: "חוקרת AI בטכניון וייצמן",
+      company: "חוקרת AI בטכניון ווייצמן",
       text: "המחלקה אפשרה לי להתמקצע במחקר ברמה הגבוהה ביותר",
       initial: "מ",
       color: "#10b981",
@@ -39,6 +39,8 @@ export default function TestimonialsForm() {
   const [editedName, setEditedName] = useState("");
   const [editedCompany, setEditedCompany] = useState("");
   const [editedText, setEditedText] = useState("");
+
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   // טעינה מ-LocalStorage
   useEffect(() => {
@@ -57,52 +59,99 @@ export default function TestimonialsForm() {
     loadFromLocalStorage();
   }, []);
 
+  const validateFields = () => {
+    const newErrors: Record<string, string> = {};
+
+    // 1. שם הבוגר/ת - חובה, טקסט
+    if (!editedName.trim()) {
+      newErrors.name = 'שם הבוגר/ת הוא שדה חובה';
+    }
+
+    // 2. תפקיד וחברה - חובה, טקסט
+    if (!editedCompany.trim()) {
+      newErrors.company = 'תפקיד וחברה הם שדה חובה';
+    }
+
+    // 3. תוכן ההמלצה - חובה, טקסט
+    if (!editedText.trim()) {
+      newErrors.text = 'תוכן ההמלצה הוא שדה חובה';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleEditClick = (testimonial: Testimonial) => {
     setCurrentTestimonial(testimonial);
     setEditedName(testimonial.name);
     setEditedCompany(testimonial.company);
     setEditedText(testimonial.text);
+    setErrors({});
     setEditDialogOpen(true);
   };
 
   const handleSaveEdit = () => {
+    if (!validateFields()) {
+      return;
+    }
+
     if (currentTestimonial) {
       setTestimonials(
         testimonials.map((t) =>
           t.id === currentTestimonial.id
-            ? { ...t, name: editedName, company: editedCompany, text: editedText }
+            ? { ...t, name: editedName, company: editedCompany, text: editedText, initial: editedName.charAt(0) }
             : t
         )
       );
     }
     setEditDialogOpen(false);
+    setErrors({});
   };
 
   const handleAddNew = () => {
-    if (editedName && editedCompany && editedText) {
-      const newTestimonial: Testimonial = {
-        id: Date.now().toString(),
-        name: editedName,
-        company: editedCompany,
-        text: editedText,
-        initial: editedName.charAt(0),
-        color: "#10b981",
-      };
-      setTestimonials([...testimonials, newTestimonial]);
-      setEditedName("");
-      setEditedCompany("");
-      setEditedText("");
-      setAddDialogOpen(false);
+    if (!validateFields()) {
+      return;
     }
+
+    const newTestimonial: Testimonial = {
+      id: Date.now().toString(),
+      name: editedName,
+      company: editedCompany,
+      text: editedText,
+      initial: editedName.charAt(0),
+      color: "#10b981",
+    };
+    setTestimonials([...testimonials, newTestimonial]);
+    setEditedName("");
+    setEditedCompany("");
+    setEditedText("");
+    setAddDialogOpen(false);
+    setErrors({});
   };
 
   const handleDelete = (id: string) => {
-    setTestimonials(testimonials.filter((t) => t.id !== id));
+    // מניעת מחיקה אם זו ההמלצה היחידה
+    if (testimonials.length === 1) {
+      alert('❌ לא ניתן למחוק את ההמלצה היחידה. חייבת להישאר לפחות המלצה אחת.');
+      return;
+    }
+
+    if (window.confirm('האם אתה בטוח שברצונך למחוק המלצה זו?')) {
+      setTestimonials(testimonials.filter((t) => t.id !== id));
+    }
   };
 
   const handleSaveToLocalStorage = () => {
     localStorage.setItem('testimonials', JSON.stringify(testimonials));
     alert('✅ נשמר ל-LocalStorage!');
+  };
+
+  const handleOpenAddDialog = () => {
+    setEditedName("");
+    setEditedCompany("");
+    setEditedText("");
+    setErrors({});
+    setAddDialogOpen(true);
   };
 
   return (
@@ -123,7 +172,7 @@ export default function TestimonialsForm() {
         <Button 
           variant="contained" 
           startIcon={<AddIcon />} 
-          onClick={() => setAddDialogOpen(true)}
+          onClick={handleOpenAddDialog}
           sx={{ '& .MuiButton-startIcon': { marginLeft: '6px' } }}
         >
           הוסף המלצה
@@ -181,28 +230,35 @@ export default function TestimonialsForm() {
         </Button>
       </Box>
 
+      {/* Dialog עריכה */}
       <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
         <DialogTitle sx={{ direction: "rtl" }}>עריכת המלצה</DialogTitle>
         <DialogContent sx={{ direction: "rtl", minWidth: 400 }}>
           <TextField
             fullWidth
-            label="שם"
+            label="שם *"
             value={editedName}
             onChange={(e) => setEditedName(e.target.value)}
+            error={Boolean(errors.name)}
+            helperText={errors.name || ' '}
             sx={{ mt: 2, mb: 2 }}
           />
           <TextField
             fullWidth
-            label="תפקיד/חברה"
+            label="תפקיד/חברה *"
             value={editedCompany}
             onChange={(e) => setEditedCompany(e.target.value)}
+            error={Boolean(errors.company)}
+            helperText={errors.company || ' '}
             sx={{ mb: 2 }}
           />
           <TextField
             fullWidth
-            label="טקסט ההמלצה"
+            label="טקסט ההמלצה *"
             value={editedText}
             onChange={(e) => setEditedText(e.target.value)}
+            error={Boolean(errors.text)}
+            helperText={errors.text || ' '}
             multiline
             rows={3}
           />
@@ -215,28 +271,35 @@ export default function TestimonialsForm() {
         </DialogActions>
       </Dialog>
 
+      {/* Dialog הוספה */}
       <Dialog open={addDialogOpen} onClose={() => setAddDialogOpen(false)}>
         <DialogTitle sx={{ direction: "rtl" }}>הוספת המלצה חדשה</DialogTitle>
         <DialogContent sx={{ direction: "rtl", minWidth: 400 }}>
           <TextField
             fullWidth
-            label="שם"
+            label="שם *"
             value={editedName}
             onChange={(e) => setEditedName(e.target.value)}
+            error={Boolean(errors.name)}
+            helperText={errors.name || ' '}
             sx={{ mt: 2, mb: 2 }}
           />
           <TextField
             fullWidth
-            label="תפקיד/חברה"
+            label="תפקיד/חברה *"
             value={editedCompany}
             onChange={(e) => setEditedCompany(e.target.value)}
+            error={Boolean(errors.company)}
+            helperText={errors.company || ' '}
             sx={{ mb: 2 }}
           />
           <TextField
             fullWidth
-            label="טקסט ההמלצה"
+            label="טקסט ההמלצה *"
             value={editedText}
             onChange={(e) => setEditedText(e.target.value)}
+            error={Boolean(errors.text)}
+            helperText={errors.text || ' '}
             multiline
             rows={3}
           />

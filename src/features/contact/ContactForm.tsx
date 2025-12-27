@@ -1,79 +1,35 @@
 import { useState, useEffect } from "react";
-import { Box, Typography, Switch, IconButton, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import AddIcon from "@mui/icons-material/Add";
-import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
-import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
-import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
+import { Box, Typography, Button, TextField } from "@mui/material";
+import PhoneIcon from "@mui/icons-material/Phone";
+import EmailIcon from "@mui/icons-material/Email";
+import HomeIcon from "@mui/icons-material/Home";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import YouTubeIcon from "@mui/icons-material/YouTube";
+import type { ContactInfo } from "../../models/Home";
 
-interface FormField {
-  id: string;
-  label: string;
-  icon: React.ReactNode;
-  required: boolean;
-  enabled: boolean;
-}
+export default function ContactInfoForm() {
+  const [contactInfo, setContactInfo] = useState<ContactInfo>({
+    phone: "050-1234567",
+    email: "info@example.com",
+    address: "רחוב 123, עיר, ישראל",
+    facebook: "https://facebook.com/...",
+    instagram: "https://instagram.com/...",
+    linkedin: "https://linkedin.com/...",
+    youtube: "https://youtube.com/...",
+  });
 
-export default function ContactForm() {
-  const [fields, setFields] = useState<FormField[]>([
-    {
-      id: "name",
-      label: "שם פרטי ומשפחה",
-      icon: <PersonOutlineIcon />,
-      required: true,
-      enabled: true,
-    },
-    {
-      id: "phone",
-      label: "מספר טלפון",
-      icon: <PhoneOutlinedIcon />,
-      required: true,
-      enabled: true,
-    },
-    {
-      id: "email",
-      label: "כתובת מייל",
-      icon: <EmailOutlinedIcon />,
-      required: false,
-      enabled: false,
-    },
-    {
-      id: "city",
-      label: "עיר מגורים",
-      icon: <LocationOnOutlinedIcon />,
-      required: false,
-      enabled: false,
-    },
-  ]);
-
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const [currentField, setCurrentField] = useState<FormField | null>(null);
-  const [editedLabel, setEditedLabel] = useState("");
-
-  const [addDialogOpen, setAddDialogOpen] = useState(false);
-  const [newFieldLabel, setNewFieldLabel] = useState("");
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   // טעינה מ-LocalStorage
   useEffect(() => {
     const loadFromLocalStorage = () => {
-      const saved = localStorage.getItem('contactFormFields');
+      const saved = localStorage.getItem('contactInfo');
       if (saved) {
         try {
-          const parsedFields = JSON.parse(saved);
-          const fieldsWithIcons = parsedFields.map((field: Omit<FormField, 'icon'>) => {
-            let icon;
-            switch(field.id) {
-              case 'name': icon = <PersonOutlineIcon />; break;
-              case 'phone': icon = <PhoneOutlinedIcon />; break;
-              case 'email': icon = <EmailOutlinedIcon />; break;
-              case 'city': icon = <LocationOnOutlinedIcon />; break;
-              default: icon = <PersonOutlineIcon />;
-            }
-            return { ...field, icon };
-          });
-          setFields(fieldsWithIcons);
+          const parsed = JSON.parse(saved);
+          setContactInfo(parsed);
         } catch (error) {
           console.error('Error loading from localStorage:', error);
         }
@@ -83,56 +39,60 @@ export default function ContactForm() {
     loadFromLocalStorage();
   }, []);
 
-  const handleToggle = (id: string) => {
-    setFields(
-      fields.map((field) =>
-        field.id === id ? { ...field, enabled: !field.enabled } : field
-      )
-    );
-  };
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
 
-  const handleEditClick = (field: FormField) => {
-    setCurrentField(field);
-    setEditedLabel(field.label);
-    setEditDialogOpen(true);
-  };
-
-  const handleDeleteClick = (id: string) => {
-    setFields(fields.filter((field) => field.id !== id));
-  };
-
-  const handleSaveEdit = () => {
-    if (currentField) {
-      setFields(
-        fields.map((field) =>
-          field.id === currentField.id ? { ...field, label: editedLabel } : field
-        )
-      );
+    // 1. טלפון - חובה, פורמט מספר טלפון
+    if (!contactInfo.phone.trim()) {
+      newErrors.phone = 'טלפון הוא שדה חובה';
+    } else if (!/^0(5[0-8]|7[3-9])-?\d{7}$/.test(contactInfo.phone.replace(/\s/g, ''))) {
+      newErrors.phone = 'פורמט טלפון לא תקין (לדוגמה: 050-1234567)';
     }
-    setEditDialogOpen(false);
-  };
 
-  const handleAddField = () => {
-    if (newFieldLabel.trim()) {
-      const newField: FormField = {
-        id: `field_${Date.now()}`,
-        label: newFieldLabel,
-        icon: <PersonOutlineIcon />,
-        required: false,
-        enabled: false,
-      };
-      setFields([...fields, newField]);
-      setNewFieldLabel("");
-      setAddDialogOpen(false);
+    // 2. אימייל - חובה, פורמט כתובת מייל
+    if (!contactInfo.email.trim()) {
+      newErrors.email = 'אימייל הוא שדה חובה';
+    } else if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(contactInfo.email)) {
+      newErrors.email = 'פורמט אימייל לא תקין (לדוגמה: example@domain.com)';
     }
+
+    // 3. כתובת - חובה
+    if (!contactInfo.address.trim()) {
+      newErrors.address = 'כתובת היא שדה חובה';
+    }
+
+    // 4. פייסבוק - אופציונלי, אבל אם מולא חייב להיות URL
+    if (contactInfo.facebook.trim() && !/^https?:\/\/.+/.test(contactInfo.facebook)) {
+      newErrors.facebook = 'קישור פייסבוק חייב להתחיל ב-http:// או https://';
+    }
+
+    // 5. אינסטגרם - אופציונלי, אבל אם מולא חייב להיות URL
+    if (contactInfo.instagram.trim() && !/^https?:\/\/.+/.test(contactInfo.instagram)) {
+      newErrors.instagram = 'קישור אינסטגרם חייב להתחיל ב-http:// או https://';
+    }
+
+    // 6. לינקדאין - אופציונלי, אבל אם מולא חייב להיות URL
+    if (contactInfo.linkedin.trim() && !/^https?:\/\/.+/.test(contactInfo.linkedin)) {
+      newErrors.linkedin = 'קישור לינקדאין חייב להתחיל ב-http:// או https://';
+    }
+
+    // 7. יוטיוב - אופציונלי, אבל אם מולא חייב להיות URL
+    if (contactInfo.youtube.trim() && !/^https?:\/\/.+/.test(contactInfo.youtube)) {
+      newErrors.youtube = 'קישור יוטיוב חייב להתחיל ב-http:// או https://';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
-  const handleSaveToLocalStorage = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const fieldsToSave = fields.map(({ icon, ...rest }) => rest);
-  localStorage.setItem('contactFormFields', JSON.stringify(fieldsToSave));
-  alert('✅ נשמר ל-LocalStorage!');
-};
+  const handleSave = () => {
+    if (!validateForm()) {
+      return;
+    }
+
+    localStorage.setItem("contactInfo", JSON.stringify(contactInfo));
+    alert("✅ נשמר ל-LocalStorage!");
+  };
 
   return (
     <Box
@@ -145,134 +105,111 @@ export default function ContactForm() {
         direction: "rtl",
       }}
     >
-      <Typography variant="h5" fontWeight={800} sx={{ mb: 1 }}>
-        הגדרות טופס השארת פרטים
-      </Typography>
-      <Typography color="text.secondary" sx={{ mb: 3 }}>
-        הגדר את שדות הטופס והודעות אוטומטיות
+      <Typography variant="h5" fontWeight={800} sx={{ mb: 3 }}>
+        פרטי התקשרות (טופס)
       </Typography>
 
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-        <Typography variant="h6" fontWeight={700}>
-          הגדרת שדות טופס
-        </Typography>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => setAddDialogOpen(true)}
-          sx={{ '& .MuiButton-startIcon': { marginLeft: '6px' } }}
-        >
-          הוסף שדה
-        </Button>
-      </Box>
-
-      {fields.map((field) => (
-        <Box
-          key={field.id}
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            p: 2,
-            mb: 2,
-            bgcolor: "#f9fafb",
-            borderRadius: 2,
-          }}
-        >
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-            <Box sx={{ color: "#6b7280" }}>{field.icon}</Box>
-            <Typography fontWeight={600}>{field.label}</Typography>
-          </Box>
-
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-            <IconButton 
-              size="small" 
-              sx={{ color: "#10b981" }}
-              onClick={() => handleEditClick(field)}
-            >
-              <EditOutlinedIcon fontSize="small" />
-            </IconButton>
-            <IconButton 
-              size="small" 
-              sx={{ color: "#ef4444" }}
-              onClick={() => handleDeleteClick(field.id)}
-            >
-              <DeleteOutlineOutlinedIcon fontSize="small" />
-            </IconButton>
-            <Typography
-              sx={{
-                color: field.enabled ? "#10b981" : "#9ca3af",
-                fontWeight: 600,
-              }}
-            >
-              {field.enabled ? "שדה חובה" : "אופציונלי"}
-            </Typography>
-            <Switch
-              checked={field.enabled}
-              onChange={() => handleToggle(field.id)}
-              sx={{
-                "& .MuiSwitch-switchBase.Mui-checked": {
-                  color: "#10b981",
-                },
-                "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
-                  backgroundColor: "#10b981",
-                },
-              }}
-            />
-          </Box>
+      <Box sx={{ display: "grid", gap: 2 }}>
+        {/* טלפון */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <PhoneIcon />
+          <TextField
+            fullWidth
+            label="טלפון *"
+            value={contactInfo.phone}
+            onChange={(e) => setContactInfo({ ...contactInfo, phone: e.target.value })}
+            error={Boolean(errors.phone)}
+            helperText={errors.phone || 'לדוגמה: 050-1234567'}
+          />
         </Box>
-      ))}
 
-      <Box sx={{ mt: 3, display: "flex", justifyContent: "center" }}>
+        {/* אימייל */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <EmailIcon />
+          <TextField
+            fullWidth
+            label="אימייל *"
+            value={contactInfo.email}
+            onChange={(e) => setContactInfo({ ...contactInfo, email: e.target.value })}
+            error={Boolean(errors.email)}
+            helperText={errors.email || 'לדוגמה: info@example.com'}
+          />
+        </Box>
+
+        {/* כתובת */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <HomeIcon />
+          <TextField
+            fullWidth
+            label="כתובת *"
+            value={contactInfo.address}
+            onChange={(e) => setContactInfo({ ...contactInfo, address: e.target.value })}
+            error={Boolean(errors.address)}
+            helperText={errors.address || ' '}
+          />
+        </Box>
+
+        {/* פייסבוק */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <FacebookIcon />
+          <TextField
+            fullWidth
+            label="פייסבוק (אופציונלי)"
+            value={contactInfo.facebook}
+            onChange={(e) => setContactInfo({ ...contactInfo, facebook: e.target.value })}
+            error={Boolean(errors.facebook)}
+            helperText={errors.facebook || 'חייב להתחיל ב-http:// או https://'}
+          />
+        </Box>
+
+        {/* אינסטגרם */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <InstagramIcon />
+          <TextField
+            fullWidth
+            label="אינסטגרם (אופציונלי)"
+            value={contactInfo.instagram}
+            onChange={(e) => setContactInfo({ ...contactInfo, instagram: e.target.value })}
+            error={Boolean(errors.instagram)}
+            helperText={errors.instagram || 'חייב להתחיל ב-http:// או https://'}
+          />
+        </Box>
+
+        {/* לינקדאין */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <LinkedInIcon />
+          <TextField
+            fullWidth
+            label="לינקדאין (אופציונלי)"
+            value={contactInfo.linkedin}
+            onChange={(e) => setContactInfo({ ...contactInfo, linkedin: e.target.value })}
+            error={Boolean(errors.linkedin)}
+            helperText={errors.linkedin || 'חייב להתחיל ב-http:// או https://'}
+          />
+        </Box>
+
+        {/* יוטיוב */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <YouTubeIcon />
+          <TextField
+            fullWidth
+            label="יוטיוב (אופציונלי)"
+            value={contactInfo.youtube}
+            onChange={(e) => setContactInfo({ ...contactInfo, youtube: e.target.value })}
+            error={Boolean(errors.youtube)}
+            helperText={errors.youtube || 'חייב להתחיל ב-http:// או https://'}
+          />
+        </Box>
+
         <Button 
           variant="contained" 
           color="success"
-          size="large"
-          onClick={handleSaveToLocalStorage}
+          onClick={handleSave} 
+          sx={{ mt: 2 }}
         >
           שמור ל-LocalStorage
         </Button>
       </Box>
-
-      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
-        <DialogTitle sx={{ direction: "rtl" }}>עריכת שם שדה</DialogTitle>
-        <DialogContent sx={{ direction: "rtl", minWidth: 400 }}>
-          <TextField
-            autoFocus
-            fullWidth
-            label="שם השדה"
-            value={editedLabel}
-            onChange={(e) => setEditedLabel(e.target.value)}
-            sx={{ mt: 2 }}
-          />
-        </DialogContent>
-        <DialogActions sx={{ direction: "rtl" }}>
-          <Button onClick={() => setEditDialogOpen(false)}>ביטול</Button>
-          <Button onClick={handleSaveEdit} variant="contained">
-            שמור
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog open={addDialogOpen} onClose={() => setAddDialogOpen(false)}>
-        <DialogTitle sx={{ direction: "rtl" }}>הוספת שדה חדש</DialogTitle>
-        <DialogContent sx={{ direction: "rtl", minWidth: 400 }}>
-          <TextField
-            autoFocus
-            fullWidth
-            label="שם השדה החדש"
-            value={newFieldLabel}
-            onChange={(e) => setNewFieldLabel(e.target.value)}
-            sx={{ mt: 2 }}
-          />
-        </DialogContent>
-        <DialogActions sx={{ direction: "rtl" }}>
-          <Button onClick={() => setAddDialogOpen(false)}>ביטול</Button>
-          <Button onClick={handleAddField} variant="contained">
-            הוסף
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   );
 }

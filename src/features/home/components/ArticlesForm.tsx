@@ -34,6 +34,8 @@ export default function ArticlesForm() {
   const [editedImageUrl, setEditedImageUrl] = useState("");
   const [editedTags, setEditedTags] = useState("");
 
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
   // טעינה מ-LocalStorage
   useEffect(() => {
     const loadFromLocalStorage = () => {
@@ -51,50 +53,94 @@ export default function ArticlesForm() {
     loadFromLocalStorage();
   }, []);
 
+  const validateFields = () => {
+    const newErrors: Record<string, string> = {};
+
+    // 1. כותרת מאמר - חובה, טקסט
+    if (!editedTitle.trim()) {
+      newErrors.title = 'כותרת המאמר היא שדה חובה';
+    }
+
+    // 2. תמונה למאמר - חובה, URL
+    if (!editedImageUrl.trim()) {
+      newErrors.imageUrl = 'קישור לתמונה הוא שדה חובה';
+    } else if (!/^https?:\/\/.+/.test(editedImageUrl)) {
+      newErrors.imageUrl = 'קישור לתמונה חייב להתחיל ב-http:// או https://';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleEditClick = (article: Article) => {
     setCurrentArticle(article);
     setEditedTitle(article.title);
     setEditedImageUrl(article.imageUrl);
     setEditedTags(article.tags.join(", "));
+    setErrors({});
     setEditDialogOpen(true);
   };
 
   const handleSaveEdit = () => {
+    if (!validateFields()) {
+      return;
+    }
+
     if (currentArticle) {
       setArticles(
         articles.map((article) =>
           article.id === currentArticle.id
-            ? { ...article, title: editedTitle, imageUrl: editedImageUrl, tags: editedTags.split(",").map(t => t.trim()) }
+            ? { ...article, title: editedTitle, imageUrl: editedImageUrl, tags: editedTags.split(",").map(t => t.trim()).filter(Boolean) }
             : article
         )
       );
     }
     setEditDialogOpen(false);
+    setErrors({});
   };
 
   const handleAddNew = () => {
-    if (editedTitle && editedImageUrl) {
-      const newArticle: Article = {
-        id: Date.now().toString(),
-        title: editedTitle,
-        imageUrl: editedImageUrl,
-        tags: editedTags.split(",").map(t => t.trim()).filter(Boolean),
-      };
-      setArticles([...articles, newArticle]);
-      setEditedTitle("");
-      setEditedImageUrl("");
-      setEditedTags("");
-      setAddDialogOpen(false);
+    if (!validateFields()) {
+      return;
     }
+
+    const newArticle: Article = {
+      id: Date.now().toString(),
+      title: editedTitle,
+      imageUrl: editedImageUrl,
+      tags: editedTags.split(",").map(t => t.trim()).filter(Boolean),
+    };
+    setArticles([...articles, newArticle]);
+    setEditedTitle("");
+    setEditedImageUrl("");
+    setEditedTags("");
+    setAddDialogOpen(false);
+    setErrors({});
   };
 
   const handleDelete = (id: string) => {
-    setArticles(articles.filter((article) => article.id !== id));
+    // מניעת מחיקה אם זה המאמר היחיד
+    if (articles.length === 1) {
+      alert('❌ לא ניתן למחוק את המאמר היחיד. חייב להישאר לפחות מאמר אחד.');
+      return;
+    }
+
+    if (window.confirm('האם אתה בטוח שברצונך למחוק מאמר זה?')) {
+      setArticles(articles.filter((article) => article.id !== id));
+    }
   };
 
   const handleSaveToLocalStorage = () => {
     localStorage.setItem('articles', JSON.stringify(articles));
     alert('✅ נשמר ל-LocalStorage!');
+  };
+
+  const handleOpenAddDialog = () => {
+    setEditedTitle("");
+    setEditedImageUrl("");
+    setEditedTags("");
+    setErrors({});
+    setAddDialogOpen(true);
   };
 
   return (
@@ -115,7 +161,7 @@ export default function ArticlesForm() {
         <Button 
           variant="contained" 
           startIcon={<AddIcon />} 
-          onClick={() => setAddDialogOpen(true)}
+          onClick={handleOpenAddDialog}
           sx={{ '& .MuiButton-startIcon': { marginLeft: '6px' } }}
         >
           הוסף מאמר
@@ -173,21 +219,26 @@ export default function ArticlesForm() {
         </Button>
       </Box>
 
+      {/* Dialog עריכה */}
       <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
         <DialogTitle sx={{ direction: "rtl" }}>עריכת מאמר</DialogTitle>
         <DialogContent sx={{ direction: "rtl", minWidth: 400 }}>
           <TextField
             fullWidth
-            label="כותרת המאמר"
+            label="כותרת המאמר *"
             value={editedTitle}
             onChange={(e) => setEditedTitle(e.target.value)}
+            error={Boolean(errors.title)}
+            helperText={errors.title || ' '}
             sx={{ mt: 2, mb: 2 }}
           />
           <TextField
             fullWidth
-            label="קישור לתמונה"
+            label="קישור לתמונה *"
             value={editedImageUrl}
             onChange={(e) => setEditedImageUrl(e.target.value)}
+            error={Boolean(errors.imageUrl)}
+            helperText={errors.imageUrl || 'חייב להתחיל ב-http:// או https://'}
             sx={{ mb: 2 }}
           />
           <TextField
@@ -206,21 +257,26 @@ export default function ArticlesForm() {
         </DialogActions>
       </Dialog>
 
+      {/* Dialog הוספה */}
       <Dialog open={addDialogOpen} onClose={() => setAddDialogOpen(false)}>
         <DialogTitle sx={{ direction: "rtl" }}>הוספת מאמר חדש</DialogTitle>
         <DialogContent sx={{ direction: "rtl", minWidth: 400 }}>
           <TextField
             fullWidth
-            label="כותרת המאמר"
+            label="כותרת המאמר *"
             value={editedTitle}
             onChange={(e) => setEditedTitle(e.target.value)}
+            error={Boolean(errors.title)}
+            helperText={errors.title || ' '}
             sx={{ mt: 2, mb: 2 }}
           />
           <TextField
             fullWidth
-            label="קישור לתמונה"
+            label="קישור לתמונה *"
             value={editedImageUrl}
             onChange={(e) => setEditedImageUrl(e.target.value)}
+            error={Boolean(errors.imageUrl)}
+            helperText={errors.imageUrl || 'חייב להתחיל ב-http:// או https://'}
             sx={{ mb: 2 }}
           />
           <TextField

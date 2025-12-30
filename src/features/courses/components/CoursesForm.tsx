@@ -7,9 +7,11 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   Typography,
+  CircularProgress,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { Course } from "../../../models/Course";
+import { addCourse } from "../../../firebase/courses";
 
 interface FormValues {
   courseId: string;
@@ -19,16 +21,14 @@ interface FormValues {
   year: string;
   semester: string;
   syllabus: string;
-  isMandatory: string;
-  isActive: string;
+  isMandatory: boolean;
+  isActive: boolean;
+  instructor: string;
 }
 
 interface FormErrors {
   [key: string]: boolean | string;
 }
-
-const LS_KEY = "courses";
-const COURSES_UPDATED_EVENT = "coursesUpdated";
 
 export default function CoursesForm() {
   const navigate = useNavigate();
@@ -41,12 +41,14 @@ export default function CoursesForm() {
     year: "",
     semester: "",
     syllabus: "",
-    isMandatory: "",
-    isActive: "",
+    isMandatory: false,
+    isActive: true,
+    instructor: "",
   };
 
   const [values, setValues] = useState<FormValues>(initialValues);
   const [errors, setErrors] = useState<FormErrors>({});
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -65,7 +67,8 @@ export default function CoursesForm() {
     (field: "isMandatory" | "isActive") =>
     (event: React.MouseEvent<HTMLElement>, newValue: string | null) => {
       if (newValue !== null) {
-        setValues({ ...values, [field]: newValue });
+        const boolValue = newValue === "yes";
+        setValues({ ...values, [field]: boolValue });
         setErrors({ ...errors, [field]: false });
       }
     };
@@ -75,14 +78,14 @@ export default function CoursesForm() {
 
     const newErrors: FormErrors = {};
 
-    // 1. מזהה קורס - חובה: 8 מספרים (שינוי מ-5 ל-8)
+    // 1. מזהה קורס - חובה: 8 מספרים
     if (!values.courseId.trim()) {
       newErrors.courseId = 'מזהה קורס הוא שדה חובה';
     } else if (!/^\d{8}$/.test(values.courseId)) {
       newErrors.courseId = 'מזהה קורס חייב להיות בדיוק 8 ספרות';
     }
 
-    // 2. שם הקורס - חובה: 2-80 תווים, אסור תווים מסוכנים
+    // 2. שם הקורס - חובה: 2-80 תווים
     if (!values.name.trim()) {
       newErrors.name = 'שם הקורס הוא שדה חובה';
     } else if (values.name.length < 2 || values.name.length > 80) {
@@ -118,43 +121,38 @@ export default function CoursesForm() {
       newErrors.syllabus = 'קישור לסילבוס חייב להתחיל ב-http:// או https://';
     }
 
-    // 8. סוג קורס (isMandatory) - חובה
-    if (!values.isMandatory) {
-      newErrors.isMandatory = 'יש לבחור אם הקורס חובה';
-    }
-
-    // 9. סטטוס קורס (isActive) - חובה
-    if (!values.isActive) {
-      newErrors.isActive = 'יש לבחור אם הקורס פעיל';
-    }
-
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
 
+    // יצירת אובייקט קורס חדש
     const newCourse = new Course(
-      Date.now().toString(),
+      "",  // Firestore ייצור ID אוטומטית
+      values.courseId,
       values.name,
       values.credits,
       values.semester,
-      values.courseId,
-      values.description,
       values.year,
+      values.description,
       values.syllabus,
       values.isMandatory,
-      values.isActive
+      values.isActive,
+      values.instructor
     );
 
-    const storedCourses = localStorage.getItem(LS_KEY);
-    const existingCourses = storedCourses ? JSON.parse(storedCourses) : [];
-    const updatedCourses = [...existingCourses, newCourse];
-
-    localStorage.setItem(LS_KEY, JSON.stringify(updatedCourses));
-    window.dispatchEvent(new Event(COURSES_UPDATED_EVENT));
-
-    alert('✅ הקורס נשמר בהצלחה!');
-    navigate("/courses");
+    // שמירה ב-Firestore
+    setLoading(true);
+    addCourse(newCourse)
+      .then(() => {
+        setLoading(false);
+        alert('✅ הקורס נשמר בהצלחה ב-Firestore!');
+        navigate("/courses");
+      })
+      .catch((error) => {
+        setLoading(false);
+        alert('❌ שגיאה בשמירת הקורס: ' + error.message);
+      });
   };
 
   const handleCancel = () => {
@@ -302,13 +300,25 @@ export default function CoursesForm() {
         helperText={errors.syllabus || "חייב להתחיל ב-http:// או https://"}
       />
 
+      {/* מרצה */}
+      <TextField
+        fullWidth
+        id="instructor"
+        name="instructor"
+        label="מרצה (אופציונלי)"
+        placeholder="ד״ר..."
+        value={values.instructor}
+        onChange={handleChange}
+        helperText="שם המרצה שמלמד את הקורס"
+      />
+
       {/* קורס חובה */}
       <Box>
         <Typography variant="body1" sx={{ mb: 1, fontWeight: "bold" }}>
           קורס חובה *
         </Typography>
         <ToggleButtonGroup
-          value={values.isMandatory}
+          value={values.isMandatory ? "yes" : "no"}
           exclusive
           onChange={handleToggleChange("isMandatory")}
           fullWidth
@@ -330,7 +340,7 @@ export default function CoursesForm() {
           קורס פעיל *
         </Typography>
         <ToggleButtonGroup
-          value={values.isActive}
+          value={values.isActive ? "yes" : "no"}
           exclusive
           onChange={handleToggleChange("isActive")}
           fullWidth
@@ -347,11 +357,22 @@ export default function CoursesForm() {
       </Box>
 
       {/* כפתורים */}
-      <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-start", mt: 2 }}>
-        <Button type="submit" variant="contained" color="primary" size="large">
-          שמור
+      <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-start", mt: 2, alignItems: "center" }}>
+        <Button 
+          type="submit" 
+          variant="contained" 
+          color="primary" 
+          size="large"
+          disabled={loading}
+        >
+          {loading ? <CircularProgress size={24} /> : "שמור"}
         </Button>
-        <Button variant="outlined" onClick={handleCancel} size="large">
+        <Button 
+          variant="outlined" 
+          onClick={handleCancel} 
+          size="large"
+          disabled={loading}
+        >
           ביטול
         </Button>
       </Box>

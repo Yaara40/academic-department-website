@@ -76,7 +76,7 @@ export async function listCourses(): Promise<Course[]> {
     collection(firestore, "courses").withConverter(new CourseConverter())
   );
   
-  return coursesSnapshot.docs.map(doc => doc.data());
+  return coursesSnapshot.docs.map((doc) => doc.data());
 }
 
 // ✏️ עדכון קורס קיים

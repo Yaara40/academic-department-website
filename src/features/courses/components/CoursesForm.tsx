@@ -65,7 +65,7 @@ export default function CoursesForm() {
 
   const handleToggleChange =
     (field: "isMandatory" | "isActive") =>
-    (event: React.MouseEvent<HTMLElement>, newValue: string | null) => {
+    (_event: React.MouseEvent<HTMLElement>, newValue: string | null) => {
       if (newValue !== null) {
         const boolValue = newValue === "yes";
         setValues({ ...values, [field]: boolValue });

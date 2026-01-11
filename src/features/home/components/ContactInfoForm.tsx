@@ -52,7 +52,7 @@ export default function ContactInfoForm() {
     // 2. אימייל - חובה, פורמט כתובת מייל
     if (!contactInfo.email.trim()) {
       newErrors.email = 'אימייל הוא שדה חובה';
-    } else if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(contactInfo.email)) {
+    } else if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i.test(contactInfo.email)) {
       newErrors.email = 'פורמט אימייל לא תקין (לדוגמה: example@domain.com)';
     }
 

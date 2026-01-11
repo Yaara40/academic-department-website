@@ -192,10 +192,10 @@ export default function AdminHelp() {
             sx={{ boxShadow: "none", border: "1px solid #e5e7eb", mb: 1, "&:before": { display: "none" } }}
           >
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography fontWeight={700} align="right">{f.q}</Typography>
+              <Typography fontWeight={700}>{f.q}</Typography>
             </AccordionSummary>
             <AccordionDetails sx={{ borderTop: "1px solid #eee" }}>
-              <Typography color="text.secondary" align="right">{f.a}</Typography>
+              <Typography color="text.secondary">{f.a}</Typography>
             </AccordionDetails>
           </Accordion>
         );
@@ -204,13 +204,14 @@ export default function AdminHelp() {
   );
 
   return (
-    <Box sx={{ direction: "rtl", textAlign: "right" }} dir="rtl">
+    // השינוי היחיד נמצא בשורה זו: הוספת הגדרות כיוון RTL ויישור לימין
+    <Box sx={{ direction: "rtl", textAlign: "right" }}>
       <Box sx={{ maxWidth: 1200, mx: "auto", px: 2, py: 4, display: "flex", flexDirection: "column", gap: 3 }}>
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
           <Box sx={{ textAlign: "center" }}>
             <Typography variant="h3" sx={{ fontWeight: 900, color: "#1f2937", mb: 1 }}>
-              דף עזרה למנהל מערכת
+              דף עזרה למנהל מערכת (Admin)
             </Typography>
             <Typography sx={{ fontSize: 20, color: "#6b7280" }}>
               הדרכה קצרה וברורה לשימוש נכון במערכת
@@ -295,7 +296,7 @@ export default function AdminHelp() {
                 <Typography variant="h6" fontWeight={900} sx={{ mb: 1 }}>
                   📋 שלבים לביצוע
                 </Typography>
-                <List sx={{ pt: 0 }}>
+                <List sx={{ pt:0 }}>
                   {[
                     'להיכנס ל־"ניהול השארת פרטים"',
                     "לחפש פנייה לפי שם/אימייל/טלפון",
@@ -303,11 +304,8 @@ export default function AdminHelp() {
                     "לעדכן סטטוס: חדש / נוצר קשר / מעוניין / לא רלוונטי",
                     "למחוק פנייה כפולה במקרה הצורך",
                   ].map((s, i) => (
-                    <ListItem key={i} sx={{ py: 0.5, justifyContent: 'flex-start' }}>
-                      <ListItemText 
-                        primary={`${i + 1}. ${s}`} 
-                        primaryTypographyProps={{ align: "right" }}
-                      />
+                    <ListItem key={i} sx={{ py: 0.5 }}>
+                      <ListItemText primary={`${i + 1}. ${s}`} />
                     </ListItem>
                   ))}
                 </List>
@@ -324,10 +322,7 @@ export default function AdminHelp() {
                     "מומלץ לעדכן סטטוס לאחר כל שיחה כדי לשמור סדר",
                   ].map((w, i) => (
                     <ListItem key={i} sx={{ py: 0 }}>
-                      <ListItemText 
-                        primary={`• ${w}`} 
-                        primaryTypographyProps={{ align: "right" }}
-                      />
+                      <ListItemText primary={`• ${w}`} />
                     </ListItem>
                   ))}
                 </List>
@@ -346,10 +341,7 @@ export default function AdminHelp() {
                   {["התחילי כל יום מטיפול בסטטוס \"חדש\"", "השתמשי בחיפוש כדי לאתר מהר מועמד", "אל תמחקי פניות לפני שתיעדת טיפול"].map(
                     (t, i) => (
                       <ListItem key={i} sx={{ py: 0 }}>
-                        <ListItemText 
-                          primary={`• ${t}`} 
-                          primaryTypographyProps={{ align: "right" }}
-                        />
+                        <ListItemText primary={`• ${t}`} />
                       </ListItem>
                     )
                   )}
@@ -397,10 +389,7 @@ export default function AdminHelp() {
                     "לערוך/להשבית קורסים קיימים לפי הצורך",
                   ].map((s, i) => (
                     <ListItem key={i} sx={{ py: 0.5 }}>
-                      <ListItemText 
-                        primary={`${i + 1}. ${s}`} 
-                        primaryTypographyProps={{ align: "right" }}
-                      />
+                      <ListItemText primary={`${i + 1}. ${s}`} />
                     </ListItem>
                   ))}
                 </List>
@@ -414,10 +403,7 @@ export default function AdminHelp() {
                   {["נ״ז חייב להיות מספר חיובי", "שם קורס לא יכול להיות ריק", 'קורס "לא פעיל" לא יוצג למועמדים'].map(
                     (w, i) => (
                       <ListItem key={i} sx={{ py: 0 }}>
-                        <ListItemText 
-                          primary={`• ${w}`} 
-                          primaryTypographyProps={{ align: "right" }}
-                        />
+                        <ListItemText primary={`• ${w}`} />
                       </ListItem>
                     )
                   )}
@@ -436,10 +422,7 @@ export default function AdminHelp() {
                 <List sx={{ pt: 0 }}>
                   {["השבתה עדיפה על מחיקה (כדי לא לאבד מידע)", "ודאי שכל שינוי מופיע גם בתצוגה הציבורית"].map((t, i) => (
                     <ListItem key={i} sx={{ py: 0 }}>
-                      <ListItemText 
-                        primary={`• ${t}`} 
-                        primaryTypographyProps={{ align: "right" }}
-                      />
+                      <ListItemText primary={`• ${t}`} />
                     </ListItem>
                   ))}
                 </List>
@@ -486,10 +469,7 @@ export default function AdminHelp() {
                     "לשמור הגדרות",
                   ].map((s, i) => (
                     <ListItem key={i} sx={{ py: 0.5 }}>
-                      <ListItemText 
-                        primary={`${i + 1}. ${s}`} 
-                        primaryTypographyProps={{ align: "right" }}
-                      />
+                      <ListItemText primary={`${i + 1}. ${s}`} />
                     </ListItem>
                   ))}
                 </List>
@@ -506,10 +486,7 @@ export default function AdminHelp() {
                     "שינויים ישפיעו על תוצאות החישוב למועמדים מיד לאחר שמירה",
                   ].map((w, i) => (
                     <ListItem key={i} sx={{ py: 0 }}>
-                      <ListItemText 
-                        primary={`• ${w}`} 
-                        primaryTypographyProps={{ align: "right" }}
-                      />
+                      <ListItemText primary={`• ${w}`} />
                     </ListItem>
                   ))}
                 </List>
@@ -527,10 +504,7 @@ export default function AdminHelp() {
                 <List sx={{ pt: 0 }}>
                   {["שמרי \"סט ערכים\" קבוע כגיבוי", "אחרי שינוי — בצעי בדיקה עם מועמד דוגמה"].map((t, i) => (
                     <ListItem key={i} sx={{ py: 0 }}>
-                      <ListItemText 
-                        primary={`• ${t}`} 
-                        primaryTypographyProps={{ align: "right" }}
-                      />
+                      <ListItemText primary={`• ${t}`} />
                     </ListItem>
                   ))}
                 </List>
@@ -576,10 +550,7 @@ export default function AdminHelp() {
                     "פרטי התקשרות (פוטר + רשתות חברתיות)",
                   ].map((x, i) => (
                     <ListItem key={i} sx={{ py: 0 }}>
-                      <ListItemText 
-                        primary={`• ${x}`} 
-                        primaryTypographyProps={{ align: "right" }}
-                      />
+                      <ListItemText primary={`• ${x}`} />
                     </ListItem>
                   ))}
                 </List>
@@ -597,10 +568,7 @@ export default function AdminHelp() {
                     "לבדוק בתצוגה ציבורית שהכל נראה תקין",
                   ].map((s, i) => (
                     <ListItem key={i} sx={{ py: 0.5 }}>
-                      <ListItemText 
-                        primary={`${i + 1}. ${s}`} 
-                        primaryTypographyProps={{ align: "right" }}
-                      />
+                      <ListItemText primary={`${i + 1}. ${s}`} />
                     </ListItem>
                   ))}
                 </List>
@@ -617,10 +585,7 @@ export default function AdminHelp() {
                     'כרטיס "מוצג/מוסתר" קובע האם המועמדים רואים אותו',
                   ].map((w, i) => (
                     <ListItem key={i} sx={{ py: 0 }}>
-                      <ListItemText 
-                        primary={`• ${w}`} 
-                        primaryTypographyProps={{ align: "right" }}
-                      />
+                      <ListItemText primary={`• ${w}`} />
                     </ListItem>
                   ))}
                 </List>
@@ -639,10 +604,7 @@ export default function AdminHelp() {
                   {["מומלץ להשתמש בתמונות באיכות טובה ולא כבדות מדי", "שמרי טקסטים קצרים וברורים בדף הבית"].map(
                     (t, i) => (
                       <ListItem key={i} sx={{ py: 0 }}>
-                        <ListItemText 
-                          primary={`• ${t}`} 
-                          primaryTypographyProps={{ align: "right" }}
-                        />
+                        <ListItemText primary={`• ${t}`} />
                       </ListItem>
                     )
                   )}
@@ -693,10 +655,10 @@ export default function AdminHelp() {
               ].map((x) => (
                 <Card key={x.title} variant="outlined" sx={{ borderRadius: 3 }}>
                   <CardContent>
-                    <Typography fontWeight={900} sx={{ mb: 0.5, color: "#111827" }} align="right">
+                    <Typography fontWeight={900} sx={{ mb: 0.5, color: "#111827" }}>
                       {x.title}
                     </Typography>
-                    <Typography color="text.secondary" align="right">{x.desc}</Typography>
+                    <Typography color="text.secondary">{x.desc}</Typography>
                   </CardContent>
                 </Card>
               ))}

@@ -1,18 +1,19 @@
-import { useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import Home from './pages/Home';
-import CoursesManagement from './pages/CoursesManagement';
-import CoursesForm from './features/courses/components/CoursesForm';
+import { useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
+import { Box } from "@mui/material";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import Home from "./pages/Home";
+import CoursesManagement from "./pages/CoursesManagement";
+import CoursesForm from "./features/courses/components/CoursesForm";
 import GrowthManagement from "./pages/GrowthManagement";
-import ContactManagement from './pages/ContactManagement';
-import HelpManagement from './pages/HelpManagement';
+import ContactManagement from "./pages/ContactManagement";
+import HelpManagement from "./pages/HelpManagement";
 
 const App = () => {
   useEffect(() => {
     // 1. קורסים
-    if (!localStorage.getItem('courses')) {
+    if (!localStorage.getItem("courses")) {
       const initialCourses = [
         { id: "1", name: "מבוא למחשבים", credits: 4, semester: "א", courseId: "10101", description: "קורס יסוד במדעי המחשב", year: "שנה א", syllabus: "https://example.com/101", isMandatory: "yes", isActive: "yes" },
         { id: "2", name: "אלגוריתמים", credits: 5, semester: "א", courseId: "10102", description: "קורס מתקדם באלגוריתמים", year: "שנה ב", syllabus: "https://example.com/102", isMandatory: "yes", isActive: "yes" },
@@ -25,11 +26,11 @@ const App = () => {
         { id: "9", name: "למידת מכונה", credits: 3, semester: "א", courseId: "10109", description: "אלגוריתמי ML", year: "שנה ד", syllabus: "https://example.com/109", isMandatory: "no", isActive: "yes" },
         { id: "10", name: "אבטחת מידע", credits: 4, semester: "ב", courseId: "10110", description: "אבטחה ברשת", year: "שנה ד", syllabus: "https://example.com/110", isMandatory: "no", isActive: "yes" },
       ];
-      localStorage.setItem('courses', JSON.stringify(initialCourses));
+      localStorage.setItem("courses", JSON.stringify(initialCourses));
     }
 
     // 2. אנשי קשר (השארת פרטים)
-    if (!localStorage.getItem('contacts')) {
+    if (!localStorage.getItem("contacts")) {
       const initialContacts = [
         { id: "1", name: "יוסי כהן", email: "yossi@email.com", phone: "050-1234567", submissionDate: "25/11/2025", status: "חדש", source: "אתר" },
         { id: "2", name: "שרה לוי", email: "sara@email.com", phone: "052-9876543", submissionDate: "26/11/2025", status: "ממתין", source: "יום פתוח" },
@@ -42,11 +43,11 @@ const App = () => {
         { id: "9", name: "עידן פלד", email: "idan@email.com", phone: "050-6666666", submissionDate: "03/12/2025", status: "ממתין", source: "פייסבוק" },
         { id: "10", name: "לירון חזן", email: "liron@email.com", phone: "052-7777777", submissionDate: "04/12/2025", status: "נסגר", source: "אתר" },
       ];
-      localStorage.setItem('contacts', JSON.stringify(initialContacts));
+      localStorage.setItem("contacts", JSON.stringify(initialContacts));
     }
 
     // 3. דרישות התואר
-    if (!localStorage.getItem('requirements')) {
+    if (!localStorage.getItem("requirements")) {
       const initialRequirements = [
         { id: "1", title: "שנות לימוד", subtitle: "3-4 שנים", value: "3-4", color: "#dbeafe" },
         { id: "2", title: "פרויקטים מעשיים", subtitle: "לפחות שני פרויקטים גדולים", value: "+2", color: "#d1fae5" },
@@ -59,11 +60,11 @@ const App = () => {
         { id: "9", title: "ממוצע מינימלי", subtitle: "ממוצע נדרש לסיום", value: "75", color: "#fed7aa" },
         { id: "10", title: "סמינריונים", subtitle: "השתתפות בסמינרים", value: "4", color: "#e9d5ff" },
       ];
-      localStorage.setItem('requirements', JSON.stringify(initialRequirements));
+      localStorage.setItem("requirements", JSON.stringify(initialRequirements));
     }
 
     // 4. מאמרים
-    if (!localStorage.getItem('articles')) {
+    if (!localStorage.getItem("articles")) {
       const initialArticles = [
         { id: "1", title: "מדריך קריירה בהייטק 2025", imageUrl: "https://via.placeholder.com/100", tags: ["קריירה"] },
         { id: "2", title: "מהפכת הבינה המלאכותית", imageUrl: "https://via.placeholder.com/100", tags: ["AI", "חדש"] },
@@ -76,11 +77,11 @@ const App = () => {
         { id: "9", title: "מדע הנתונים למתקדמים", imageUrl: "https://via.placeholder.com/100", tags: ["Data Science"] },
         { id: "10", title: "פיתוח משחקים ב-Unity", imageUrl: "https://via.placeholder.com/100", tags: ["משחקים"] },
       ];
-      localStorage.setItem('articles', JSON.stringify(initialArticles));
+      localStorage.setItem("articles", JSON.stringify(initialArticles));
     }
 
     // 5. המלצות בוגרים
-    if (!localStorage.getItem('testimonials')) {
+    if (!localStorage.getItem("testimonials")) {
       const initialTestimonials = [
         { id: "1", name: "נועה כהן", company: "מפתחת בכירה ב-Google", text: "הלימודים נתנו לי את הכלים והביטחון להצליח בעולם הגלובלי", initial: "נ", color: "#10b981" },
         { id: "2", name: "דני לוי", company: "מייסד ו-CEO ב-TechCorp", text: "הידע שרכשתי כאן היה הבסיס להקמת החברה שלי", initial: "ד", color: "#10b981" },
@@ -93,11 +94,11 @@ const App = () => {
         { id: "9", name: "ליאת רוזן", company: "UX Researcher", text: "השילוב של טכנולוגיה ומחקר היה מושלם", initial: "ל", color: "#10b981" },
         { id: "10", name: "עומר דוד", company: "Cloud Architect ב-AWS", text: "הבסיס התיאורטי עזר לי להבין ארכיטקטורות מורכבות", initial: "ע", color: "#10b981" },
       ];
-      localStorage.setItem('testimonials', JSON.stringify(initialTestimonials));
+      localStorage.setItem("testimonials", JSON.stringify(initialTestimonials));
     }
 
     // 6. פרטי התקשרות
-    if (!localStorage.getItem('contactInfo')) {
+    if (!localStorage.getItem("contactInfo")) {
       const initialContactInfo = {
         phone: "050-1234567",
         email: "info@example.com",
@@ -107,22 +108,22 @@ const App = () => {
         linkedin: "https://linkedin.com/company/example",
         youtube: "https://youtube.com/@example",
       };
-      localStorage.setItem('contactInfo', JSON.stringify(initialContactInfo));
+      localStorage.setItem("contactInfo", JSON.stringify(initialContactInfo));
     }
   }, []);
 
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      display: 'flex', 
-      flexDirection: 'column' 
-    }}>
+    <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <Header />
-      <main style={{ 
-        flex: 1, 
-        padding: '20px', 
-        marginRight: '220px'
-      }}>
+
+      <Box
+        component="main"
+        sx={{
+          flex: 1,
+          p: 2.5, // 20px
+          mr: "220px",
+        }}
+      >
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/courses" element={<CoursesManagement />} />
@@ -131,9 +132,10 @@ const App = () => {
           <Route path="/contact" element={<ContactManagement />} />
           <Route path="/help" element={<HelpManagement />} />
         </Routes>
-      </main>
+      </Box>
+
       <Footer />
-    </div>
+    </Box>
   );
 };
 

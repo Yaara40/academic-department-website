@@ -1,44 +1,51 @@
-import { useState, useEffect } from "react";
-import { Box, Typography, Button, IconButton, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Card, CardContent } from "@mui/material";
+import { useEffect, useMemo, useState } from "react";
+import {
+  Box,
+  Typography,
+  Button,
+  IconButton,
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Card,
+  CardContent,
+  Snackbar,
+  Alert,
+} from "@mui/material";
+
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import type { Requirement } from "../../../models/Home";
 
+type SnackState = {
+  open: boolean;
+  message: string;
+  severity: "success" | "error" | "info" | "warning";
+};
+
+const isOnlyDigits = (value: string) => /^[0-9]+$/.test(value.trim());
+
 export default function RequirementsForm() {
-  const [requirements, setRequirements] = useState<Requirement[]>([
-    {
-      id: "1",
-      title: "שנות לימוד",
-      subtitle: "3-4 שנים",
-      value: "3-4",
-      color: "#dbeafe",
-    },
-    {
-      id: "2",
-      title: "פרויקטים מעשיים",
-      subtitle: "לפחות שני פרויקטים גדולים",
-      value: "+2",
-      color: "#d1fae5",
-    },
-    {
-      id: "3",
-      title: "רמת אנגלית",
-      subtitle: "ציון מינימלי באמי״ר",
-      value: "+85",
-      color: "#e9d5ff",
-    },
-    {
-      id: "4",
-      title: "נקודות זכות כוללות",
-      subtitle: "מינימום נקודות זכות לתואר",
-      value: "120",
-      color: "#fed7aa",
-    },
-  ]);
+  const colors = useMemo(() => ["#dbeafe", "#d1fae5", "#e9d5ff", "#fed7aa", "#fef3c7"], []);
+
+  const initialRequirements: Requirement[] = useMemo(
+    () => [
+      { id: "1", title: "שנות לימוד", subtitle: "3-4 שנים", value: "3-4", color: "#dbeafe" },
+      { id: "2", title: "פרויקטים מעשיים", subtitle: "לפחות שני פרויקטים גדולים", value: "+2", color: "#d1fae5" },
+      { id: "3", title: "רמת אנגלית", subtitle: "ציון מינימלי באמי״ר", value: "+85", color: "#e9d5ff" },
+      { id: "4", title: "נקודות זכות כוללות", subtitle: "מינימום נקודות זכות לתואר", value: "120", color: "#fed7aa" },
+    ],
+    []
+  );
+
+  const [requirements, setRequirements] = useState<Requirement[]>(initialRequirements);
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
+
   const [currentReq, setCurrentReq] = useState<Requirement | null>(null);
   const [editedTitle, setEditedTitle] = useState("");
   const [editedSubtitle, setEditedSubtitle] = useState("");
@@ -46,36 +53,61 @@ export default function RequirementsForm() {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const colors = ["#dbeafe", "#d1fae5", "#e9d5ff", "#fed7aa", "#fef3c7"];
+  const [snack, setSnack] = useState<SnackState>({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+
+  const openSnack = (message: string, severity: SnackState["severity"]) => {
+    setSnack({ open: true, message, severity });
+  };
+
+  const resetFormFields = () => {
+    setEditedTitle("");
+    setEditedSubtitle("");
+    setEditedValue("");
+    setErrors({});
+  };
 
   // טעינה מ-LocalStorage
   useEffect(() => {
-    const loadFromLocalStorage = () => {
-      const saved = localStorage.getItem('requirements');
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
+    const saved = localStorage.getItem("requirements");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
           setRequirements(parsed);
-        } catch (error) {
-          console.error('Error loading from localStorage:', error);
         }
+      } catch (error) {
+        console.error("Error loading from localStorage:", error);
       }
-    };
-    
-    loadFromLocalStorage();
+    }
   }, []);
+
+  // שמירה אוטומטית ל-LocalStorage בכל שינוי
+  useEffect(() => {
+    localStorage.setItem("requirements", JSON.stringify(requirements));
+  }, [requirements]);
 
   const validateFields = () => {
     const newErrors: Record<string, string> = {};
+    const title = editedTitle.trim();
+    const value = editedValue.trim();
 
-    // בדיקת כותרת - חובה, טקסט
-    if (!editedTitle.trim()) {
-      newErrors.title = 'כותרת דרישה היא שדה חובה';
+    // כותרת - חובה + לא מספר (ולא רק מספרים)
+    if (!title) {
+      newErrors.title = "כותרת דרישה היא שדה חובה";
+    } else if (isOnlyDigits(title)) {
+      newErrors.title = "כותרת לא יכולה להיות מספר. כתבי טקסט (למשל: 'נקודות זכות כוללות')";
     }
 
-    // בדיקת ערך - חובה
-    if (!editedValue.trim()) {
-      newErrors.value = 'ערך הדרישה הוא שדה חובה';
+    // ערך - חובה (כאן כן מותר מספרים, כי זה הערך)
+    if (!value) {
+      newErrors.value = "ערך הדרישה הוא שדה חובה";
     }
 
     setErrors(newErrors);
@@ -84,74 +116,76 @@ export default function RequirementsForm() {
 
   const handleEditClick = (req: Requirement) => {
     setCurrentReq(req);
-    setEditedTitle(req.title);
-    setEditedSubtitle(req.subtitle);
-    setEditedValue(req.value);
+    setEditedTitle(req.title ?? "");
+    setEditedSubtitle(req.subtitle ?? "");
+    setEditedValue(req.value ?? "");
     setErrors({});
     setEditDialogOpen(true);
   };
 
   const handleSaveEdit = () => {
     if (!validateFields()) {
+      openSnack("❌ יש שגיאות בטופס. תקני ותנסי שוב.", "error");
       return;
     }
+    if (!currentReq) return;
 
-    if (currentReq) {
-      setRequirements(
-        requirements.map((req) =>
-          req.id === currentReq.id
-            ? { ...req, title: editedTitle, subtitle: editedSubtitle, value: editedValue }
-            : req
-        )
-      );
-    }
+    const updated: Requirement = {
+      ...currentReq,
+      title: editedTitle.trim(),
+      subtitle: editedSubtitle.trim(),
+      value: editedValue.trim(),
+    };
+
+    setRequirements((prev) => prev.map((r) => (r.id === currentReq.id ? updated : r)));
     setEditDialogOpen(false);
-    setErrors({});
+    setCurrentReq(null);
+    resetFormFields();
+    openSnack("✅ הדרישה עודכנה בהצלחה", "success");
+  };
+
+  const handleOpenAddDialog = () => {
+    setCurrentReq(null);
+    resetFormFields();
+    setAddDialogOpen(true);
   };
 
   const handleAddNew = () => {
     if (!validateFields()) {
+      openSnack("❌ יש שגיאות בטופס. תקני ותנסי שוב.", "error");
       return;
     }
 
     const newReq: Requirement = {
       id: Date.now().toString(),
-      title: editedTitle,
-      subtitle: editedSubtitle,
-      value: editedValue,
+      title: editedTitle.trim(),
+      subtitle: editedSubtitle.trim(),
+      value: editedValue.trim(),
       color: colors[Math.floor(Math.random() * colors.length)],
     };
-    setRequirements([...requirements, newReq]);
-    setEditedTitle("");
-    setEditedSubtitle("");
-    setEditedValue("");
+
+    setRequirements((prev) => [...prev, newReq]);
     setAddDialogOpen(false);
-    setErrors({});
+    resetFormFields();
+    openSnack("✅ דרישה נוספה בהצלחה", "success");
   };
 
-  const handleDelete = (id: string) => {
-    // מניעת מחיקה אם זו הדרישה היחידה
+  // במקום confirm/alert
+  const handleAskDelete = (id: string) => {
     if (requirements.length === 1) {
-      alert('❌ לא ניתן למחוק את הדרישה היחידה. חייבת להישאר לפחות דרישה אחת.');
+      openSnack("❌ לא ניתן למחוק את הדרישה היחידה. חייבת להישאר לפחות דרישה אחת.", "error");
       return;
     }
-
-    if (window.confirm('האם אתה בטוח שברצונך למחוק דרישה זו?')) {
-      setRequirements(requirements.filter((req) => req.id !== id));
-    }
+    setPendingDeleteId(id);
+    setDeleteDialogOpen(true);
   };
 
-  const handleSaveToLocalStorage = () => {
-    localStorage.setItem('requirements', JSON.stringify(requirements));
-    alert('✅ נשמר ל-LocalStorage!');
-  };
-
-  const handleOpenAddDialog = () => {
-    setEditedTitle("");
-    setEditedSubtitle("");
-    setEditedValue("");
-    setErrors({});
-    setAddDialogOpen(true);
+  const handleConfirmDelete = () => {
+    if (!pendingDeleteId) return;
+    setRequirements((prev) => prev.filter((r) => r.id !== pendingDeleteId));
+    setDeleteDialogOpen(false);
+    setPendingDeleteId(null);
+    openSnack("🗑️ הדרישה נמחקה", "success");
   };
 
   return (
@@ -169,11 +203,12 @@ export default function RequirementsForm() {
         <Typography variant="h5" fontWeight={800}>
           דרישות התואר
         </Typography>
-        <Button 
-          variant="contained" 
-          startIcon={<AddIcon />} 
+
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
           onClick={handleOpenAddDialog}
-          sx={{ '& .MuiButton-startIcon': { marginLeft: '6px' } }}
+          sx={{ "& .MuiButton-startIcon": { marginLeft: "6px" } }}
         >
           הוסף דרישה
         </Button>
@@ -187,15 +222,17 @@ export default function RequirementsForm() {
                 <Typography variant="h4" fontWeight={800}>
                   {req.value}
                 </Typography>
+
                 <Box>
                   <IconButton size="small" onClick={() => handleEditClick(req)}>
                     <EditOutlinedIcon fontSize="small" />
                   </IconButton>
-                  <IconButton size="small" onClick={() => handleDelete(req.id)}>
+                  <IconButton size="small" onClick={() => handleAskDelete(req.id)}>
                     <DeleteOutlineOutlinedIcon fontSize="small" />
                   </IconButton>
                 </Box>
               </Box>
+
               <Typography fontWeight={700}>{req.title}</Typography>
               <Typography variant="body2" color="text.secondary">
                 {req.subtitle}
@@ -205,30 +242,20 @@ export default function RequirementsForm() {
         ))}
       </Box>
 
-      <Box sx={{ mt: 3, display: "flex", justifyContent: "center" }}>
-        <Button 
-          variant="contained" 
-          color="success"
-          size="large"
-          onClick={handleSaveToLocalStorage}
-        >
-          שמור ל-LocalStorage
-        </Button>
-      </Box>
-
       {/* Dialog עריכה */}
       <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
         <DialogTitle sx={{ direction: "rtl" }}>עריכת דרישה</DialogTitle>
-        <DialogContent sx={{ direction: "rtl", minWidth: 400 }}>
+        <DialogContent sx={{ direction: "rtl", minWidth: 420 }}>
           <TextField
             fullWidth
             label="כותרת *"
             value={editedTitle}
             onChange={(e) => setEditedTitle(e.target.value)}
             error={Boolean(errors.title)}
-            helperText={errors.title || ' '}
+            helperText={errors.title || " "}
             sx={{ mt: 2, mb: 2 }}
           />
+
           <TextField
             fullWidth
             label="תת כותרת"
@@ -236,15 +263,17 @@ export default function RequirementsForm() {
             onChange={(e) => setEditedSubtitle(e.target.value)}
             sx={{ mb: 2 }}
           />
+
           <TextField
             fullWidth
             label="ערך *"
             value={editedValue}
             onChange={(e) => setEditedValue(e.target.value)}
             error={Boolean(errors.value)}
-            helperText={errors.value || ' '}
+            helperText={errors.value || " "}
           />
         </DialogContent>
+
         <DialogActions sx={{ direction: "rtl" }}>
           <Button onClick={() => setEditDialogOpen(false)}>ביטול</Button>
           <Button onClick={handleSaveEdit} variant="contained">
@@ -256,16 +285,17 @@ export default function RequirementsForm() {
       {/* Dialog הוספה */}
       <Dialog open={addDialogOpen} onClose={() => setAddDialogOpen(false)}>
         <DialogTitle sx={{ direction: "rtl" }}>הוספת דרישה חדשה</DialogTitle>
-        <DialogContent sx={{ direction: "rtl", minWidth: 400 }}>
+        <DialogContent sx={{ direction: "rtl", minWidth: 420 }}>
           <TextField
             fullWidth
             label="כותרת *"
             value={editedTitle}
             onChange={(e) => setEditedTitle(e.target.value)}
             error={Boolean(errors.title)}
-            helperText={errors.title || ' '}
+            helperText={errors.title || " "}
             sx={{ mt: 2, mb: 2 }}
           />
+
           <TextField
             fullWidth
             label="תת כותרת"
@@ -273,15 +303,17 @@ export default function RequirementsForm() {
             onChange={(e) => setEditedSubtitle(e.target.value)}
             sx={{ mb: 2 }}
           />
+
           <TextField
             fullWidth
             label="ערך *"
             value={editedValue}
             onChange={(e) => setEditedValue(e.target.value)}
             error={Boolean(errors.value)}
-            helperText={errors.value || ' '}
+            helperText={errors.value || " "}
           />
         </DialogContent>
+
         <DialogActions sx={{ direction: "rtl" }}>
           <Button onClick={() => setAddDialogOpen(false)}>ביטול</Button>
           <Button onClick={handleAddNew} variant="contained">
@@ -289,6 +321,37 @@ export default function RequirementsForm() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Dialog מחיקה */}
+      <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
+        <DialogTitle sx={{ direction: "rtl" }}>אישור מחיקה</DialogTitle>
+        <DialogContent sx={{ direction: "rtl" }}>
+          <Typography>האם למחוק את הדרישה? פעולה זו לא ניתנת לשחזור.</Typography>
+        </DialogContent>
+        <DialogActions sx={{ direction: "rtl" }}>
+          <Button onClick={() => setDeleteDialogOpen(false)}>ביטול</Button>
+          <Button color="error" variant="contained" onClick={handleConfirmDelete}>
+            מחק
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Snackbar הודעות */}
+      <Snackbar
+        open={snack.open}
+        autoHideDuration={2500}
+        onClose={() => setSnack((s) => ({ ...s, open: false }))}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setSnack((s) => ({ ...s, open: false }))}
+          severity={snack.severity}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {snack.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

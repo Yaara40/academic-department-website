@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -12,12 +12,19 @@ import {
   DialogActions,
   Snackbar,
   Alert,
+  CircularProgress,
 } from "@mui/material";
 
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import type { Article } from "../../../models/Home";
+import {
+  getAllArticles,
+  addArticle,
+  updateArticle,
+  deleteArticle,
+} from "../../../firebase/articles";
 
 type SnackState = {
   open: boolean;
@@ -37,33 +44,8 @@ const isValidHttpUrl = (value: string) => {
 };
 
 export default function ArticlesForm() {
-  const initialArticles: Article[] = useMemo(
-    () => [
-      {
-        id: "1",
-        title: "מדריך קריירה בהייטק 2025",
-        imageUrl: "https://www.ecomschool.co.il/wp-content/uploads/2025/03/לימודים-הייטק-1.jpg",
-        tags: ["קריירה"],
-      },
-      {
-        id: "2",
-        title: "מהפכת הבינה המלאכותית",
-        imageUrl:
-          "https://static.wixstatic.com/media/979988_7cdbeaac56b54d07bf75b8bbb710ba41~mv2.jpg/v1/fill/w_568,h_324,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/979988_7cdbeaac56b54d07bf75b8bbb710ba41~mv2.jpg",
-        tags: ["AI", "חדש"],
-      },
-      {
-        id: "3",
-        title: "להקים סטארטאפ - המדריך השלם",
-        imageUrl:
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsWfcXDo24kK9bopcycPf0uQrdqDrbUdIirQ&s",
-        tags: ["יזמות"],
-      },
-    ],
-    []
-  );
-
-  const [articles, setArticles] = useState<Article[]>(initialArticles);
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
@@ -85,25 +67,23 @@ export default function ArticlesForm() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
-  // טעינה מ-LocalStorage
+  // טעינה מ-Firestore
   useEffect(() => {
-    const saved = localStorage.getItem("articles");
-    if (saved) {
+    const loadData = async () => {
       try {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) {
-          setArticles(parsed);
-        }
+        setLoading(true);
+        const data = await getAllArticles();
+        setArticles(data);
       } catch (error) {
-        console.error("Error loading from localStorage:", error);
+        console.error("Error loading articles:", error);
+        openSnack("❌ שגיאה בטעינת המאמרים", "error");
+      } finally {
+        setLoading(false);
       }
-    }
-  }, []);
+    };
 
-  // שמירה ל-LocalStorage בכל שינוי (כדי שהכל ישתקף במסכי המשתמש)
-  useEffect(() => {
-    localStorage.setItem("articles", JSON.stringify(articles));
-  }, [articles]);
+    loadData();
+  }, []);
 
   const openSnack = (message: string, severity: SnackState["severity"]) => {
     setSnack({ open: true, message, severity });
@@ -121,18 +101,18 @@ export default function ArticlesForm() {
     const title = editedTitle.trim();
     const img = editedImageUrl.trim();
 
-    // 1) כותרת - חובה וגם לא מספר
     if (!title) {
       newErrors.title = "כותרת המאמר היא שדה חובה";
     } else if (isOnlyDigits(title)) {
-      newErrors.title = "כותרת לא יכולה להיות מספר. כתבי טקסט (למשל: 'React למתחילים')";
+      newErrors.title =
+        "כותרת לא יכולה להיות מספר. כתבי טקסט (למשל: 'React למתחילים')";
     }
 
-    // 2) קישור לתמונה - חובה + URL תקין (http/https)
     if (!img) {
       newErrors.imageUrl = "קישור לתמונה הוא שדה חובה";
     } else if (!isValidHttpUrl(img)) {
-      newErrors.imageUrl = "קישור לתמונה חייב להיות URL תקין שמתחיל ב-http:// או https://";
+      newErrors.imageUrl =
+        "קישור לתמונה חייב להיות URL תקין שמתחיל ב-http:// או https://";
     }
 
     setErrors(newErrors);
@@ -148,7 +128,7 @@ export default function ArticlesForm() {
     setEditDialogOpen(true);
   };
 
-  const handleSaveEdit = () => {
+  const handleSaveEdit = async () => {
     if (!validateFields()) {
       openSnack("❌ יש שגיאות בטופס. תקני ותנסי שוב.", "error");
       return;
@@ -156,21 +136,30 @@ export default function ArticlesForm() {
 
     if (!currentArticle) return;
 
-    const updated: Article = {
-      ...currentArticle,
-      title: editedTitle.trim(),
-      imageUrl: editedImageUrl.trim(),
-      tags: editedTags
-        .split(",")
-        .map((t) => t.trim())
-        .filter(Boolean),
-    };
+    try {
+      const updated = {
+        title: editedTitle.trim(),
+        imageUrl: editedImageUrl.trim(),
+        tags: editedTags
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean),
+      };
 
-    setArticles((prev) => prev.map((a) => (a.id === currentArticle.id ? updated : a)));
-    setEditDialogOpen(false);
-    setCurrentArticle(null);
-    resetFormFields();
-    openSnack("✅ המאמר עודכן בהצלחה", "success");
+      await updateArticle(currentArticle.id, updated);
+
+      setArticles((prev) =>
+        prev.map((a) => (a.id === currentArticle.id ? { ...a, ...updated } : a))
+      );
+
+      setEditDialogOpen(false);
+      setCurrentArticle(null);
+      resetFormFields();
+      openSnack("✅ המאמר עודכן בהצלחה", "success");
+    } catch (error) {
+      console.error("Error updating article:", error);
+      openSnack("❌ שגיאה בעדכון המאמר", "error");
+    }
   };
 
   const handleOpenAddDialog = () => {
@@ -179,45 +168,68 @@ export default function ArticlesForm() {
     setAddDialogOpen(true);
   };
 
-  const handleAddNew = () => {
+  const handleAddNew = async () => {
     if (!validateFields()) {
       openSnack("❌ יש שגיאות בטופס. תקני ותנסי שוב.", "error");
       return;
     }
 
-    const newArticle: Article = {
-      id: Date.now().toString(),
-      title: editedTitle.trim(),
-      imageUrl: editedImageUrl.trim(),
-      tags: editedTags
-        .split(",")
-        .map((t) => t.trim())
-        .filter(Boolean),
-    };
+    try {
+      const newArticle = {
+        title: editedTitle.trim(),
+        imageUrl: editedImageUrl.trim(),
+        tags: editedTags
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean),
+      };
 
-    setArticles((prev) => [...prev, newArticle]);
-    setAddDialogOpen(false);
-    resetFormFields();
-    openSnack("✅ מאמר נוסף בהצלחה", "success");
+      const id = await addArticle(newArticle);
+
+      setArticles((prev) => [...prev, { id, ...newArticle }]);
+      setAddDialogOpen(false);
+      resetFormFields();
+      openSnack("✅ מאמר נוסף בהצלחה", "success");
+    } catch (error) {
+      console.error("Error adding article:", error);
+      openSnack("❌ שגיאה בהוספת המאמר", "error");
+    }
   };
 
-  // פתיחת דיאלוג מחיקה (במקום confirm)
   const handleAskDelete = (id: string) => {
     if (articles.length === 1) {
-      openSnack("❌ לא ניתן למחוק את המאמר היחיד. חייב להישאר לפחות מאמר אחד.", "error");
+      openSnack(
+        "❌ לא ניתן למחוק את המאמר היחיד. חייב להישאר לפחות מאמר אחד.",
+        "error"
+      );
       return;
     }
     setPendingDeleteId(id);
     setDeleteDialogOpen(true);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (!pendingDeleteId) return;
-    setArticles((prev) => prev.filter((a) => a.id !== pendingDeleteId));
-    setDeleteDialogOpen(false);
-    setPendingDeleteId(null);
-    openSnack("🗑️ המאמר נמחק", "success");
+
+    try {
+      await deleteArticle(pendingDeleteId);
+      setArticles((prev) => prev.filter((a) => a.id !== pendingDeleteId));
+      setDeleteDialogOpen(false);
+      setPendingDeleteId(null);
+      openSnack("🗑️ המאמר נמחק", "success");
+    } catch (error) {
+      console.error("Error deleting article:", error);
+      openSnack("❌ שגיאה במחיקת המאמר", "error");
+    }
   };
+
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -230,7 +242,14 @@ export default function ArticlesForm() {
         direction: "rtl",
       }}
     >
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 3,
+        }}
+      >
         <Typography variant="h5" fontWeight={800}>
           מאמרים על המקצוע והתעשייה
         </Typography>
@@ -262,10 +281,15 @@ export default function ArticlesForm() {
             <img
               src={article.imageUrl}
               alt={article.title}
-              style={{ width: 60, height: 60, borderRadius: 8, objectFit: "cover" }}
+              style={{
+                width: 60,
+                height: 60,
+                borderRadius: 8,
+                objectFit: "cover",
+              }}
               onError={(e) => {
-                // fallback קטן אם הקישור שבור
-                (e.currentTarget as HTMLImageElement).src = "https://via.placeholder.com/60";
+                (e.currentTarget as HTMLImageElement).src =
+                  "https://via.placeholder.com/60";
               }}
             />
 
@@ -284,7 +308,10 @@ export default function ArticlesForm() {
             <IconButton size="small" onClick={() => handleEditClick(article)}>
               <EditOutlinedIcon fontSize="small" />
             </IconButton>
-            <IconButton size="small" onClick={() => handleAskDelete(article.id)}>
+            <IconButton
+              size="small"
+              onClick={() => handleAskDelete(article.id)}
+            >
               <DeleteOutlineOutlinedIcon fontSize="small" />
             </IconButton>
           </Box>
@@ -374,14 +401,21 @@ export default function ArticlesForm() {
       </Dialog>
 
       {/* Dialog מחיקה */}
-      <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+      >
         <DialogTitle sx={{ direction: "rtl" }}>אישור מחיקה</DialogTitle>
         <DialogContent sx={{ direction: "rtl" }}>
           <Typography>האם למחוק את המאמר? פעולה זו לא ניתנת לשחזור.</Typography>
         </DialogContent>
         <DialogActions sx={{ direction: "rtl" }}>
           <Button onClick={() => setDeleteDialogOpen(false)}>ביטול</Button>
-          <Button color="error" variant="contained" onClick={handleConfirmDelete}>
+          <Button
+            color="error"
+            variant="contained"
+            onClick={handleConfirmDelete}
+          >
             מחק
           </Button>
         </DialogActions>

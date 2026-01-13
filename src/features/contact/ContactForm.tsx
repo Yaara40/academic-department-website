@@ -6,6 +6,7 @@ import {
   TextField,
   Snackbar,
   Alert,
+  CircularProgress,
 } from "@mui/material";
 
 import PhoneIcon from "@mui/icons-material/Phone";
@@ -17,6 +18,7 @@ import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 
 import type { ContactInfo } from "../../models/Home";
+import { getContactInfo, saveContactInfo } from "../../firebase/contactInfo";
 
 export default function ContactInfoForm() {
   const [contactInfo, setContactInfo] = useState<ContactInfo>({
@@ -30,6 +32,8 @@ export default function ContactInfoForm() {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
   // Snackbar state
   const [snackOpen, setSnackOpen] = useState(false);
@@ -38,17 +42,26 @@ export default function ContactInfoForm() {
     "success"
   );
 
-  // טעינה מ-LocalStorage
+  // טעינה מ-Firestore
   useEffect(() => {
-    const saved = localStorage.getItem("contactInfo");
-    if (saved) {
+    const loadData = async () => {
       try {
-        const parsed = JSON.parse(saved);
-        setContactInfo(parsed);
+        setLoading(true);
+        const data = await getContactInfo();
+        if (data) {
+          setContactInfo(data);
+        }
       } catch (error) {
-        console.error("Error loading from localStorage:", error);
+        console.error("Error loading contact info:", error);
+        setSnackSeverity("error");
+        setSnackMsg("❌ שגיאה בטעינת הנתונים");
+        setSnackOpen(true);
+      } finally {
+        setLoading(false);
       }
-    }
+    };
+
+    loadData();
   }, []);
 
   const validateForm = () => {
@@ -95,7 +108,7 @@ export default function ContactInfoForm() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!validateForm()) {
       setSnackSeverity("error");
       setSnackMsg("❌ יש שדות לא תקינים. תקני את השגיאות ונסי שוב.");
@@ -103,11 +116,29 @@ export default function ContactInfoForm() {
       return;
     }
 
-    localStorage.setItem("contactInfo", JSON.stringify(contactInfo));
-    setSnackSeverity("success");
-    setSnackMsg("✅ נשמר ל-LocalStorage!");
-    setSnackOpen(true);
+    try {
+      setSaving(true);
+      await saveContactInfo(contactInfo);
+      setSnackSeverity("success");
+      setSnackMsg("✅ נשמר ל-Firestore בהצלחה!");
+      setSnackOpen(true);
+    } catch (error) {
+      console.error("Error saving:", error);
+      setSnackSeverity("error");
+      setSnackMsg("❌ שגיאה בשמירה. נסי שוב.");
+      setSnackOpen(true);
+    } finally {
+      setSaving(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -246,13 +277,14 @@ export default function ContactInfoForm() {
           variant="contained"
           color="success"
           onClick={handleSave}
+          disabled={saving}
           sx={{ mt: 2 }}
         >
-          שמור ל-LocalStorage
+          {saving ? "שומר..." : "שמור ל-Firestore"}
         </Button>
       </Box>
 
-      {/* Snackbar במקום alert */}
+      {/* Snackbar הודעות */}
       <Snackbar
         open={snackOpen}
         autoHideDuration={3000}

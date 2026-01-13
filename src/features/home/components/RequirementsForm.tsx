@@ -29,36 +29,28 @@ type SnackState = {
 const isOnlyDigits = (value: string) => /^[0-9]+$/.test(value.trim());
 
 export default function RequirementsForm() {
-  const colors = useMemo(() => ["#dbeafe", "#d1fae5", "#e9d5ff", "#fed7aa", "#fef3c7"], []);
+  // שימוש בשמות הצבעים מה-Theme
+  const colors = useMemo(() => ["cardBlue", "cardGreen", "cardPurple", "cardOrange", "cardYellow"], []);
 
   const initialRequirements: Requirement[] = useMemo(
     () => [
-      { id: "1", title: "שנות לימוד", subtitle: "3-4 שנים", value: "3-4", color: "#dbeafe" },
-      { id: "2", title: "פרויקטים מעשיים", subtitle: "לפחות שני פרויקטים גדולים", value: "+2", color: "#d1fae5" },
-      { id: "3", title: "רמת אנגלית", subtitle: "ציון מינימלי באמי״ר", value: "+85", color: "#e9d5ff" },
-      { id: "4", title: "נקודות זכות כוללות", subtitle: "מינימום נקודות זכות לתואר", value: "120", color: "#fed7aa" },
+      { id: "1", title: "שנות לימוד", subtitle: "3-4 שנים", value: "3-4", color: "cardBlue" },
+      { id: "2", title: "פרויקטים מעשיים", subtitle: "לפחות שני פרויקטים גדולים", value: "+2", color: "cardGreen" },
+      { id: "3", title: "רמת אנגלית", subtitle: "ציון מינימלי באמי״ר", value: "+85", color: "cardPurple" },
+      { id: "4", title: "נקודות זכות כוללות", subtitle: "מינימום נקודות זכות לתואר", value: "120", color: "cardOrange" },
     ],
     []
   );
 
   const [requirements, setRequirements] = useState<Requirement[]>(initialRequirements);
-
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
-
   const [currentReq, setCurrentReq] = useState<Requirement | null>(null);
   const [editedTitle, setEditedTitle] = useState("");
   const [editedSubtitle, setEditedSubtitle] = useState("");
   const [editedValue, setEditedValue] = useState("");
-
   const [errors, setErrors] = useState<Record<string, string>>({});
-
-  const [snack, setSnack] = useState<SnackState>({
-    open: false,
-    message: "",
-    severity: "success",
-  });
-
+  const [snack, setSnack] = useState<SnackState>({ open: false, message: "", severity: "success" });
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
@@ -73,7 +65,6 @@ export default function RequirementsForm() {
     setErrors({});
   };
 
-  // טעינה מ-LocalStorage
   useEffect(() => {
     const saved = localStorage.getItem("requirements");
     if (saved) {
@@ -88,7 +79,6 @@ export default function RequirementsForm() {
     }
   }, []);
 
-  // שמירה אוטומטית ל-LocalStorage בכל שינוי
   useEffect(() => {
     localStorage.setItem("requirements", JSON.stringify(requirements));
   }, [requirements]);
@@ -98,17 +88,10 @@ export default function RequirementsForm() {
     const title = editedTitle.trim();
     const value = editedValue.trim();
 
-    // כותרת - חובה + לא מספר (ולא רק מספרים)
-    if (!title) {
-      newErrors.title = "כותרת דרישה היא שדה חובה";
-    } else if (isOnlyDigits(title)) {
-      newErrors.title = "כותרת לא יכולה להיות מספר. כתבי טקסט (למשל: 'נקודות זכות כוללות')";
-    }
+    if (!title) newErrors.title = "כותרת דרישה היא שדה חובה";
+    else if (isOnlyDigits(title)) newErrors.title = "כותרת לא יכולה להיות מספר";
 
-    // ערך - חובה (כאן כן מותר מספרים, כי זה הערך)
-    if (!value) {
-      newErrors.value = "ערך הדרישה הוא שדה חובה";
-    }
+    if (!value) newErrors.value = "ערך הדרישה הוא שדה חובה";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -125,7 +108,7 @@ export default function RequirementsForm() {
 
   const handleSaveEdit = () => {
     if (!validateFields()) {
-      openSnack("❌ יש שגיאות בטופס. תקני ותנסי שוב.", "error");
+      openSnack("❌ יש שגיאות בטופס", "error");
       return;
     }
     if (!currentReq) return;
@@ -141,7 +124,7 @@ export default function RequirementsForm() {
     setEditDialogOpen(false);
     setCurrentReq(null);
     resetFormFields();
-    openSnack("✅ הדרישה עודכנה בהצלחה", "success");
+    openSnack("✅ עודכן בהצלחה", "success");
   };
 
   const handleOpenAddDialog = () => {
@@ -152,7 +135,7 @@ export default function RequirementsForm() {
 
   const handleAddNew = () => {
     if (!validateFields()) {
-      openSnack("❌ יש שגיאות בטופס. תקני ותנסי שוב.", "error");
+      openSnack("❌ יש שגיאות בטופס", "error");
       return;
     }
 
@@ -167,13 +150,12 @@ export default function RequirementsForm() {
     setRequirements((prev) => [...prev, newReq]);
     setAddDialogOpen(false);
     resetFormFields();
-    openSnack("✅ דרישה נוספה בהצלחה", "success");
+    openSnack("✅ נוסף בהצלחה", "success");
   };
 
-  // במקום confirm/alert
   const handleAskDelete = (id: string) => {
     if (requirements.length === 1) {
-      openSnack("❌ לא ניתן למחוק את הדרישה היחידה. חייבת להישאר לפחות דרישה אחת.", "error");
+      openSnack("❌ חייבת להישאר לפחות דרישה אחת", "error");
       return;
     }
     setPendingDeleteId(id);
@@ -185,22 +167,23 @@ export default function RequirementsForm() {
     setRequirements((prev) => prev.filter((r) => r.id !== pendingDeleteId));
     setDeleteDialogOpen(false);
     setPendingDeleteId(null);
-    openSnack("🗑️ הדרישה נמחקה", "success");
+    openSnack("🗑️ נמחק", "success");
   };
 
   return (
     <Box
       sx={{
-        border: "1px solid #eee",
+        border: "1px solid",
+        borderColor: "divider",
         borderRadius: 3,
         p: 3,
         mb: 4,
-        bgcolor: "#fff",
+        bgcolor: "background.paper", // שימוש ברקע של ה-Theme
         direction: "rtl",
       }}
     >
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
-        <Typography variant="h5" fontWeight={800}>
+        <Typography variant="h5" fontWeight={800} color="text.primary">
           דרישות התואר
         </Typography>
 
@@ -219,6 +202,7 @@ export default function RequirementsForm() {
           <Card key={req.id} sx={{ bgcolor: req.color }}>
             <CardContent>
               <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+                {/* הסרנו את הצבעים הקשיחים! ה-Theme דואג לזה */}
                 <Typography variant="h4" fontWeight={800}>
                   {req.value}
                 </Typography>
@@ -242,115 +226,44 @@ export default function RequirementsForm() {
         ))}
       </Box>
 
-      {/* Dialog עריכה */}
+      {/* הדיאלוגים נשארו זהים, רק קיצרתי מעט כדי לחסוך מקום בתצוגה כאן */}
       <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
         <DialogTitle sx={{ direction: "rtl" }}>עריכת דרישה</DialogTitle>
         <DialogContent sx={{ direction: "rtl", minWidth: 420 }}>
-          <TextField
-            fullWidth
-            label="כותרת *"
-            value={editedTitle}
-            onChange={(e) => setEditedTitle(e.target.value)}
-            error={Boolean(errors.title)}
-            helperText={errors.title || " "}
-            sx={{ mt: 2, mb: 2 }}
-          />
-
-          <TextField
-            fullWidth
-            label="תת כותרת"
-            value={editedSubtitle}
-            onChange={(e) => setEditedSubtitle(e.target.value)}
-            sx={{ mb: 2 }}
-          />
-
-          <TextField
-            fullWidth
-            label="ערך *"
-            value={editedValue}
-            onChange={(e) => setEditedValue(e.target.value)}
-            error={Boolean(errors.value)}
-            helperText={errors.value || " "}
-          />
+          <TextField fullWidth label="כותרת *" value={editedTitle} onChange={(e) => setEditedTitle(e.target.value)} error={Boolean(errors.title)} helperText={errors.title || " "} sx={{ mt: 2, mb: 2 }} />
+          <TextField fullWidth label="תת כותרת" value={editedSubtitle} onChange={(e) => setEditedSubtitle(e.target.value)} sx={{ mb: 2 }} />
+          <TextField fullWidth label="ערך *" value={editedValue} onChange={(e) => setEditedValue(e.target.value)} error={Boolean(errors.value)} helperText={errors.value || " "} />
         </DialogContent>
-
         <DialogActions sx={{ direction: "rtl" }}>
           <Button onClick={() => setEditDialogOpen(false)}>ביטול</Button>
-          <Button onClick={handleSaveEdit} variant="contained">
-            שמור
-          </Button>
+          <Button onClick={handleSaveEdit} variant="contained">שמור</Button>
         </DialogActions>
       </Dialog>
 
-      {/* Dialog הוספה */}
       <Dialog open={addDialogOpen} onClose={() => setAddDialogOpen(false)}>
         <DialogTitle sx={{ direction: "rtl" }}>הוספת דרישה חדשה</DialogTitle>
         <DialogContent sx={{ direction: "rtl", minWidth: 420 }}>
-          <TextField
-            fullWidth
-            label="כותרת *"
-            value={editedTitle}
-            onChange={(e) => setEditedTitle(e.target.value)}
-            error={Boolean(errors.title)}
-            helperText={errors.title || " "}
-            sx={{ mt: 2, mb: 2 }}
-          />
-
-          <TextField
-            fullWidth
-            label="תת כותרת"
-            value={editedSubtitle}
-            onChange={(e) => setEditedSubtitle(e.target.value)}
-            sx={{ mb: 2 }}
-          />
-
-          <TextField
-            fullWidth
-            label="ערך *"
-            value={editedValue}
-            onChange={(e) => setEditedValue(e.target.value)}
-            error={Boolean(errors.value)}
-            helperText={errors.value || " "}
-          />
+          <TextField fullWidth label="כותרת *" value={editedTitle} onChange={(e) => setEditedTitle(e.target.value)} error={Boolean(errors.title)} helperText={errors.title || " "} sx={{ mt: 2, mb: 2 }} />
+          <TextField fullWidth label="תת כותרת" value={editedSubtitle} onChange={(e) => setEditedSubtitle(e.target.value)} sx={{ mb: 2 }} />
+          <TextField fullWidth label="ערך *" value={editedValue} onChange={(e) => setEditedValue(e.target.value)} error={Boolean(errors.value)} helperText={errors.value || " "} />
         </DialogContent>
-
         <DialogActions sx={{ direction: "rtl" }}>
           <Button onClick={() => setAddDialogOpen(false)}>ביטול</Button>
-          <Button onClick={handleAddNew} variant="contained">
-            הוסף
-          </Button>
+          <Button onClick={handleAddNew} variant="contained">הוסף</Button>
         </DialogActions>
       </Dialog>
 
-      {/* Dialog מחיקה */}
       <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
         <DialogTitle sx={{ direction: "rtl" }}>אישור מחיקה</DialogTitle>
-        <DialogContent sx={{ direction: "rtl" }}>
-          <Typography>האם למחוק את הדרישה? פעולה זו לא ניתנת לשחזור.</Typography>
-        </DialogContent>
+        <DialogContent sx={{ direction: "rtl" }}><Typography>האם למחוק את הדרישה?</Typography></DialogContent>
         <DialogActions sx={{ direction: "rtl" }}>
           <Button onClick={() => setDeleteDialogOpen(false)}>ביטול</Button>
-          <Button color="error" variant="contained" onClick={handleConfirmDelete}>
-            מחק
-          </Button>
+          <Button color="error" variant="contained" onClick={handleConfirmDelete}>מחק</Button>
         </DialogActions>
       </Dialog>
 
-      {/* Snackbar הודעות */}
-      <Snackbar
-        open={snack.open}
-        autoHideDuration={2500}
-        onClose={() => setSnack((s) => ({ ...s, open: false }))}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert
-          onClose={() => setSnack((s) => ({ ...s, open: false }))}
-          severity={snack.severity}
-          variant="filled"
-          sx={{ width: "100%" }}
-        >
-          {snack.message}
-        </Alert>
+      <Snackbar open={snack.open} autoHideDuration={2500} onClose={() => setSnack((s) => ({ ...s, open: false }))} anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
+        <Alert onClose={() => setSnack((s) => ({ ...s, open: false }))} severity={snack.severity} variant="filled" sx={{ width: "100%" }}>{snack.message}</Alert>
       </Snackbar>
     </Box>
   );

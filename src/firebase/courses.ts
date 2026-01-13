@@ -99,7 +99,7 @@ export async function updateCourse(course: Course): Promise<void> {
 }
 
 // 🗑️ מחיקת קורס
-export async function deleteCourse(courseId: string): Promise<void> {
-  const courseDoc = doc(firestore, "courses", courseId);
-  await deleteDoc(courseDoc);
+export async function deleteCourse(docId: string): Promise<void> {
+  await deleteDoc(doc(firestore, "courses", docId));
 }
+

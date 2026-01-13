@@ -28,7 +28,7 @@ type Category = {
   id: CategoryId;
   title: string;
   description: string;
-  color: "blue" | "green" | "purple" | "orange";
+  colorName: "cardBlue" | "cardGreen" | "cardPurple" | "cardOrange";
   icon: React.ReactNode;
 };
 
@@ -43,46 +43,33 @@ export default function AdminHelp() {
         id: "leads",
         title: "ניהול מועמדים ופניות",
         description: 'טיפול בפניות שמגיעות מטופס "השארת פרטים"',
-        color: "blue",
+        colorName: "cardBlue",
         icon: <PeopleAltOutlinedIcon sx={{ fontSize: 34 }} />,
       },
       {
         id: "courses",
         title: "ניהול קורסים ותוכן אקדמי",
         description: "ניהול רשימת הקורסים המוצגת למועמדים",
-        color: "green",
+        colorName: "cardGreen",
         icon: <MenuBookOutlinedIcon sx={{ fontSize: 34 }} />,
       },
       {
         id: "calculator",
         title: "מחשבון קבלה ודרישות",
         description: "הגדרת כללי מחשבון הקבלה והדרישות",
-        color: "purple",
+        colorName: "cardPurple",
         icon: <CalculateOutlinedIcon sx={{ fontSize: 34 }} />,
       },
       {
         id: "settings",
         title: "הגדרות אתר וניווט",
         description: "שליטה בחוויית המשתמש באתר הציבורי",
-        color: "orange",
+        colorName: "cardOrange",
         icon: <SettingsOutlinedIcon sx={{ fontSize: 34 }} />,
       },
     ],
     []
   );
-
-  const colorClasses = (c: Category["color"]) => {
-    switch (c) {
-      case "blue":
-        return { bg: "#EFF6FF", hover: "#DBEAFE", border: "#BFDBFE", fg: "#1D4ED8" };
-      case "green":
-        return { bg: "#ECFDF5", hover: "#D1FAE5", border: "#BBF7D0", fg: "#047857" };
-      case "purple":
-        return { bg: "#F5F3FF", hover: "#EDE9FE", border: "#DDD6FE", fg: "#6D28D9" };
-      case "orange":
-        return { bg: "#FFF7ED", hover: "#FFEDD5", border: "#FED7AA", fg: "#C2410C" };
-    }
-  };
 
   const scrollToSection = (id: CategoryId) => {
     document.getElementById(`section-${id}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -159,19 +146,17 @@ export default function AdminHelp() {
   const SectionHeader = ({
     title,
     icon,
-    bg,
-    fg,
+    colorName,
   }: {
     title: string;
     icon: React.ReactNode;
-    bg: string;
-    fg: string;
+    colorName: string;
   }) => (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2, pb: 2, borderBottom: "1px solid #eee" }}>
-      <Box sx={{ width: 48, height: 48, borderRadius: 2, bgcolor: bg, display: "grid", placeItems: "center", color: fg }}>
+    <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2, pb: 2, borderBottom: "1px solid", borderColor: "divider" }}>
+      <Box sx={{ width: 48, height: 48, borderRadius: 2, bgcolor: colorName, display: "grid", placeItems: "center", color: "text.primary" }}>
         {icon}
       </Box>
-      <Typography variant="h5" fontWeight={900} sx={{ color: "#1f2937" }}>
+      <Typography variant="h5" fontWeight={900} sx={{ color: "text.primary" }}>
         {title}
       </Typography>
     </Box>
@@ -179,7 +164,7 @@ export default function AdminHelp() {
 
   const FAQBlock = ({ baseId, faqs }: { baseId: string; faqs: FAQ[] }) => (
     <Box>
-      <Typography variant="h6" fontWeight={900} sx={{ mb: 1 }}>
+      <Typography variant="h6" fontWeight={900} sx={{ mb: 1, color: "text.primary" }}>
         ❓ שאלות נפוצות
       </Typography>
       {faqs.map((f, idx) => {
@@ -189,12 +174,12 @@ export default function AdminHelp() {
             key={panelId}
             expanded={expanded === panelId}
             onChange={handleAccordionChange(panelId)}
-            sx={{ boxShadow: "none", border: "1px solid #e5e7eb", mb: 1, "&:before": { display: "none" } }}
+            sx={{ boxShadow: "none", border: "1px solid", borderColor: "divider", mb: 1, "&:before": { display: "none" } }}
           >
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography fontWeight={700}>{f.q}</Typography>
             </AccordionSummary>
-            <AccordionDetails sx={{ borderTop: "1px solid #eee" }}>
+            <AccordionDetails sx={{ borderTop: "1px solid", borderColor: "divider" }}>
               <Typography color="text.secondary">{f.a}</Typography>
             </AccordionDetails>
           </Accordion>
@@ -204,16 +189,16 @@ export default function AdminHelp() {
   );
 
   return (
-    // השינוי היחיד נמצא בשורה זו: הוספת הגדרות כיוון RTL ויישור לימין
     <Box sx={{ direction: "rtl", textAlign: "right" }}>
       <Box sx={{ maxWidth: 1200, mx: "auto", px: 2, py: 4, display: "flex", flexDirection: "column", gap: 3 }}>
+        
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
-          <Box sx={{ textAlign: "center" }}>
-            <Typography variant="h3" sx={{ fontWeight: 900, color: "#1f2937", mb: 1 }}>
+          <Box sx={{ textAlign: "center", mb: 3 }}>
+            <Typography variant="h3" sx={{ fontWeight: 900, color: "text.primary", mb: 1 }}>
               דף עזרה למנהל מערכת (Admin)
             </Typography>
-            <Typography sx={{ fontSize: 20, color: "#6b7280" }}>
+            <Typography sx={{ fontSize: 20, color: "text.secondary" }}>
               הדרכה קצרה וברורה לשימוש נכון במערכת
             </Typography>
           </Box>
@@ -229,7 +214,6 @@ export default function AdminHelp() {
             }}
           >
             {categories.map((cat, index) => {
-              const cc = colorClasses(cat.color);
               return (
                 <motion.div
                   key={cat.id}
@@ -241,21 +225,22 @@ export default function AdminHelp() {
                     variant="outlined"
                     sx={{
                       borderRadius: 3,
-                      border: `2px solid ${cc.border}`,
-                      bgcolor: cc.bg,
+                      border: "1px solid",
+                      borderColor: "divider",
+                      bgcolor: cat.colorName,
                       transition: "all 0.2s",
-                      "&:hover": { bgcolor: cc.hover, boxShadow: 3 },
+                      "&:hover": { transform: 'translateY(-4px)', boxShadow: 3 },
                     }}
                   >
                     <CardActionArea onClick={() => scrollToSection(cat.id)} sx={{ p: 2 }}>
                       <CardContent sx={{ p: 0, textAlign: "center" }}>
-                        <Box sx={{ color: cc.fg, mb: 1, display: "flex", justifyContent: "center" }}>
+                        <Box sx={{ color: "text.primary", mb: 1, display: "flex", justifyContent: "center" }}>
                           {cat.icon}
                         </Box>
-                        <Typography fontWeight={900} sx={{ mb: 0.5, color: "#111827" }}>
+                        <Typography fontWeight={900} sx={{ mb: 0.5, color: "text.primary" }}>
                           {cat.title}
                         </Typography>
-                        <Typography variant="body2" sx={{ color: "#374151", opacity: 0.85 }}>
+                        <Typography variant="body2" sx={{ color: "text.secondary" }}>
                           {cat.description}
                         </Typography>
                       </CardContent>
@@ -278,22 +263,21 @@ export default function AdminHelp() {
             <SectionHeader
               title="ניהול מועמדים ופניות (Leads)"
               icon={<PeopleAltOutlinedIcon />}
-              bg="#DBEAFE"
-              fg="#1D4ED8"
+              colorName="cardBlue"
             />
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <Box>
-                <Typography variant="h6" fontWeight={900} sx={{ mb: 1 }}>
+                <Typography variant="h6" fontWeight={900} sx={{ mb: 1, color: "text.primary" }}>
                   🎯 מטרה
                 </Typography>
-                <Typography sx={{ color: "#374151", lineHeight: 1.8 }}>
+                <Typography sx={{ color: "text.secondary", lineHeight: 1.8 }}>
                   לעזור ל-Admin לטפל בפניות שמגיעות מטופס "השארת פרטים" באתר.
                 </Typography>
               </Box>
 
               <Box>
-                <Typography variant="h6" fontWeight={900} sx={{ mb: 1 }}>
+                <Typography variant="h6" fontWeight={900} sx={{ mb: 1, color: "text.primary" }}>
                   📋 שלבים לביצוע
                 </Typography>
                 <List sx={{ pt:0 }}>
@@ -305,14 +289,16 @@ export default function AdminHelp() {
                     "למחוק פנייה כפולה במקרה הצורך",
                   ].map((s, i) => (
                     <ListItem key={i} sx={{ py: 0.5 }}>
-                      <ListItemText primary={`${i + 1}. ${s}`} />
+                      <ListItemText 
+                        primary={<Typography color="text.primary">{`${i + 1}. ${s}`}</Typography>} 
+                      />
                     </ListItem>
                   ))}
                 </List>
               </Box>
 
-              <Box sx={{ bgcolor: "#FFFBEB", borderRight: "4px solid #F59E0B", p: 2, borderRadius: 2 }}>
-                <Typography variant="h6" fontWeight={900} sx={{ mb: 1 }}>
+              <Box sx={{ bgcolor: "background.paper", borderRight: "4px solid", borderColor: "warning.main", p: 2, borderRadius: 2 }}>
+                <Typography variant="h6" fontWeight={900} sx={{ mb: 1, color: "text.primary" }}>
                   ⚠️ דגשים חשובים
                 </Typography>
                 <List sx={{ pt: 0 }}>
@@ -322,7 +308,9 @@ export default function AdminHelp() {
                     "מומלץ לעדכן סטטוס לאחר כל שיחה כדי לשמור סדר",
                   ].map((w, i) => (
                     <ListItem key={i} sx={{ py: 0 }}>
-                      <ListItemText primary={`• ${w}`} />
+                      <ListItemText 
+                        primary={<Typography color="text.primary">{`• ${w}`}</Typography>} 
+                      />
                     </ListItem>
                   ))}
                 </List>
@@ -330,10 +318,10 @@ export default function AdminHelp() {
 
               <FAQBlock baseId="leads" faqs={leadsFaq} />
 
-              <Box sx={{ bgcolor: "#ECFDF5", borderRight: "4px solid #10B981", p: 2, borderRadius: 2 }}>
+              <Box sx={{ bgcolor: "cardGreen", borderRight: "4px solid", borderColor: "success.main", p: 2, borderRadius: 2 }}>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-                  <TipsAndUpdatesOutlinedIcon sx={{ color: "#059669" }} />
-                  <Typography variant="h6" fontWeight={900}>
+                  <TipsAndUpdatesOutlinedIcon sx={{ color: "success.main" }} />
+                  <Typography variant="h6" fontWeight={900} sx={{ color: "text.primary" }}>
                     💡 טיפים
                   </Typography>
                 </Box>
@@ -341,7 +329,9 @@ export default function AdminHelp() {
                   {["התחילי כל יום מטיפול בסטטוס \"חדש\"", "השתמשי בחיפוש כדי לאתר מהר מועמד", "אל תמחקי פניות לפני שתיעדת טיפול"].map(
                     (t, i) => (
                       <ListItem key={i} sx={{ py: 0 }}>
-                        <ListItemText primary={`• ${t}`} />
+                        <ListItemText 
+                          primary={<Typography color="text.primary">{`• ${t}`}</Typography>} 
+                        />
                       </ListItem>
                     )
                   )}
@@ -362,22 +352,21 @@ export default function AdminHelp() {
             <SectionHeader
               title="ניהול קורסים ותוכן אקדמי"
               icon={<MenuBookOutlinedIcon />}
-              bg="#D1FAE5"
-              fg="#047857"
+              colorName="cardGreen"
             />
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <Box>
-                <Typography variant="h6" fontWeight={900} sx={{ mb: 1 }}>
+                <Typography variant="h6" fontWeight={900} sx={{ mb: 1, color: "text.primary" }}>
                   🎯 מטרה
                 </Typography>
-                <Typography sx={{ color: "#374151", lineHeight: 1.8 }}>
+                <Typography sx={{ color: "text.secondary", lineHeight: 1.8 }}>
                   לנהל את רשימת הקורסים שמוצגת למועמדים באתר.
                 </Typography>
               </Box>
 
               <Box>
-                <Typography variant="h6" fontWeight={900} sx={{ mb: 1 }}>
+                <Typography variant="h6" fontWeight={900} sx={{ mb: 1, color: "text.primary" }}>
                   📋 שלבים לביצוע
                 </Typography>
                 <List sx={{ pt: 0 }}>
@@ -389,21 +378,25 @@ export default function AdminHelp() {
                     "לערוך/להשבית קורסים קיימים לפי הצורך",
                   ].map((s, i) => (
                     <ListItem key={i} sx={{ py: 0.5 }}>
-                      <ListItemText primary={`${i + 1}. ${s}`} />
+                      <ListItemText 
+                        primary={<Typography color="text.primary">{`${i + 1}. ${s}`}</Typography>} 
+                      />
                     </ListItem>
                   ))}
                 </List>
               </Box>
 
-              <Box sx={{ bgcolor: "#FFFBEB", borderRight: "4px solid #F59E0B", p: 2, borderRadius: 2 }}>
-                <Typography variant="h6" fontWeight={900} sx={{ mb: 1 }}>
+              <Box sx={{ bgcolor: "background.paper", borderRight: "4px solid", borderColor: "warning.main", p: 2, borderRadius: 2 }}>
+                <Typography variant="h6" fontWeight={900} sx={{ mb: 1, color: "text.primary" }}>
                   ⚠️ דגשים חשובים
                 </Typography>
                 <List sx={{ pt: 0 }}>
                   {["נ״ז חייב להיות מספר חיובי", "שם קורס לא יכול להיות ריק", 'קורס "לא פעיל" לא יוצג למועמדים'].map(
                     (w, i) => (
                       <ListItem key={i} sx={{ py: 0 }}>
-                        <ListItemText primary={`• ${w}`} />
+                        <ListItemText 
+                          primary={<Typography color="text.primary">{`• ${w}`}</Typography>} 
+                        />
                       </ListItem>
                     )
                   )}
@@ -412,17 +405,19 @@ export default function AdminHelp() {
 
               <FAQBlock baseId="courses" faqs={coursesFaq} />
 
-              <Box sx={{ bgcolor: "#ECFDF5", borderRight: "4px solid #10B981", p: 2, borderRadius: 2 }}>
+              <Box sx={{ bgcolor: "cardGreen", borderRight: "4px solid", borderColor: "success.main", p: 2, borderRadius: 2 }}>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-                  <TipsAndUpdatesOutlinedIcon sx={{ color: "#059669" }} />
-                  <Typography variant="h6" fontWeight={900}>
+                  <TipsAndUpdatesOutlinedIcon sx={{ color: "success.main" }} />
+                  <Typography variant="h6" fontWeight={900} sx={{ color: "text.primary" }}>
                     💡 טיפים
                   </Typography>
                 </Box>
                 <List sx={{ pt: 0 }}>
                   {["השבתה עדיפה על מחיקה (כדי לא לאבד מידע)", "ודאי שכל שינוי מופיע גם בתצוגה הציבורית"].map((t, i) => (
                     <ListItem key={i} sx={{ py: 0 }}>
-                      <ListItemText primary={`• ${t}`} />
+                      <ListItemText 
+                        primary={<Typography color="text.primary">{`• ${t}`}</Typography>} 
+                      />
                     </ListItem>
                   ))}
                 </List>
@@ -442,22 +437,21 @@ export default function AdminHelp() {
             <SectionHeader
               title="מחשבון קבלה ודרישות קבלה"
               icon={<CalculateOutlinedIcon />}
-              bg="#EDE9FE"
-              fg="#6D28D9"
+              colorName="cardPurple"
             />
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <Box>
-                <Typography variant="h6" fontWeight={900} sx={{ mb: 1 }}>
+                <Typography variant="h6" fontWeight={900} sx={{ mb: 1, color: "text.primary" }}>
                   🎯 מטרה
                 </Typography>
-                <Typography sx={{ color: "#374151", lineHeight: 1.8 }}>
+                <Typography sx={{ color: "text.secondary", lineHeight: 1.8 }}>
                   להגדיר את הכללים שמחשבון הקבלה משתמש בהם (משקלים, ספים, דרישות).
                 </Typography>
               </Box>
 
               <Box>
-                <Typography variant="h6" fontWeight={900} sx={{ mb: 1 }}>
+                <Typography variant="h6" fontWeight={900} sx={{ mb: 1, color: "text.primary" }}>
                   📋 שלבים לביצוע
                 </Typography>
                 <List sx={{ pt: 0 }}>
@@ -469,14 +463,16 @@ export default function AdminHelp() {
                     "לשמור הגדרות",
                   ].map((s, i) => (
                     <ListItem key={i} sx={{ py: 0.5 }}>
-                      <ListItemText primary={`${i + 1}. ${s}`} />
+                      <ListItemText 
+                        primary={<Typography color="text.primary">{`${i + 1}. ${s}`}</Typography>} 
+                      />
                     </ListItem>
                   ))}
                 </List>
               </Box>
 
-              <Box sx={{ bgcolor: "#FFFBEB", borderRight: "4px solid #F59E0B", p: 2, borderRadius: 2 }}>
-                <Typography variant="h6" fontWeight={900} sx={{ mb: 1 }}>
+              <Box sx={{ bgcolor: "background.paper", borderRight: "4px solid", borderColor: "warning.main", p: 2, borderRadius: 2 }}>
+                <Typography variant="h6" fontWeight={900} sx={{ mb: 1, color: "text.primary" }}>
                   ⚠️ דגשים חשובים
                 </Typography>
                 <List sx={{ pt: 0 }}>
@@ -486,7 +482,9 @@ export default function AdminHelp() {
                     "שינויים ישפיעו על תוצאות החישוב למועמדים מיד לאחר שמירה",
                   ].map((w, i) => (
                     <ListItem key={i} sx={{ py: 0 }}>
-                      <ListItemText primary={`• ${w}`} />
+                      <ListItemText 
+                        primary={<Typography color="text.primary">{`• ${w}`}</Typography>} 
+                      />
                     </ListItem>
                   ))}
                 </List>
@@ -494,17 +492,19 @@ export default function AdminHelp() {
 
               <FAQBlock baseId="calculator" faqs={calculatorFaq} />
 
-              <Box sx={{ bgcolor: "#ECFDF5", borderRight: "4px solid #10B981", p: 2, borderRadius: 2 }}>
+              <Box sx={{ bgcolor: "cardGreen", borderRight: "4px solid", borderColor: "success.main", p: 2, borderRadius: 2 }}>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-                  <TipsAndUpdatesOutlinedIcon sx={{ color: "#059669" }} />
-                  <Typography variant="h6" fontWeight={900}>
+                  <TipsAndUpdatesOutlinedIcon sx={{ color: "success.main" }} />
+                  <Typography variant="h6" fontWeight={900} sx={{ color: "text.primary" }}>
                     💡 טיפים
                   </Typography>
                 </Box>
                 <List sx={{ pt: 0 }}>
                   {["שמרי \"סט ערכים\" קבוע כגיבוי", "אחרי שינוי — בצעי בדיקה עם מועמד דוגמה"].map((t, i) => (
                     <ListItem key={i} sx={{ py: 0 }}>
-                      <ListItemText primary={`• ${t}`} />
+                      <ListItemText 
+                        primary={<Typography color="text.primary">{`• ${t}`}</Typography>} 
+                      />
                     </ListItem>
                   ))}
                 </List>
@@ -524,22 +524,21 @@ export default function AdminHelp() {
             <SectionHeader
               title="הגדרות אתר, ניווט ותוכן כללי"
               icon={<SettingsOutlinedIcon />}
-              bg="#FFEDD5"
-              fg="#C2410C"
+              colorName="cardOrange"
             />
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <Box>
-                <Typography variant="h6" fontWeight={900} sx={{ mb: 1 }}>
+                <Typography variant="h6" fontWeight={900} sx={{ mb: 1, color: "text.primary" }}>
                   🎯 מטרה
                 </Typography>
-                <Typography sx={{ color: "#374151", lineHeight: 1.8 }}>
+                <Typography sx={{ color: "text.secondary", lineHeight: 1.8 }}>
                   לאפשר ל-Admin לשלוט בחוויית המשתמש באתר הציבורי.
                 </Typography>
               </Box>
 
               <Box>
-                <Typography variant="h6" fontWeight={900} sx={{ mb: 1 }}>
+                <Typography variant="h6" fontWeight={900} sx={{ mb: 1, color: "text.primary" }}>
                   📦 מה כולל?
                 </Typography>
                 <List sx={{ pt: 0 }}>
@@ -550,14 +549,16 @@ export default function AdminHelp() {
                     "פרטי התקשרות (פוטר + רשתות חברתיות)",
                   ].map((x, i) => (
                     <ListItem key={i} sx={{ py: 0 }}>
-                      <ListItemText primary={`• ${x}`} />
+                      <ListItemText 
+                        primary={<Typography color="text.primary">{`• ${x}`}</Typography>} 
+                      />
                     </ListItem>
                   ))}
                 </List>
               </Box>
 
               <Box>
-                <Typography variant="h6" fontWeight={900} sx={{ mb: 1 }}>
+                <Typography variant="h6" fontWeight={900} sx={{ mb: 1, color: "text.primary" }}>
                   📋 שלבים לביצוע
                 </Typography>
                 <List sx={{ pt: 0 }}>
@@ -568,14 +569,16 @@ export default function AdminHelp() {
                     "לבדוק בתצוגה ציבורית שהכל נראה תקין",
                   ].map((s, i) => (
                     <ListItem key={i} sx={{ py: 0.5 }}>
-                      <ListItemText primary={`${i + 1}. ${s}`} />
+                      <ListItemText 
+                        primary={<Typography color="text.primary">{`${i + 1}. ${s}`}</Typography>} 
+                      />
                     </ListItem>
                   ))}
                 </List>
               </Box>
 
-              <Box sx={{ bgcolor: "#FFFBEB", borderRight: "4px solid #F59E0B", p: 2, borderRadius: 2 }}>
-                <Typography variant="h6" fontWeight={900} sx={{ mb: 1 }}>
+              <Box sx={{ bgcolor: "background.paper", borderRight: "4px solid", borderColor: "warning.main", p: 2, borderRadius: 2 }}>
+                <Typography variant="h6" fontWeight={900} sx={{ mb: 1, color: "text.primary" }}>
                   ⚠️ דגשים חשובים
                 </Typography>
                 <List sx={{ pt: 0 }}>
@@ -585,7 +588,9 @@ export default function AdminHelp() {
                     'כרטיס "מוצג/מוסתר" קובע האם המועמדים רואים אותו',
                   ].map((w, i) => (
                     <ListItem key={i} sx={{ py: 0 }}>
-                      <ListItemText primary={`• ${w}`} />
+                      <ListItemText 
+                        primary={<Typography color="text.primary">{`• ${w}`}</Typography>} 
+                      />
                     </ListItem>
                   ))}
                 </List>
@@ -593,10 +598,10 @@ export default function AdminHelp() {
 
               <FAQBlock baseId="settings" faqs={settingsFaq} />
 
-              <Box sx={{ bgcolor: "#ECFDF5", borderRight: "4px solid #10B981", p: 2, borderRadius: 2 }}>
+              <Box sx={{ bgcolor: "cardGreen", borderRight: "4px solid", borderColor: "success.main", p: 2, borderRadius: 2 }}>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-                  <TipsAndUpdatesOutlinedIcon sx={{ color: "#059669" }} />
-                  <Typography variant="h6" fontWeight={900}>
+                  <TipsAndUpdatesOutlinedIcon sx={{ color: "success.main" }} />
+                  <Typography variant="h6" fontWeight={900} sx={{ color: "text.primary" }}>
                     💡 טיפים
                   </Typography>
                 </Box>
@@ -604,7 +609,9 @@ export default function AdminHelp() {
                   {["מומלץ להשתמש בתמונות באיכות טובה ולא כבדות מדי", "שמרי טקסטים קצרים וברורים בדף הבית"].map(
                     (t, i) => (
                       <ListItem key={i} sx={{ py: 0 }}>
-                        <ListItemText primary={`• ${t}`} />
+                        <ListItemText 
+                          primary={<Typography color="text.primary">{`• ${t}`}</Typography>} 
+                        />
                       </ListItem>
                     )
                   )}
@@ -620,14 +627,15 @@ export default function AdminHelp() {
             sx={{
               p: 3,
               borderRadius: 3,
-              border: "2px solid #BBF7D0",
-              background: "linear-gradient(135deg, #ECFDF5 0%, #EFF6FF 100%)",
+              border: "2px solid",
+              borderColor: "success.main",
+              bgcolor: "cardGreen",
               boxShadow: 3,
             }}
           >
             <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-              <TipsAndUpdatesOutlinedIcon sx={{ color: "#059669" }} />
-              <Typography variant="h5" fontWeight={900} sx={{ color: "#1f2937" }}>
+              <TipsAndUpdatesOutlinedIcon sx={{ color: "success.main" }} />
+              <Typography variant="h5" fontWeight={900} sx={{ color: "text.primary" }}>
                 הנחיות כלליות
               </Typography>
             </Box>
@@ -655,7 +663,7 @@ export default function AdminHelp() {
               ].map((x) => (
                 <Card key={x.title} variant="outlined" sx={{ borderRadius: 3 }}>
                   <CardContent>
-                    <Typography fontWeight={900} sx={{ mb: 0.5, color: "#111827" }}>
+                    <Typography fontWeight={900} sx={{ mb: 0.5, color: "text.primary" }}>
                       {x.title}
                     </Typography>
                     <Typography color="text.secondary">{x.desc}</Typography>

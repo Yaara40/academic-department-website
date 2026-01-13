@@ -54,8 +54,9 @@ export default function GrowthOptionList() {
         size="small"
         sx={{
           fontWeight: 700,
-          bgcolor: isVeryHigh ? "#D1FAE5" : "#DBEAFE",
-          color: isVeryHigh ? "#065F46" : "#1E3A8A",
+          // שימוש בשמות הצבעים מה-Theme
+          bgcolor: isVeryHigh ? "cardGreen" : "cardBlue",
+          color: "text.primary" // טקסט דינמי
         }}
       />
     );
@@ -84,6 +85,8 @@ export default function GrowthOptionList() {
               borderRadius: 3,
               height: "100%",
               boxShadow: "0 6px 16px rgba(0,0,0,0.08)",
+              // הוספתי רקע לבן/כהה סטנדרטי לכרטיסים האלו
+              bgcolor: "background.paper"
             }}
           >
             <CardContent
@@ -111,10 +114,11 @@ export default function GrowthOptionList() {
       {/* טבלה */}
       <Box
         sx={{
-          border: "1px solid #eee",
+          border: "1px solid",
+          borderColor: "divider",
           borderRadius: 3,
           p: 2,
-          bgcolor: "#fff",
+          bgcolor: "background.paper", // רקע דינמי
         }}
       >
         <Typography variant="h6" fontWeight={800} sx={{ mb: 2 }}>

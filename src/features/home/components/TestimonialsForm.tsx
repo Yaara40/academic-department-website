@@ -161,7 +161,7 @@ export default function TestimonialsForm() {
         borderRadius: 3,
         p: 3,
         mb: 4,
-        bgcolor: "#fff",
+        bgcolor: "background.paper",
         direction: "rtl",
       }}
     >
@@ -188,7 +188,7 @@ export default function TestimonialsForm() {
             justifyContent: "space-between",
             p: 2,
             mb: 2,
-            bgcolor: "#f9fafb",
+            bgcolor: "cardGray",
             borderRadius: 2,
           }}
         >

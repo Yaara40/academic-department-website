@@ -226,7 +226,7 @@ export default function ArticlesForm() {
         borderRadius: 3,
         p: 3,
         mb: 4,
-        bgcolor: "#fff",
+        bgcolor: "background.paper",
         direction: "rtl",
       }}
     >
@@ -254,7 +254,7 @@ export default function ArticlesForm() {
             justifyContent: "space-between",
             p: 2,
             mb: 2,
-            bgcolor: "#f9fafb",
+            bgcolor: "cardGray",
             borderRadius: 2,
           }}
         >

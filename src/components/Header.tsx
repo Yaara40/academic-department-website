@@ -38,7 +38,7 @@ const Header = () => {
                 sx={{
                   minWidth: "auto",
                   px: 2,
-                  "&:hover": { bgcolor: "rgba(255, 255, 255, 1)" },
+                  "&:hover": { bgcolor: "rgba(255, 255, 255, 0.2)" }, // שיפור קטן להובר
                 }}
               >
                 {item.text}
@@ -74,7 +74,7 @@ const Header = () => {
         </Toolbar>
       </AppBar>
 
-      {/* Right Side Vertical Menu */}
+      {/* Right Side Vertical Menu - תיקון למצב כהה */}
       <Box
         sx={{
           position: "fixed",
@@ -82,14 +82,15 @@ const Header = () => {
           top: "72px",
           height: "calc(100vh - 64px - 105px)",
           width: 200,
-          bgcolor: "#fff",
+          bgcolor: "background.paper", // ✅ תיקון: צבע רקע דינמי
           display: "flex",
           flexDirection: "column",
           gap: 1,
           p: 2,
           pt: 3,
           zIndex: 1000,
-          borderLeft: "1px solid #e0e0e0",
+          borderLeft: "1px solid",
+          borderColor: "divider", // ✅ תיקון: צבע גבול דינמי
           boxSizing: "border-box",
         }}
       >
@@ -102,11 +103,11 @@ const Header = () => {
             sx={{
               justifyContent: "flex-start",
               width: "100%",
-              color: "#2e917a",
+              color: "text.primary", // ✅ תיקון: צבע טקסט שחור ביום ולבן בלילה
               display: "flex",
               flexDirection: "row",
               gap: 1,
-              "&:hover": { bgcolor: "rgba(46, 145, 122, 0.1)" },
+              "&:hover": { bgcolor: "action.hover" }, // ✅ תיקון: צבע הובר סטנדרטי
             }}
           >
             {item.icon}

@@ -27,7 +27,6 @@ function CourseList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // טעינת נתונים מ-Firestore בעת טעינת הקומפוננטה
   const loadCourses = async () => {
     setLoading(true);
     setError(null);
@@ -46,18 +45,15 @@ function CourseList() {
     loadCourses();
   }, []);
 
-  // חישוב סטטיסטיקות
   const totalCourses = courses.length;
   const activeCourses = courses.filter(c => c.isActive === true).length;
   const mandatoryCourses = courses.filter(c => c.isMandatory === true).length;
   const electiveCourses = courses.filter(c => c.isMandatory === false).length;
 
-  // פונקציה לניווט לטופס הוספת קורס חדש
   function navigateToNewCourse() {
     navigate('/courses/new');
   }
 
-  // פונקציה למחיקת קורס
   const handleDeleteCourse = async (courseId: string, courseName: string) => {
     const confirmDelete = window.confirm(
       `האם אתה בטוח שברצונך למחוק את הקורס "${courseName}"?`
@@ -66,7 +62,6 @@ function CourseList() {
     if (confirmDelete) {
       try {
         await deleteCourse(courseId);
-        // רענון הרשימה
         await loadCourses();
         alert('✅ הקורס נמחק בהצלחה!');
       } catch (err) {
@@ -76,56 +71,37 @@ function CourseList() {
     }
   };
 
-  // פונקציה לעריכת קורס
   const handleEditCourse = (courseId: string) => {
     navigate(`/courses/edit/${courseId}`);
   };
 
-  // אם טוען - הצג מחוון טעינה
   if (loading) {
     return (
-      <Box sx={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '50vh' 
-      }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
         <CircularProgress size={60} />
       </Box>
     );
   }
 
-  // אם יש שגיאה
   if (error) {
     return (
       <Box sx={{ padding: 2, direction: 'rtl' }}>
-        <Typography variant="h5" color="error" sx={{ mb: 2 }}>
-          {error}
-        </Typography>
-        <Button variant="contained" onClick={loadCourses}>
-          נסה שוב
-        </Button>
+        <Typography variant="h5" color="error" sx={{ mb: 2 }}>{error}</Typography>
+        <Button variant="contained" onClick={loadCourses}>נסה שוב</Button>
       </Box>
     );
   }
 
   return (
     <Box sx={{ padding: 2, direction: 'rtl' }}>
-      {/* כותרת */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
-          ניהול קורסים
-        </Typography>
-        <IconButton 
-          color="primary" 
-          onClick={loadCourses}
-          title="רענן רשימה"
-        >
+        <Typography variant="h4" sx={{ fontWeight: 'bold' }}>ניהול קורסים</Typography>
+        <IconButton color="primary" onClick={loadCourses} title="רענן רשימה">
           <RefreshIcon />
         </IconButton>
       </Box>
 
-      {/* כרטיסי סטטיסטיקה */}
+      {/* כרטיסי סטטיסטיקה - מעודכנים לשימוש ב-Theme */}
       <Box sx={{ 
         display: 'grid', 
         gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
@@ -133,55 +109,46 @@ function CourseList() {
         mb: 4 
       }}>
         {/* סה"כ קורסים */}
-        <Card sx={{ textAlign: 'center', backgroundColor: '#f5f5f5' }}>
+        <Card sx={{ textAlign: 'center', bgcolor: 'cardGray' }}>
           <CardContent>
-            <Typography variant="h3" color="primary" sx={{ fontWeight: 'bold' }}>
+            <Typography variant="h3" sx={{ fontWeight: 'bold' }}>
               {totalCourses}
             </Typography>
-            <Typography variant="body1" color="text.secondary">
-              סה"כ קורסים
-            </Typography>
+            <Typography variant="body1" color="text.secondary">סה"כ קורסים</Typography>
           </CardContent>
         </Card>
 
         {/* קורסים פעילים */}
-        <Card sx={{ textAlign: 'center', backgroundColor: '#e8f5e9' }}>
+        <Card sx={{ textAlign: 'center', bgcolor: 'cardGreen' }}>
           <CardContent>
-            <Typography variant="h3" color="success.main" sx={{ fontWeight: 'bold' }}>
+            <Typography variant="h3" sx={{ fontWeight: 'bold' }}>
               {activeCourses}
             </Typography>
-            <Typography variant="body1" color="text.secondary">
-              קורסים פעילים
-            </Typography>
+            <Typography variant="body1" color="text.secondary">קורסים פעילים</Typography>
           </CardContent>
         </Card>
 
         {/* קורסי חובה */}
-        <Card sx={{ textAlign: 'center', backgroundColor: '#fff3e0' }}>
+        <Card sx={{ textAlign: 'center', bgcolor: 'cardYellow' }}>
           <CardContent>
-            <Typography variant="h3" color="warning.main" sx={{ fontWeight: 'bold' }}>
+            <Typography variant="h3" sx={{ fontWeight: 'bold' }}>
               {mandatoryCourses}
             </Typography>
-            <Typography variant="body1" color="text.secondary">
-              קורסי חובה
-            </Typography>
+            <Typography variant="body1" color="text.secondary">קורסי חובה</Typography>
           </CardContent>
         </Card>
 
         {/* קורסי בחירה */}
-        <Card sx={{ textAlign: 'center', backgroundColor: '#e3f2fd' }}>
+        <Card sx={{ textAlign: 'center', bgcolor: 'cardBlue' }}>
           <CardContent>
-            <Typography variant="h3" color="info.main" sx={{ fontWeight: 'bold' }}>
+            <Typography variant="h3" sx={{ fontWeight: 'bold' }}>
               {electiveCourses}
             </Typography>
-            <Typography variant="body1" color="text.secondary">
-              קורסי בחירה
-            </Typography>
+            <Typography variant="body1" color="text.secondary">קורסי בחירה</Typography>
           </CardContent>
         </Card>
       </Box>
 
-      {/* כפתור הוספה */}
       <Box sx={{ display: 'flex', gap: 2, marginBottom: 3 }}>
         <Button 
           variant="contained" 
@@ -194,19 +161,10 @@ function CourseList() {
         </Button>
       </Box>
 
-      {/* טבלת הקורסים */}
       {courses.length === 0 ? (
         <Box sx={{ textAlign: 'center', py: 4 }}>
-          <Typography variant="h6" color="text.secondary">
-            אין קורסים להצגה
-          </Typography>
-          <Button 
-            variant="contained" 
-            sx={{ mt: 2 }}
-            onClick={navigateToNewCourse}
-          >
-            הוסף קורס ראשון
-          </Button>
+          <Typography variant="h6" color="text.secondary">אין קורסים להצגה</Typography>
+          <Button variant="contained" sx={{ mt: 2 }} onClick={navigateToNewCourse}>הוסף קורס ראשון</Button>
         </Box>
       ) : (
         <TableContainer component={Paper}>
@@ -234,41 +192,21 @@ function CourseList() {
                   <TableCell align="center">{course.semester}</TableCell>
                   <TableCell align="center">{course.instructor || '-'}</TableCell>
                   <TableCell align="center">
-                    <Typography 
-                      sx={{ 
-                        color: course.isMandatory ? 'error.main' : 'info.main',
-                        fontWeight: 'bold'
-                      }}
-                    >
+                    <Typography sx={{ color: course.isMandatory ? 'error.main' : 'info.main', fontWeight: 'bold' }}>
                       {course.isMandatory ? 'כן' : 'לא'}
                     </Typography>
                   </TableCell>
                   <TableCell align="center">
-                    <Typography 
-                      sx={{ 
-                        color: course.isActive ? 'success.main' : 'text.secondary',
-                        fontWeight: 'bold'
-                      }}
-                    >
+                    <Typography sx={{ color: course.isActive ? 'success.main' : 'text.secondary', fontWeight: 'bold' }}>
                       {course.isActive ? 'כן' : 'לא'}
                     </Typography>
                   </TableCell>
                   <TableCell align="center">
                     <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
-                      <IconButton
-                        color="primary"
-                        size="small"
-                        onClick={() => handleEditCourse(course.id)}
-                        title="ערוך קורס"
-                      >
+                      <IconButton color="primary" size="small" onClick={() => handleEditCourse(course.id)} title="ערוך קורס">
                         <EditIcon />
                       </IconButton>
-                      <IconButton
-                        color="error"
-                        size="small"
-                        onClick={() => handleDeleteCourse(course.id, course.name)}
-                        title="מחק קורס"
-                      >
+                      <IconButton color="error" size="small" onClick={() => handleDeleteCourse(course.id, course.name)} title="מחק קורס">
                         <DeleteIcon />
                       </IconButton>
                     </Box>

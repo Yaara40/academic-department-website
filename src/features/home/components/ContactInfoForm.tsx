@@ -101,7 +101,7 @@ export default function ContactInfoForm() {
         borderRadius: 3,
         p: 3,
         mb: 4,
-        bgcolor: "#fff",
+        bgcolor: "background.paper",
         direction: "rtl",
       }}
     >

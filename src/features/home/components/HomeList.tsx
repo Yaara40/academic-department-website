@@ -5,11 +5,12 @@ import TestimonialsForm from "./TestimonialsForm";
 import ContactInfoForm from "./ContactInfoForm";
 
 export default function HomeList() {
+  // שימוש בשמות הסמנטיים שהגדרנו ב-Theme
   const stats = [
-    { title: "סה״כ קורסים", value: "12", color: "#f3f4f6" },
-    { title: "מועמדים פעילים", value: "4", color: "#e0f2fe" },
-    { title: "בוגרים", value: "120", color: "#fef3c7" },
-    { title: "שיעור השמה", value: "95%", color: "#d1fae5" },
+    { title: "סה״כ קורסים", value: "12", color: "cardGray" },
+    { title: "מועמדים פעילים", value: "4", color: "cardBlue" },
+    { title: "בוגרים", value: "120", color: "cardYellow" },
+    { title: "שיעור השמה", value: "95%", color: "cardGreen" },
   ];
 
   return (
@@ -23,8 +24,10 @@ export default function HomeList() {
         }}
       >
         {stats.map((stat, index) => (
+          // bgcolor: stat.color מושך עכשיו את הצבע הנכון מה-Theme
           <Card key={index} sx={{ bgcolor: stat.color }}>
             <CardContent sx={{ textAlign: "center" }}>
+              {/* הסרנו את הצבעים הקשיחים! עכשיו זה יסתדר אוטומטית */}
               <Typography variant="h3" fontWeight={800}>
                 {stat.value}
               </Typography>

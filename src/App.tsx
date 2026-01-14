@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Footer from "./components/Footer";
 import AdminLayout from "./layouts/AdminLayout";
 import UserLayout from "./layouts/UserLayout";
+import HelpUser from "./pages/HelpUser";
 
 // ייבוא הדפים שלך (אל תשני את זה, זה מה שעובד אצלך)
 import Home from "./pages/Home"; 
@@ -33,6 +34,8 @@ const App = () => {
           <Route index element={<UserHome />} />
           <Route path="courses" element={<CoursesManagement />} /> {/* דוגמה לשימוש חוזר */}
           <Route path="contact" element={<ContactManagement />} /> {/* דוגמה */}
+          <Route path="help" element={<HelpUser />} />  {/* דוגמה */}
+          
         </Route>
 
         {/* ברירת מחדל */}

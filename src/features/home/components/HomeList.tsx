@@ -2,7 +2,7 @@ import { Box, Card, CardContent, Typography } from "@mui/material";
 import RequirementsForm from "./RequirementsForm";
 import ArticlesForm from "./ArticlesForm";
 import TestimonialsForm from "./TestimonialsForm";
-import ContactInfoForm from "./ContactInfoForm";
+import ContactForm from "../../contact/ContactForm";
 
 export default function HomeList() {
   // שימוש בשמות הסמנטיים שהגדרנו ב-Theme
@@ -18,7 +18,11 @@ export default function HomeList() {
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(4, 1fr)" },
+          gridTemplateColumns: {
+            xs: "1fr",
+            sm: "repeat(2, 1fr)",
+            md: "repeat(4, 1fr)",
+          },
           gap: 3,
           mb: 4,
         }}
@@ -40,7 +44,7 @@ export default function HomeList() {
       <RequirementsForm />
       <ArticlesForm />
       <TestimonialsForm />
-      <ContactInfoForm />
+      <ContactForm />
     </Box>
   );
 }

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -13,12 +13,19 @@ import {
   CardContent,
   Snackbar,
   Alert,
+  CircularProgress,
 } from "@mui/material";
 
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import type { Requirement } from "../../../models/Home";
+import {
+  getAllRequirements,
+  addRequirement,
+  updateRequirement,
+  deleteRequirement,
+} from "../../../firebase/requirements";
 
 type SnackState = {
   open: boolean;
@@ -29,20 +36,9 @@ type SnackState = {
 const isOnlyDigits = (value: string) => /^[0-9]+$/.test(value.trim());
 
 export default function RequirementsForm() {
-  // שימוש בשמות הצבעים מה-Theme
-  const colors = useMemo(() => ["cardBlue", "cardGreen", "cardPurple", "cardOrange", "cardYellow"], []);
+  const [requirements, setRequirements] = useState<Requirement[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const initialRequirements: Requirement[] = useMemo(
-    () => [
-      { id: "1", title: "שנות לימוד", subtitle: "3-4 שנים", value: "3-4", color: "cardBlue" },
-      { id: "2", title: "פרויקטים מעשיים", subtitle: "לפחות שני פרויקטים גדולים", value: "+2", color: "cardGreen" },
-      { id: "3", title: "רמת אנגלית", subtitle: "ציון מינימלי באמי״ר", value: "+85", color: "cardPurple" },
-      { id: "4", title: "נקודות זכות כוללות", subtitle: "מינימום נקודות זכות לתואר", value: "120", color: "cardOrange" },
-    ],
-    []
-  );
-
-  const [requirements, setRequirements] = useState<Requirement[]>(initialRequirements);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [currentReq, setCurrentReq] = useState<Requirement | null>(null);
@@ -50,9 +46,39 @@ export default function RequirementsForm() {
   const [editedSubtitle, setEditedSubtitle] = useState("");
   const [editedValue, setEditedValue] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [snack, setSnack] = useState<SnackState>({ open: false, message: "", severity: "success" });
+  const [snack, setSnack] = useState<SnackState>({
+    open: false,
+    message: "",
+    severity: "success",
+  });
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+
+  const colors = [
+    "cardBlue",
+    "cardGreen",
+    "cardPurple",
+    "cardOrange",
+    "cardYellow",
+  ];
+
+  // טעינה מ-Firestore
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        const data = await getAllRequirements();
+        setRequirements(data);
+      } catch (error) {
+        console.error("Error loading requirements:", error);
+        openSnack("❌ שגיאה בטעינת הדרישות", "error");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
 
   const openSnack = (message: string, severity: SnackState["severity"]) => {
     setSnack({ open: true, message, severity });
@@ -64,24 +90,6 @@ export default function RequirementsForm() {
     setEditedValue("");
     setErrors({});
   };
-
-  useEffect(() => {
-    const saved = localStorage.getItem("requirements");
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) {
-          setRequirements(parsed);
-        }
-      } catch (error) {
-        console.error("Error loading from localStorage:", error);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("requirements", JSON.stringify(requirements));
-  }, [requirements]);
 
   const validateFields = () => {
     const newErrors: Record<string, string> = {};
@@ -106,25 +114,34 @@ export default function RequirementsForm() {
     setEditDialogOpen(true);
   };
 
-  const handleSaveEdit = () => {
+  const handleSaveEdit = async () => {
     if (!validateFields()) {
       openSnack("❌ יש שגיאות בטופס", "error");
       return;
     }
     if (!currentReq) return;
 
-    const updated: Requirement = {
-      ...currentReq,
-      title: editedTitle.trim(),
-      subtitle: editedSubtitle.trim(),
-      value: editedValue.trim(),
-    };
+    try {
+      const updated = {
+        title: editedTitle.trim(),
+        subtitle: editedSubtitle.trim(),
+        value: editedValue.trim(),
+      };
 
-    setRequirements((prev) => prev.map((r) => (r.id === currentReq.id ? updated : r)));
-    setEditDialogOpen(false);
-    setCurrentReq(null);
-    resetFormFields();
-    openSnack("✅ עודכן בהצלחה", "success");
+      await updateRequirement(currentReq.id, updated);
+
+      setRequirements((prev) =>
+        prev.map((r) => (r.id === currentReq.id ? { ...r, ...updated } : r))
+      );
+
+      setEditDialogOpen(false);
+      setCurrentReq(null);
+      resetFormFields();
+      openSnack("✅ עודכן בהצלחה", "success");
+    } catch (error) {
+      console.error("Error updating requirement:", error);
+      openSnack("❌ שגיאה בעדכון", "error");
+    }
   };
 
   const handleOpenAddDialog = () => {
@@ -133,24 +150,30 @@ export default function RequirementsForm() {
     setAddDialogOpen(true);
   };
 
-  const handleAddNew = () => {
+  const handleAddNew = async () => {
     if (!validateFields()) {
       openSnack("❌ יש שגיאות בטופס", "error");
       return;
     }
 
-    const newReq: Requirement = {
-      id: Date.now().toString(),
-      title: editedTitle.trim(),
-      subtitle: editedSubtitle.trim(),
-      value: editedValue.trim(),
-      color: colors[Math.floor(Math.random() * colors.length)],
-    };
+    try {
+      const newReq = {
+        title: editedTitle.trim(),
+        subtitle: editedSubtitle.trim(),
+        value: editedValue.trim(),
+        color: colors[Math.floor(Math.random() * colors.length)],
+      };
 
-    setRequirements((prev) => [...prev, newReq]);
-    setAddDialogOpen(false);
-    resetFormFields();
-    openSnack("✅ נוסף בהצלחה", "success");
+      const id = await addRequirement(newReq);
+
+      setRequirements((prev) => [...prev, { id, ...newReq }]);
+      setAddDialogOpen(false);
+      resetFormFields();
+      openSnack("✅ נוסף בהצלחה", "success");
+    } catch (error) {
+      console.error("Error adding requirement:", error);
+      openSnack("❌ שגיאה בהוספה", "error");
+    }
   };
 
   const handleAskDelete = (id: string) => {
@@ -162,13 +185,28 @@ export default function RequirementsForm() {
     setDeleteDialogOpen(true);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (!pendingDeleteId) return;
-    setRequirements((prev) => prev.filter((r) => r.id !== pendingDeleteId));
-    setDeleteDialogOpen(false);
-    setPendingDeleteId(null);
-    openSnack("🗑️ נמחק", "success");
+
+    try {
+      await deleteRequirement(pendingDeleteId);
+      setRequirements((prev) => prev.filter((r) => r.id !== pendingDeleteId));
+      setDeleteDialogOpen(false);
+      setPendingDeleteId(null);
+      openSnack("🗑️ נמחק", "success");
+    } catch (error) {
+      console.error("Error deleting requirement:", error);
+      openSnack("❌ שגיאה במחיקה", "error");
+    }
   };
+
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -178,11 +216,18 @@ export default function RequirementsForm() {
         borderRadius: 3,
         p: 3,
         mb: 4,
-        bgcolor: "background.paper", // שימוש ברקע של ה-Theme
+        bgcolor: "background.paper",
         direction: "rtl",
       }}
     >
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 3,
+        }}
+      >
         <Typography variant="h5" fontWeight={800} color="text.primary">
           דרישות התואר
         </Typography>
@@ -197,12 +242,19 @@ export default function RequirementsForm() {
         </Button>
       </Box>
 
-      <Box sx={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: 2 }}>
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+          gap: 2,
+        }}
+      >
         {requirements.map((req) => (
           <Card key={req.id} sx={{ bgcolor: req.color }}>
             <CardContent>
-              <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-                {/* הסרנו את הצבעים הקשיחים! ה-Theme דואג לזה */}
+              <Box
+                sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
+              >
                 <Typography variant="h4" fontWeight={800}>
                   {req.value}
                 </Typography>
@@ -211,7 +263,10 @@ export default function RequirementsForm() {
                   <IconButton size="small" onClick={() => handleEditClick(req)}>
                     <EditOutlinedIcon fontSize="small" />
                   </IconButton>
-                  <IconButton size="small" onClick={() => handleAskDelete(req.id)}>
+                  <IconButton
+                    size="small"
+                    onClick={() => handleAskDelete(req.id)}
+                  >
                     <DeleteOutlineOutlinedIcon fontSize="small" />
                   </IconButton>
                 </Box>
@@ -226,44 +281,116 @@ export default function RequirementsForm() {
         ))}
       </Box>
 
-      {/* הדיאלוגים נשארו זהים, רק קיצרתי מעט כדי לחסוך מקום בתצוגה כאן */}
+      {/* Dialog עריכה */}
       <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
         <DialogTitle sx={{ direction: "rtl" }}>עריכת דרישה</DialogTitle>
         <DialogContent sx={{ direction: "rtl", minWidth: 420 }}>
-          <TextField fullWidth label="כותרת *" value={editedTitle} onChange={(e) => setEditedTitle(e.target.value)} error={Boolean(errors.title)} helperText={errors.title || " "} sx={{ mt: 2, mb: 2 }} />
-          <TextField fullWidth label="תת כותרת" value={editedSubtitle} onChange={(e) => setEditedSubtitle(e.target.value)} sx={{ mb: 2 }} />
-          <TextField fullWidth label="ערך *" value={editedValue} onChange={(e) => setEditedValue(e.target.value)} error={Boolean(errors.value)} helperText={errors.value || " "} />
+          <TextField
+            fullWidth
+            label="כותרת *"
+            value={editedTitle}
+            onChange={(e) => setEditedTitle(e.target.value)}
+            error={Boolean(errors.title)}
+            helperText={errors.title || " "}
+            sx={{ mt: 2, mb: 2 }}
+          />
+          <TextField
+            fullWidth
+            label="תת כותרת"
+            value={editedSubtitle}
+            onChange={(e) => setEditedSubtitle(e.target.value)}
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            fullWidth
+            label="ערך *"
+            value={editedValue}
+            onChange={(e) => setEditedValue(e.target.value)}
+            error={Boolean(errors.value)}
+            helperText={errors.value || " "}
+          />
         </DialogContent>
         <DialogActions sx={{ direction: "rtl" }}>
           <Button onClick={() => setEditDialogOpen(false)}>ביטול</Button>
-          <Button onClick={handleSaveEdit} variant="contained">שמור</Button>
+          <Button onClick={handleSaveEdit} variant="contained">
+            שמור
+          </Button>
         </DialogActions>
       </Dialog>
 
+      {/* Dialog הוספה */}
       <Dialog open={addDialogOpen} onClose={() => setAddDialogOpen(false)}>
         <DialogTitle sx={{ direction: "rtl" }}>הוספת דרישה חדשה</DialogTitle>
         <DialogContent sx={{ direction: "rtl", minWidth: 420 }}>
-          <TextField fullWidth label="כותרת *" value={editedTitle} onChange={(e) => setEditedTitle(e.target.value)} error={Boolean(errors.title)} helperText={errors.title || " "} sx={{ mt: 2, mb: 2 }} />
-          <TextField fullWidth label="תת כותרת" value={editedSubtitle} onChange={(e) => setEditedSubtitle(e.target.value)} sx={{ mb: 2 }} />
-          <TextField fullWidth label="ערך *" value={editedValue} onChange={(e) => setEditedValue(e.target.value)} error={Boolean(errors.value)} helperText={errors.value || " "} />
+          <TextField
+            fullWidth
+            label="כותרת *"
+            value={editedTitle}
+            onChange={(e) => setEditedTitle(e.target.value)}
+            error={Boolean(errors.title)}
+            helperText={errors.title || " "}
+            sx={{ mt: 2, mb: 2 }}
+          />
+          <TextField
+            fullWidth
+            label="תת כותרת"
+            value={editedSubtitle}
+            onChange={(e) => setEditedSubtitle(e.target.value)}
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            fullWidth
+            label="ערך *"
+            value={editedValue}
+            onChange={(e) => setEditedValue(e.target.value)}
+            error={Boolean(errors.value)}
+            helperText={errors.value || " "}
+          />
         </DialogContent>
         <DialogActions sx={{ direction: "rtl" }}>
           <Button onClick={() => setAddDialogOpen(false)}>ביטול</Button>
-          <Button onClick={handleAddNew} variant="contained">הוסף</Button>
+          <Button onClick={handleAddNew} variant="contained">
+            הוסף
+          </Button>
         </DialogActions>
       </Dialog>
 
-      <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
+      {/* Dialog מחיקה */}
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+      >
         <DialogTitle sx={{ direction: "rtl" }}>אישור מחיקה</DialogTitle>
-        <DialogContent sx={{ direction: "rtl" }}><Typography>האם למחוק את הדרישה?</Typography></DialogContent>
+        <DialogContent sx={{ direction: "rtl" }}>
+          <Typography>האם למחוק את הדרישה?</Typography>
+        </DialogContent>
         <DialogActions sx={{ direction: "rtl" }}>
           <Button onClick={() => setDeleteDialogOpen(false)}>ביטול</Button>
-          <Button color="error" variant="contained" onClick={handleConfirmDelete}>מחק</Button>
+          <Button
+            color="error"
+            variant="contained"
+            onClick={handleConfirmDelete}
+          >
+            מחק
+          </Button>
         </DialogActions>
       </Dialog>
 
-      <Snackbar open={snack.open} autoHideDuration={2500} onClose={() => setSnack((s) => ({ ...s, open: false }))} anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
-        <Alert onClose={() => setSnack((s) => ({ ...s, open: false }))} severity={snack.severity} variant="filled" sx={{ width: "100%" }}>{snack.message}</Alert>
+      {/* Snackbar */}
+      <Snackbar
+        open={snack.open}
+        autoHideDuration={2500}
+        onClose={() => setSnack((s) => ({ ...s, open: false }))}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setSnack((s) => ({ ...s, open: false }))}
+          severity={snack.severity}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {snack.message}
+        </Alert>
       </Snackbar>
     </Box>
   );

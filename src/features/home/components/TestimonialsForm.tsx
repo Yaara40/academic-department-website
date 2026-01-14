@@ -1,80 +1,101 @@
 import { useState, useEffect } from "react";
-import { Box, Typography, Button, IconButton, Avatar, Chip, TextField, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  IconButton,
+  Avatar,
+  Chip,
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Snackbar,
+  Alert,
+  CircularProgress,
+} from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import type { Testimonial } from "../../../models/Home";
+import {
+  getAllTestimonials,
+  addTestimonial,
+  updateTestimonial,
+  deleteTestimonial,
+} from "../../../firebase/testimonials";
+
+type SnackState = {
+  open: boolean;
+  message: string;
+  severity: "success" | "error" | "info" | "warning";
+};
 
 export default function TestimonialsForm() {
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([
-    {
-      id: "1",
-      name: "נועה כהן",
-      company: "מפתחת בכירה ב-Google",
-      text: "הלימודים נתנו לי את הכלים והביטחון להצליח בעולם הגלובלי",
-      initial: "נ",
-      color: "#10b981",
-    },
-    {
-      id: "2",
-      name: "דני לוי",
-      company: "מייסד ו-CEO ב-TechCorp",
-      text: "הידע שרכשתי כאן היה הבסיס להקמת החברה שלי",
-      initial: "ד",
-      color: "#10b981",
-    },
-    {
-      id: "3",
-      name: "מיכל שפירא",
-      company: "חוקרת AI בטכניון ווייצמן",
-      text: "המחלקה אפשרה לי להתמקצע במחקר ברמה הגבוהה ביותר",
-      initial: "מ",
-      color: "#10b981",
-    },
-  ]);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
-  const [currentTestimonial, setCurrentTestimonial] = useState<Testimonial | null>(null);
+  const [currentTestimonial, setCurrentTestimonial] =
+    useState<Testimonial | null>(null);
   const [editedName, setEditedName] = useState("");
   const [editedCompany, setEditedCompany] = useState("");
   const [editedText, setEditedText] = useState("");
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [snack, setSnack] = useState<SnackState>({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
-  // טעינה מ-LocalStorage
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+
+  // טעינה מ-Firestore
   useEffect(() => {
-    const loadFromLocalStorage = () => {
-      const saved = localStorage.getItem('testimonials');
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          setTestimonials(parsed);
-        } catch (error) {
-          console.error('Error loading from localStorage:', error);
-        }
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        const data = await getAllTestimonials();
+        setTestimonials(data);
+      } catch (error) {
+        console.error("Error loading testimonials:", error);
+        openSnack("❌ שגיאה בטעינת ההמלצות", "error");
+      } finally {
+        setLoading(false);
       }
     };
-    
-    loadFromLocalStorage();
+
+    loadData();
   }, []);
+
+  const openSnack = (message: string, severity: SnackState["severity"]) => {
+    setSnack({ open: true, message, severity });
+  };
+
+  const resetFormFields = () => {
+    setEditedName("");
+    setEditedCompany("");
+    setEditedText("");
+    setErrors({});
+  };
 
   const validateFields = () => {
     const newErrors: Record<string, string> = {};
 
-    // 1. שם הבוגר/ת - חובה, טקסט
     if (!editedName.trim()) {
-      newErrors.name = 'שם הבוגר/ת הוא שדה חובה';
+      newErrors.name = "שם הבוגר/ת הוא שדה חובה";
     }
 
-    // 2. תפקיד וחברה - חובה, טקסט
     if (!editedCompany.trim()) {
-      newErrors.company = 'תפקיד וחברה הם שדה חובה';
+      newErrors.company = "תפקיד וחברה הם שדה חובה";
     }
 
-    // 3. תוכן ההמלצה - חובה, טקסט
     if (!editedText.trim()) {
-      newErrors.text = 'תוכן ההמלצה הוא שדה חובה';
+      newErrors.text = "תוכן ההמלצה הוא שדה חובה";
     }
 
     setErrors(newErrors);
@@ -90,69 +111,106 @@ export default function TestimonialsForm() {
     setEditDialogOpen(true);
   };
 
-  const handleSaveEdit = () => {
+  const handleSaveEdit = async () => {
     if (!validateFields()) {
+      openSnack("❌ יש שגיאות בטופס", "error");
       return;
     }
 
-    if (currentTestimonial) {
-      setTestimonials(
-        testimonials.map((t) =>
-          t.id === currentTestimonial.id
-            ? { ...t, name: editedName, company: editedCompany, text: editedText, initial: editedName.charAt(0) }
-            : t
+    if (!currentTestimonial) return;
+
+    try {
+      const updated = {
+        name: editedName,
+        company: editedCompany,
+        text: editedText,
+        initial: editedName.charAt(0),
+      };
+
+      await updateTestimonial(currentTestimonial.id, updated);
+
+      setTestimonials((prev) =>
+        prev.map((t) =>
+          t.id === currentTestimonial.id ? { ...t, ...updated } : t
         )
       );
+
+      setEditDialogOpen(false);
+      resetFormFields();
+      openSnack("✅ ההמלצה עודכנה בהצלחה", "success");
+    } catch (error) {
+      console.error("Error updating testimonial:", error);
+      openSnack("❌ שגיאה בעדכון ההמלצה", "error");
     }
-    setEditDialogOpen(false);
-    setErrors({});
-  };
-
-  const handleAddNew = () => {
-    if (!validateFields()) {
-      return;
-    }
-
-    const newTestimonial: Testimonial = {
-      id: Date.now().toString(),
-      name: editedName,
-      company: editedCompany,
-      text: editedText,
-      initial: editedName.charAt(0),
-      color: "#10b981",
-    };
-    setTestimonials([...testimonials, newTestimonial]);
-    setEditedName("");
-    setEditedCompany("");
-    setEditedText("");
-    setAddDialogOpen(false);
-    setErrors({});
-  };
-
-  const handleDelete = (id: string) => {
-    // מניעת מחיקה אם זו ההמלצה היחידה
-    if (testimonials.length === 1) {
-      alert('❌ לא ניתן למחוק את ההמלצה היחידה. חייבת להישאר לפחות המלצה אחת.');
-      return;
-    }
-
-    if (window.confirm('האם אתה בטוח שברצונך למחוק המלצה זו?')) {
-      setTestimonials(testimonials.filter((t) => t.id !== id));
-    }
-  };
-
-  const handleSaveToLocalStorage = () => {
-    localStorage.setItem('testimonials', JSON.stringify(testimonials));
-    alert('✅ נשמר ל-LocalStorage!');
   };
 
   const handleOpenAddDialog = () => {
-    setEditedName("");
-    setEditedCompany("");
-    setEditedText("");
-    setErrors({});
+    setCurrentTestimonial(null);
+    resetFormFields();
     setAddDialogOpen(true);
   };
+
+  const handleAddNew = async () => {
+    if (!validateFields()) {
+      openSnack("❌ יש שגיאות בטופס", "error");
+      return;
+    }
+
+    try {
+      const newTestimonial = {
+        name: editedName,
+        company: editedCompany,
+        text: editedText,
+        initial: editedName.charAt(0),
+        color: "#10b981",
+      };
+
+      const id = await addTestimonial(newTestimonial);
+
+      setTestimonials((prev) => [...prev, { id, ...newTestimonial }]);
+      setAddDialogOpen(false);
+      resetFormFields();
+      openSnack("✅ המלצה נוספה בהצלחה", "success");
+    } catch (error) {
+      console.error("Error adding testimonial:", error);
+      openSnack("❌ שגיאה בהוספת ההמלצה", "error");
+    }
+  };
+
+  const handleAskDelete = (id: string) => {
+    if (testimonials.length === 1) {
+      openSnack(
+        "❌ לא ניתן למחוק את ההמלצה היחידה. חייבת להישאר לפחות המלצה אחת.",
+        "error"
+      );
+      return;
+    }
+    setPendingDeleteId(id);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!pendingDeleteId) return;
+
+    try {
+      await deleteTestimonial(pendingDeleteId);
+      setTestimonials((prev) => prev.filter((t) => t.id !== pendingDeleteId));
+      setDeleteDialogOpen(false);
+      setPendingDeleteId(null);
+      openSnack("🗑️ ההמלצה נמחקה", "success");
+    } catch (error) {
+      console.error("Error deleting testimonial:", error);
+      openSnack("❌ שגיאה במחיקת ההמלצה", "error");
+    }
+  };
+
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -165,15 +223,22 @@ export default function TestimonialsForm() {
         direction: "rtl",
       }}
     >
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 3,
+        }}
+      >
         <Typography variant="h5" fontWeight={800}>
           המלצות בוגרים
         </Typography>
-        <Button 
-          variant="contained" 
-          startIcon={<AddIcon />} 
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
           onClick={handleOpenAddDialog}
-          sx={{ '& .MuiButton-startIcon': { marginLeft: '6px' } }}
+          sx={{ "& .MuiButton-startIcon": { marginLeft: "6px" } }}
         >
           הוסף המלצה
         </Button>
@@ -209,26 +274,21 @@ export default function TestimonialsForm() {
 
           <Box sx={{ display: "flex", gap: 1 }}>
             <Chip label="מוצג" size="small" color="success" />
-            <IconButton size="small" onClick={() => handleEditClick(testimonial)}>
+            <IconButton
+              size="small"
+              onClick={() => handleEditClick(testimonial)}
+            >
               <EditOutlinedIcon fontSize="small" />
             </IconButton>
-            <IconButton size="small" onClick={() => handleDelete(testimonial.id)}>
+            <IconButton
+              size="small"
+              onClick={() => handleAskDelete(testimonial.id)}
+            >
               <DeleteOutlineOutlinedIcon fontSize="small" />
             </IconButton>
           </Box>
         </Box>
       ))}
-
-      <Box sx={{ mt: 3, display: "flex", justifyContent: "center" }}>
-        <Button 
-          variant="contained" 
-          color="success"
-          size="large"
-          onClick={handleSaveToLocalStorage}
-        >
-          שמור ל-LocalStorage
-        </Button>
-      </Box>
 
       {/* Dialog עריכה */}
       <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
@@ -240,7 +300,7 @@ export default function TestimonialsForm() {
             value={editedName}
             onChange={(e) => setEditedName(e.target.value)}
             error={Boolean(errors.name)}
-            helperText={errors.name || ' '}
+            helperText={errors.name || " "}
             sx={{ mt: 2, mb: 2 }}
           />
           <TextField
@@ -249,7 +309,7 @@ export default function TestimonialsForm() {
             value={editedCompany}
             onChange={(e) => setEditedCompany(e.target.value)}
             error={Boolean(errors.company)}
-            helperText={errors.company || ' '}
+            helperText={errors.company || " "}
             sx={{ mb: 2 }}
           />
           <TextField
@@ -258,7 +318,7 @@ export default function TestimonialsForm() {
             value={editedText}
             onChange={(e) => setEditedText(e.target.value)}
             error={Boolean(errors.text)}
-            helperText={errors.text || ' '}
+            helperText={errors.text || " "}
             multiline
             rows={3}
           />
@@ -281,7 +341,7 @@ export default function TestimonialsForm() {
             value={editedName}
             onChange={(e) => setEditedName(e.target.value)}
             error={Boolean(errors.name)}
-            helperText={errors.name || ' '}
+            helperText={errors.name || " "}
             sx={{ mt: 2, mb: 2 }}
           />
           <TextField
@@ -290,7 +350,7 @@ export default function TestimonialsForm() {
             value={editedCompany}
             onChange={(e) => setEditedCompany(e.target.value)}
             error={Boolean(errors.company)}
-            helperText={errors.company || ' '}
+            helperText={errors.company || " "}
             sx={{ mb: 2 }}
           />
           <TextField
@@ -299,7 +359,7 @@ export default function TestimonialsForm() {
             value={editedText}
             onChange={(e) => setEditedText(e.target.value)}
             error={Boolean(errors.text)}
-            helperText={errors.text || ' '}
+            helperText={errors.text || " "}
             multiline
             rows={3}
           />
@@ -311,6 +371,44 @@ export default function TestimonialsForm() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Dialog מחיקה */}
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+      >
+        <DialogTitle sx={{ direction: "rtl" }}>אישור מחיקה</DialogTitle>
+        <DialogContent sx={{ direction: "rtl" }}>
+          <Typography>האם אתה בטוח שברצונך למחוק המלצה זו?</Typography>
+        </DialogContent>
+        <DialogActions sx={{ direction: "rtl" }}>
+          <Button onClick={() => setDeleteDialogOpen(false)}>ביטול</Button>
+          <Button
+            color="error"
+            variant="contained"
+            onClick={handleConfirmDelete}
+          >
+            מחק
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Snackbar */}
+      <Snackbar
+        open={snack.open}
+        autoHideDuration={2500}
+        onClose={() => setSnack((s) => ({ ...s, open: false }))}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setSnack((s) => ({ ...s, open: false }))}
+          severity={snack.severity}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {snack.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

@@ -20,7 +20,7 @@ import YouTubeIcon from "@mui/icons-material/YouTube";
 import type { ContactInfo } from "../../models/Home";
 import { getContactInfo, saveContactInfo } from "../../firebase/contactInfo";
 
-export default function ContactInfoForm() {
+export default function ContactForm() {
   const [contactInfo, setContactInfo] = useState<ContactInfo>({
     phone: "050-1234567",
     email: "info@example.com",

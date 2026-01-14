@@ -1,18 +1,21 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // הוספנו useNavigate
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import ContactMailIcon from "@mui/icons-material/ContactMail";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import HelpIcon from "@mui/icons-material/Help";
+import PersonIcon from "@mui/icons-material/Person"; // אייקון למשתמש
 
-export default function Header() {
+export default function AdminHeader() {
+  const navigate = useNavigate(); // מאפשר מעבר עמודים
+
   const menuItems = [
-    { text: "דף הבית", icon: <HomeIcon />, path: "/" },
-    { text: "קורסים", icon: <MenuBookIcon />, path: "/courses" },
-    { text: "אפשרויות צמיחה", icon: <TrendingUpIcon />, path: "/growth" },
-    { text: "צור קשר", icon: <ContactMailIcon />, path: "/contact" },
-    { text: "עזרה", icon: <HelpIcon />, path: "/help" },
+    { text: "דף הבית", icon: <HomeIcon />, path: "/admin" },
+    { text: "ניהול קורסים", icon: <MenuBookIcon />, path: "/admin/courses" },
+    { text: "ניהול פניות", icon: <ContactMailIcon />, path: "/admin/contact" },
+    { text: "אפשרויות צמיחה", icon: <TrendingUpIcon />, path: "/admin/growth" },
+    { text: "עזרה", icon: <HelpIcon />, path: "/admin/help" },
   ];
 
   return (
@@ -27,22 +30,23 @@ export default function Header() {
       }}
     >
       <Toolbar>
-        {/* לוגו/כותרת */}
+        {/* לוגו */}
         <Typography
           variant="h6"
           component={Link}
-          to="/"
+          to="/admin"
           sx={{
             fontWeight: 700,
             textDecoration: "none",
             color: "inherit",
             flexShrink: 0,
+            ml: 2
           }}
         >
-          מדעי המחשב
+          🔧 מערכת ניהול
         </Typography>
 
-        {/* כפתורים - מרכז */}
+        {/* כפתורי הניווט (באמצע) */}
         <Box
           sx={{
             flexGrow: 1,
@@ -67,19 +71,20 @@ export default function Header() {
           ))}
         </Box>
 
-        {/* כפתור הרשמה */}
+        {/* כפתור מעבר לתצוגת משתמש (בצד שמאל) */}
         <Button
-          variant="contained"
-          color="success"
-          component={Link}
-          to="/contact"
-          sx={{
+          variant="outlined"
+          color="secondary"
+          onClick={() => navigate("/user")}
+          startIcon={<PersonIcon />}
+          sx={{ 
             fontWeight: 700,
-            display: { xs: "none", md: "inline-flex" },
+            display: { xs: "none", md: "inline-flex" } 
           }}
         >
-          הרשמה ללימודים
+          מעבר לאתר
         </Button>
+
       </Toolbar>
     </AppBar>
   );

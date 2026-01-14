@@ -1,58 +1,46 @@
-import { Routes, Route, useLocation } from "react-router-dom";
-import { Box } from "@mui/material";
-import Header from "./components/Header";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Footer from "./components/Footer";
-import Sidebar from "./components/UserSidebar";
-import UserSidebar from "./components/UserSidebar";
+import AdminLayout from "./layouts/AdminLayout";
+import UserLayout from "./layouts/UserLayout";
 
-// Admin Pages
-import Home from "./pages/Home";
+// ייבוא הדפים שלך (אל תשני את זה, זה מה שעובד אצלך)
+import Home from "./pages/Home"; 
 import CoursesManagement from "./pages/CoursesManagement";
 import CoursesForm from "./features/courses/components/CoursesForm";
 import GrowthManagement from "./pages/GrowthManagement";
 import ContactManagement from "./pages/ContactManagement";
 import HelpManagement from "./pages/HelpManagement";
-
-// User Pages
 import UserHome from "./pages/UserHome";
 
 const App = () => {
-  const location = useLocation();
-  const isUserView = location.pathname.startsWith("/user");
-
   return (
-    <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <Header />
+    <>
+      <Routes>
+        {/* === מסכי ניהול (Admin) === */}
+        {/* כל מה שפה יקבל AdminHeader + Sidebar */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<Home />} />
+          <Route path="courses" element={<CoursesManagement />} />
+          <Route path="courses/new" element={<CoursesForm />} />
+          <Route path="growth" element={<GrowthManagement />} />
+          <Route path="contact" element={<ContactManagement />} />
+          <Route path="help" element={<HelpManagement />} />
+        </Route>
 
-      {/* Sidebar - מחליף בין מנהל למשתמש */}
-      {isUserView ? <UserSidebar /> : <Sidebar />}
+        {/* === מסכי משתמש (User) === */}
+        {/* כל מה שפה יקבל רק UserHeader (בלי Sidebar) */}
+        <Route path="/user" element={<UserLayout />}>
+          <Route index element={<UserHome />} />
+          <Route path="courses" element={<CoursesManagement />} /> {/* דוגמה לשימוש חוזר */}
+          <Route path="contact" element={<ContactManagement />} /> {/* דוגמה */}
+        </Route>
 
-      <Box
-        component="main"
-        sx={{
-          flex: 1,
-          p: 2.5,
-          mr: { xs: 0, md: "220px" },
-          mt: "72px",
-        }}
-      >
-        <Routes>
-          {/* User Routes */}
-          <Route path="/user" element={<UserHome />} />
-
-          {/* Admin Routes */}
-          <Route path="/" element={<Home />} />
-          <Route path="/admin" element={<Home />} />
-          <Route path="/admin/courses" element={<CoursesManagement />} />
-          <Route path="/admin/courses/new" element={<CoursesForm />} />
-          <Route path="/admin/growth" element={<GrowthManagement />} />
-          <Route path="/admin/contact" element={<ContactManagement />} />
-          <Route path="/admin/help" element={<HelpManagement />} />
-        </Routes>
-      </Box>
+        {/* ברירת מחדל */}
+        <Route path="/" element={<Navigate to="/admin" replace />} />
+      </Routes>
 
       <Footer />
-    </Box>
+    </>
   );
 };
 

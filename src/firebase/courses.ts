@@ -1,105 +1,85 @@
-import { 
-  addDoc, 
-  collection, 
-  getDocs, 
-  doc, 
-  updateDoc, 
-  deleteDoc
+import {
+  addDoc,
+  collection,
+  getDocs,
+  doc,
+  updateDoc,
+  deleteDoc,
 } from "firebase/firestore";
-import type { 
+import type {
   DocumentData,
   FirestoreDataConverter,
   QueryDocumentSnapshot,
   SnapshotOptions,
-  WithFieldValue
+  WithFieldValue,
 } from "firebase/firestore";
 import { firestore } from "./config";
 import { Course } from "../models/Course";
 
-// ========================================
-// CONVERTER - ממיר בין Course ל-Firestore
-// ========================================
-class CourseConverter implements FirestoreDataConverter<Course> {
-  // פונקציה שהופכת Course לפורמט של Firestore
+// Converter for Firestore
+const courseConverter: FirestoreDataConverter<Course> = {
   toFirestore(course: WithFieldValue<Course>): DocumentData {
-    return {
-      courseId: course.courseId,
-      name: course.name,
-      credits: course.credits,
-      semester: course.semester,
-      year: course.year || "",
-      description: course.description || "",
-      syllabus: course.syllabus || "",
-      isMandatory: course.isMandatory || false,
-      isActive: course.isActive || true,
-      instructor: course.instructor || ""
-    };
-  }
-
-  // פונקציה שהופכת מסמך מ-Firestore ל-Course
+    return { ...course };
+  },
   fromFirestore(
     snapshot: QueryDocumentSnapshot,
     options: SnapshotOptions
   ): Course {
     const data = snapshot.data(options);
-    return new Course(
-      snapshot.id,              // Firestore ID
-      data.courseId,            // קוד הקורס
-      data.name,
-      data.credits,
-      data.semester,
-      data.year,
-      data.description,
-      data.syllabus,
-      data.isMandatory,
-      data.isActive,
-      data.instructor
+    return {
+      id: snapshot.id,
+      ...data,
+    } as Course;
+  },
+};
+
+// קבלת כל הקורסים
+export async function getAllCourses(): Promise<Course[]> {
+  try {
+    const coursesCollection = collection(firestore, "courses").withConverter(
+      courseConverter
     );
+    const snapshot = await getDocs(coursesCollection);
+    return snapshot.docs.map((doc) => doc.data());
+  } catch (error) {
+    console.error("Error getting courses:", error);
+    throw error;
   }
 }
 
-// ========================================
-// הפונקציות לעבודה עם FIRESTORE
-// ========================================
-
-// 📝 הוספת קורס חדש
-export async function addCourse(course: Course): Promise<void> {
-  const courseCollection = collection(firestore, "courses")
-    .withConverter(new CourseConverter());
-  
-  await addDoc(courseCollection, course);
+// הוספת קורס חדש
+export async function addCourse(course: Omit<Course, "id">): Promise<string> {
+  try {
+    const coursesCollection = collection(firestore, "courses");
+    const docRef = await addDoc(coursesCollection, course);
+    return docRef.id;
+  } catch (error) {
+    console.error("Error adding course:", error);
+    throw error;
+  }
 }
 
-// 📋 קבלת כל הקורסים
-export async function listCourses(): Promise<Course[]> {
-  const coursesSnapshot = await getDocs(
-    collection(firestore, "courses").withConverter(new CourseConverter())
-  );
-  
-  return coursesSnapshot.docs.map((doc) => doc.data());
+// עדכון קורס
+export async function updateCourse(
+  id: string,
+  updates: Partial<Omit<Course, "id">>
+): Promise<void> {
+  try {
+    const courseDoc = doc(firestore, "courses", id);
+    await updateDoc(courseDoc, updates);
+  } catch (error) {
+    console.error("Error updating course:", error);
+    throw error;
+  }
 }
 
-// ✏️ עדכון קורס קיים
-export async function updateCourse(course: Course): Promise<void> {
-  const courseDoc = doc(firestore, "courses", course.id)
-    .withConverter(new CourseConverter());
-  
-  await updateDoc(courseDoc, {
-    courseId: course.courseId,
-    name: course.name,
-    credits: course.credits,
-    semester: course.semester,
-    year: course.year,
-    description: course.description,
-    syllabus: course.syllabus,
-    isMandatory: course.isMandatory,
-    isActive: course.isActive,
-    instructor: course.instructor
-  });
+// מחיקת קורס
+export async function deleteCourse(id: string): Promise<void> {
+  try {
+    const courseDoc = doc(firestore, "courses", id);
+    await deleteDoc(courseDoc);
+  } catch (error) {
+    console.error("Error deleting course:", error);
+    throw error;
+  }
 }
-
-// 🗑️ מחיקת קורס
-export async function deleteCourse(docId: string): Promise<void> {
-  await deleteDoc(doc(firestore, "courses", docId));
-}
-

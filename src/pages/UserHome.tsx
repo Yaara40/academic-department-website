@@ -52,7 +52,10 @@ export default function UserHome() {
       <Box
         sx={{
           minHeight: "70vh",
-          background: "linear-gradient(135deg, #1a2332 0%, #2d3748 100%)",
+          backgroundImage:
+            "url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1920')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
           position: "relative",
           overflow: "hidden",
           display: "flex",
@@ -64,9 +67,10 @@ export default function UserHome() {
             left: 0,
             right: 0,
             bottom: 0,
-            backgroundImage: `url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50" font-size="12" fill="%23ffffff" opacity="0.05" font-family="monospace">{"code": "CS"}</text></svg>')`,
+            backgroundImage: `url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50" font-size="12" fill="%23ffffff" opacity="0.05" font-family="monospace"></text></svg>')`,
             backgroundRepeat: "repeat",
-            opacity: 0.1,
+            bgcolor: "rgba(26, 35, 50, 0.85)", // שכבה כהה כדי שהטקסט יהיה קריא
+            opacity: 1,
           },
         }}
       >
@@ -74,17 +78,13 @@ export default function UserHome() {
           <Box sx={{ textAlign: "center", color: "white" }}>
             {/* תג הרשמה פתוחה */}
             <Chip
-              icon={<StarIcon />}
-              label="הרשמה לשנת הלימודים 2025 פתוחה"
+              label="ההרשמה לשנת הלימודים 2026 פתוחה"
               sx={{
                 bgcolor: "success.main",
                 color: "white",
                 fontWeight: 700,
                 mb: 3,
                 fontSize: "0.9rem",
-                "& .MuiChip-icon": {
-                  color: "white",
-                },
               }}
             />
 
@@ -251,7 +251,7 @@ export default function UserHome() {
                 sx={{
                   textAlign: "center",
                   p: 3,
-                  bgcolor: req.color || "white",
+                  bgcolor: "#E8F5E9",
                   height: "100%",
                   transition: "transform 0.2s",
                   "&:hover": { transform: "translateY(-8px)" },
@@ -260,7 +260,7 @@ export default function UserHome() {
                 <Typography
                   variant="h2"
                   fontWeight={900}
-                  color="primary"
+                  color="#2c8332ff"
                   gutterBottom
                 >
                   {req.value}
@@ -334,7 +334,11 @@ export default function UserHome() {
                         key={index}
                         label={tag}
                         size="small"
-                        color="primary"
+                        sx={{
+                          bgcolor: "#2c8332",
+                          color: "white",
+                          fontWeight: 600,
+                        }}
                       />
                     ))}
                   </Box>

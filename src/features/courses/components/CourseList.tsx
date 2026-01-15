@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Course } from "../../../models/Course";
-import { listCourses, deleteCourse } from "../../../firebase/courses";
+import { getAllCourses, deleteCourse } from "../../../firebase/courses";
 import Button from "@mui/material/Button";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -31,7 +31,7 @@ function CourseList() {
     setLoading(true);
     setError(null);
     try {
-      const coursesData = await listCourses();
+      const coursesData = await getAllCourses(); // 👈 תוקן
       setCourses(coursesData);
     } catch (err) {
       setError("שגיאה בטעינת הקורסים");
@@ -51,7 +51,7 @@ function CourseList() {
   const electiveCourses = courses.filter((c) => c.isMandatory === false).length;
 
   function navigateToNewCourse() {
-    navigate("/courses/new");
+    navigate("/admin/courses/new");
   }
 
   const handleDeleteCourse = async (courseId: string, courseName: string) => {
@@ -72,7 +72,7 @@ function CourseList() {
   };
 
   const handleEditCourse = (courseId: string) => {
-    navigate(`/courses/edit/${courseId}`);
+    navigate(`/admin/courses/edit/${courseId}`);
   };
 
   if (loading) {
@@ -85,7 +85,7 @@ function CourseList() {
           height: "50vh",
         }}
       >
-        <CircularProgress size={60} />
+        <CircularProgress size={60} sx={{ color: "#2c8332" }} />
       </Box>
     );
   }
@@ -116,12 +116,21 @@ function CourseList() {
         <Typography variant="h4" sx={{ fontWeight: "bold" }}>
           ניהול קורסים
         </Typography>
-        <IconButton color="primary" onClick={loadCourses} title="רענן רשימה">
+        <IconButton
+          onClick={loadCourses}
+          title="רענן רשימה"
+          sx={{
+            color: "#2c8332",
+            "&:hover": {
+              bgcolor: "rgba(44, 131, 50, 0.08)",
+            },
+          }}
+        >
           <RefreshIcon />
         </IconButton>
       </Box>
 
-      {/* כרטיסי סטטיסטיקה - מעודכנים לשימוש ב-Theme */}
+      {/* כרטיסי סטטיסטיקה */}
       <Box
         sx={{
           display: "grid",
@@ -137,7 +146,10 @@ function CourseList() {
         {/* סה"כ קורסים */}
         <Card sx={{ textAlign: "center", bgcolor: "#E8F5E9" }}>
           <CardContent>
-            <Typography variant="h3" sx={{ fontWeight: "bold" }}>
+            <Typography
+              variant="h3"
+              sx={{ fontWeight: "bold", color: "#2c8332" }}
+            >
               {totalCourses}
             </Typography>
             <Typography variant="body1" color="text.secondary">
@@ -149,7 +161,10 @@ function CourseList() {
         {/* קורסים פעילים */}
         <Card sx={{ textAlign: "center", bgcolor: "#E8F5E9" }}>
           <CardContent>
-            <Typography variant="h3" sx={{ fontWeight: "bold" }}>
+            <Typography
+              variant="h3"
+              sx={{ fontWeight: "bold", color: "#2c8332" }}
+            >
               {activeCourses}
             </Typography>
             <Typography variant="body1" color="text.secondary">
@@ -161,7 +176,10 @@ function CourseList() {
         {/* קורסי חובה */}
         <Card sx={{ textAlign: "center", bgcolor: "#E8F5E9" }}>
           <CardContent>
-            <Typography variant="h3" sx={{ fontWeight: "bold" }}>
+            <Typography
+              variant="h3"
+              sx={{ fontWeight: "bold", color: "#2c8332" }}
+            >
               {mandatoryCourses}
             </Typography>
             <Typography variant="body1" color="text.secondary">
@@ -173,7 +191,10 @@ function CourseList() {
         {/* קורסי בחירה */}
         <Card sx={{ textAlign: "center", bgcolor: "#E8F5E9" }}>
           <CardContent>
-            <Typography variant="h3" sx={{ fontWeight: "bold" }}>
+            <Typography
+              variant="h3"
+              sx={{ fontWeight: "bold", color: "#2c8332" }}
+            >
               {electiveCourses}
             </Typography>
             <Typography variant="body1" color="text.secondary">
@@ -186,12 +207,11 @@ function CourseList() {
       <Box sx={{ display: "flex", gap: 2, marginBottom: 3 }}>
         <Button
           variant="contained"
-          color="primary"
           startIcon={<AddIcon />}
           onClick={navigateToNewCourse}
           sx={{
-            bgcolor: "#2c8332ff",
-            "&:hover": { bgcolor: "#689F38" },
+            bgcolor: "#2c8332",
+            "&:hover": { bgcolor: "#236a28" },
             "& .MuiButton-startIcon": { marginLeft: "6px" },
           }}
         >
@@ -206,7 +226,11 @@ function CourseList() {
           </Typography>
           <Button
             variant="contained"
-            sx={{ mt: 2 }}
+            sx={{
+              mt: 2,
+              bgcolor: "#2c8332",
+              "&:hover": { bgcolor: "#236a28" },
+            }}
             onClick={navigateToNewCourse}
           >
             הוסף קורס ראשון
@@ -290,7 +314,7 @@ function CourseList() {
                         sx={{
                           color: "#2c8332",
                           "&:hover": {
-                            bgcolor: "rgba(44, 131, 50, 0.08)", // רקע ירוק בהיר ב-hover
+                            bgcolor: "rgba(44, 131, 50, 0.08)",
                           },
                         }}
                       >

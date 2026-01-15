@@ -52,7 +52,14 @@ export default function UserContact() {
 
                 <Box sx={{ mt: 3 }}>
                   {/* טלפון */}
-                  <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      mb: 3,
+                      gap: 2,
+                    }}
+                  >
                     <Box
                       sx={{
                         width: 48,
@@ -78,7 +85,14 @@ export default function UserContact() {
                   </Box>
 
                   {/* אימייל */}
-                  <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      mb: 3,
+                      gap: 2,
+                    }}
+                  >
                     <Box
                       sx={{
                         width: 48,
@@ -104,7 +118,14 @@ export default function UserContact() {
                   </Box>
 
                   {/* כתובת */}
-                  <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      mb: 3,
+                      gap: 2,
+                    }}
+                  >
                     <Box
                       sx={{
                         width: 48,
@@ -130,7 +151,14 @@ export default function UserContact() {
                   </Box>
 
                   {/* שעות פעילות */}
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      mb: 3,
+                      gap: 2,
+                    }}
+                  >
                     <Box
                       sx={{
                         width: 48,
@@ -163,13 +191,15 @@ export default function UserContact() {
               <CardContent sx={{ p: 0 }}>
                 <Box
                   component="iframe"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3381.6174524!2d34.8543!3d32.0634!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x151d4b7e48d5e7d7%3A0x7e1c6f5b5f9b5f5f!2z15TXqdeZ16jXlCDXlNWQ16fXk9ee15nXqiDXkNeV16DXlQ!5e0!3m2!1siw!2sil!4v1234567890"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3382.2187426134233!2d34.86823375920072!3d32.03627012157968!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x151d4a7f686d93bb%3A0x415afc2aca521e8f!2z15TXp9eo15nXlCDXlNeQ16fXk9ee15nXqiDXkNeV16DXlQ!5e0!3m2!1siw!2sil!4v1768483362989!5m2!1siw!2sil"
                   sx={{
                     width: "100%",
                     height: 300,
                     border: 0,
                   }}
+                  allowFullScreen
                   loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
                 />
               </CardContent>
             </Card>

@@ -238,7 +238,11 @@ export default function TestimonialsForm() {
           variant="contained"
           startIcon={<AddIcon />}
           onClick={handleOpenAddDialog}
-          sx={{ "& .MuiButton-startIcon": { marginLeft: "6px" } }}
+          sx={{
+            bgcolor: "#2c8332ff",
+            "&:hover": { bgcolor: "#689F38" },
+            "& .MuiButton-startIcon": { marginLeft: "6px" },
+          }}
         >
           הוסף המלצה
         </Button>

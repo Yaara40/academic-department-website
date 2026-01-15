@@ -143,7 +143,20 @@ export default function GrowthOptionsForm() {
         rows={2}
         sx={{ mb: 2 }}
       />
-      <Button variant="contained" onClick={handleSave} disabled={saving}>
+      <Button
+        variant="contained"
+        onClick={handleSave}
+        disabled={saving}
+        sx={{
+          bgcolor: "#2c8332",
+          "&:hover": {
+            bgcolor: "#236a28",
+          },
+          "&:disabled": {
+            bgcolor: "#a5d6a7", // ירוק בהיר כש-disabled
+          },
+        }}
+      >
         {saving ? "שומר..." : "שמור ל-Firestore"}
       </Button>
 

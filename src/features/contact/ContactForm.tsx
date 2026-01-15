@@ -219,9 +219,14 @@ export default function ContactForm() {
 
         <Button
           variant="contained"
-          color="primary"
           onClick={handleSubmit}
-          sx={{ mt: 2 }}
+          sx={{
+            mt: 2,
+            bgcolor: "#2c8332",
+            "&:hover": {
+              bgcolor: "#236a28", // צבע כהה יותר ב-hover
+            },
+          }}
         >
           שלח פרטים
         </Button>

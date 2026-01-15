@@ -35,6 +35,9 @@ type SnackState = {
 
 const isOnlyDigits = (value: string) => /^[0-9]+$/.test(value.trim());
 
+// צבע ירוק פסטל - כמו בHeader
+const GREEN_COLOR = "#7CB342";
+
 export default function RequirementsForm() {
   const [requirements, setRequirements] = useState<Requirement[]>([]);
   const [loading, setLoading] = useState(true);
@@ -54,12 +57,12 @@ export default function RequirementsForm() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
-  const colors = [
-    "cardBlue",
-    "cardGreen",
-    "cardPurple",
-    "cardOrange",
-    "cardYellow",
+  const greenColors = [
+    "#C5E1A5", // ירוק פסטל בהיר
+    "#AED581", // ירוק בהיר
+    "#9CCC65", // ירוק בינוני בהיר
+    "#8BC34A", // ירוק בינוני
+    "#7CB342", // ירוק כהה יותר (כמו ה-Header)
   ];
 
   // טעינה מ-Firestore
@@ -161,7 +164,7 @@ export default function RequirementsForm() {
         title: editedTitle.trim(),
         subtitle: editedSubtitle.trim(),
         value: editedValue.trim(),
-        color: colors[Math.floor(Math.random() * colors.length)],
+        color: greenColors[Math.floor(Math.random() * greenColors.length)],
       };
 
       const id = await addRequirement(newReq);
@@ -203,7 +206,7 @@ export default function RequirementsForm() {
   if (loading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
-        <CircularProgress />
+        <CircularProgress sx={{ color: GREEN_COLOR }} />
       </Box>
     );
   }
@@ -236,7 +239,11 @@ export default function RequirementsForm() {
           variant="contained"
           startIcon={<AddIcon />}
           onClick={handleOpenAddDialog}
-          sx={{ "& .MuiButton-startIcon": { marginLeft: "6px" } }}
+          sx={{
+            bgcolor: "#2c8332ff",
+            "&:hover": { bgcolor: "#689F38" },
+            "& .MuiButton-startIcon": { marginLeft: "6px" },
+          }}
         >
           הוסף דרישה
         </Button>
@@ -250,7 +257,18 @@ export default function RequirementsForm() {
         }}
       >
         {requirements.map((req) => (
-          <Card key={req.id} sx={{ bgcolor: req.color }}>
+          <Card
+            key={req.id}
+            sx={{
+              bgcolor: "#E8F5E9",
+              boxShadow: 0,
+              transition: "all 0.2s",
+              "&:hover": {
+                transform: "translateY(-4px)",
+                boxShadow: 2,
+              },
+            }}
+          >
             <CardContent>
               <Box
                 sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
@@ -312,7 +330,14 @@ export default function RequirementsForm() {
         </DialogContent>
         <DialogActions sx={{ direction: "rtl" }}>
           <Button onClick={() => setEditDialogOpen(false)}>ביטול</Button>
-          <Button onClick={handleSaveEdit} variant="contained">
+          <Button
+            onClick={handleSaveEdit}
+            variant="contained"
+            sx={{
+              bgcolor: GREEN_COLOR,
+              "&:hover": { bgcolor: "#689F38" },
+            }}
+          >
             שמור
           </Button>
         </DialogActions>
@@ -349,7 +374,14 @@ export default function RequirementsForm() {
         </DialogContent>
         <DialogActions sx={{ direction: "rtl" }}>
           <Button onClick={() => setAddDialogOpen(false)}>ביטול</Button>
-          <Button onClick={handleAddNew} variant="contained">
+          <Button
+            onClick={handleAddNew}
+            variant="contained"
+            sx={{
+              bgcolor: GREEN_COLOR,
+              "&:hover": { bgcolor: "#689F38" },
+            }}
+          >
             הוסף
           </Button>
         </DialogActions>

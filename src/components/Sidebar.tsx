@@ -51,7 +51,7 @@ export default function Sidebar() {
               sx={{
                 textAlign: "right",
                 "&.Mui-selected": {
-                  bgcolor: "action.selected",
+                  bgcolor: "#9CCC65",
                   borderRight: "3px solid",
                   borderColor: "primary.main",
                   "&:hover": { bgcolor: "action.selected" },
@@ -62,7 +62,7 @@ export default function Sidebar() {
               <ListItemIcon
                 sx={{
                   minWidth: 40,
-                  color: location.pathname === item.path ? "primary.main" : "inherit",
+                  color: "#7CB342",
                 }}
               >
                 {item.icon}

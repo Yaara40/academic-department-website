@@ -7,10 +7,10 @@ import ContactForm from "../../contact/ContactForm";
 export default function HomeList() {
   // שימוש בשמות הסמנטיים שהגדרנו ב-Theme
   const stats = [
-    { title: "סה״כ קורסים", value: "12", color: "cardGray" },
-    { title: "מועמדים פעילים", value: "4", color: "cardBlue" },
-    { title: "בוגרים", value: "120", color: "cardYellow" },
-    { title: "שיעור השמה", value: "95%", color: "cardGreen" },
+    { title: "סה״כ קורסים", value: "12", color: "#E8F5E9" },
+    { title: "מועמדים פעילים", value: "4", color: "#E8F5E9" },
+    { title: "בוגרים", value: "120", color: "#E8F5E9" },
+    { title: "שיעור השמה", value: "95%", color: "#E8F5E9" },
   ];
 
   return (

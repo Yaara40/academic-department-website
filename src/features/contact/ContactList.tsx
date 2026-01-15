@@ -23,10 +23,46 @@ interface ContactWithInitial extends Contact {
 
 export default function ContactList() {
   const contacts: ContactWithInitial[] = [
-    { id: "1", name: "יוסי כהן", email: "yossi@email.com", phone: "050-1234567", submissionDate: "25/11/2025", status: "חדש", source: "אתר", initial: "י" },
-    { id: "2", name: "שרה לוי", email: "sara@email.com", phone: "052-9876543", submissionDate: "25/11/2025", status: "ממתין", source: "יום פתוח", initial: "ש" },
-    { id: "3", name: "דוד ישראלי", email: "david@email.com", phone: "054-5555555", submissionDate: "25/11/2025", status: "נוצר קשר", source: "אתר", initial: "ד" },
-    { id: "4", name: "מיכל אברהם", email: "michal@email.com", phone: "053-1111111", submissionDate: "25/11/2025", status: "חדש", source: "פייסבוק", initial: "מ" },
+    {
+      id: "1",
+      name: "יוסי כהן",
+      email: "yossi@email.com",
+      phone: "050-1234567",
+      submissionDate: "25/11/2025",
+      status: "חדש",
+      source: "אתר",
+      initial: "י",
+    },
+    {
+      id: "2",
+      name: "שרה לוי",
+      email: "sara@email.com",
+      phone: "052-9876543",
+      submissionDate: "25/11/2025",
+      status: "ממתין",
+      source: "יום פתוח",
+      initial: "ש",
+    },
+    {
+      id: "3",
+      name: "דוד ישראלי",
+      email: "david@email.com",
+      phone: "054-5555555",
+      submissionDate: "25/11/2025",
+      status: "נוצר קשר",
+      source: "אתר",
+      initial: "ד",
+    },
+    {
+      id: "4",
+      name: "מיכל אברהם",
+      email: "michal@email.com",
+      phone: "053-1111111",
+      submissionDate: "25/11/2025",
+      status: "חדש",
+      source: "פייסבוק",
+      initial: "מ",
+    },
   ];
 
   // פונקציית צבעים מעודכנת המשתמשת ב-Theme
@@ -50,70 +86,101 @@ export default function ContactList() {
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(4, 1fr)" },
+          gridTemplateColumns: {
+            xs: "1fr",
+            sm: "repeat(2, 1fr)",
+            md: "repeat(4, 1fr)",
+          },
           gap: 3,
           mb: 4,
         }}
       >
-        <Card sx={{ bgcolor: "cardGray" }}>
+        <Card sx={{ bgcolor: "#E8F5E9" }}>
           <CardContent sx={{ textAlign: "center" }}>
             <Box sx={{ display: "flex", justifyContent: "center", mb: 1 }}>
               <Avatar sx={{ bgcolor: "rgba(0,0,0,0.1)" }}>
                 <PeopleOutlineIcon color="action" />
               </Avatar>
             </Box>
-            <Typography variant="h4" fontWeight={800}>4</Typography>
+            <Typography variant="h4" fontWeight={800}>
+              4
+            </Typography>
             <Typography color="text.secondary">סה"כ פניות</Typography>
           </CardContent>
         </Card>
 
-        <Card sx={{ bgcolor: "cardBlue" }}>
+        <Card sx={{ bgcolor: "#E8F5E9" }}>
           <CardContent sx={{ textAlign: "center" }}>
             <Box sx={{ display: "flex", justifyContent: "center", mb: 1 }}>
               <Avatar sx={{ bgcolor: "rgba(0,0,0,0.1)" }}>
                 <AccessTimeIcon color="action" />
               </Avatar>
             </Box>
-            <Typography variant="h4" fontWeight={800}>2</Typography>
+            <Typography variant="h4" fontWeight={800}>
+              2
+            </Typography>
             <Typography color="text.secondary">פניות חדשות</Typography>
           </CardContent>
         </Card>
 
-        <Card sx={{ bgcolor: "cardYellow" }}>
+        <Card sx={{ bgcolor: "#E8F5E9" }}>
           <CardContent sx={{ textAlign: "center" }}>
             <Box sx={{ display: "flex", justifyContent: "center", mb: 1 }}>
               <Avatar sx={{ bgcolor: "rgba(0,0,0,0.1)" }}>
                 <PeopleOutlineIcon color="action" />
               </Avatar>
             </Box>
-            <Typography variant="h4" fontWeight={800}>1</Typography>
+            <Typography variant="h4" fontWeight={800}>
+              1
+            </Typography>
             <Typography color="text.secondary">ממתינים</Typography>
           </CardContent>
         </Card>
 
-        <Card sx={{ bgcolor: "cardGray" }}>
+        <Card sx={{ bgcolor: "#E8F5E9" }}>
           <CardContent sx={{ textAlign: "center" }}>
             <Box sx={{ display: "flex", justifyContent: "center", mb: 1 }}>
               <Avatar sx={{ bgcolor: "rgba(0,0,0,0.1)" }}>
                 <PeopleOutlineIcon color="action" />
               </Avatar>
             </Box>
-            <Typography variant="h4" fontWeight={800}>0</Typography>
+            <Typography variant="h4" fontWeight={800}>
+              0
+            </Typography>
             <Typography color="text.secondary">נרשמו</Typography>
           </CardContent>
         </Card>
       </Box>
 
-      <Box sx={{ border: "1px solid", borderColor: "divider", borderRadius: 3, p: 2, bgcolor: "background.paper", mb: 4 }}>
+      <Box
+        sx={{
+          border: "1px solid",
+          borderColor: "divider",
+          borderRadius: 3,
+          p: 2,
+          bgcolor: "background.paper",
+          mb: 4,
+        }}
+      >
         <TableContainer component={Paper} elevation={0}>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell align="right" sx={{ fontWeight: 800 }}>שם מלא</TableCell>
-                <TableCell align="right" sx={{ fontWeight: 800 }}>פרטי קשר</TableCell>
-                <TableCell align="center" sx={{ fontWeight: 800 }}>תאריך פנייה</TableCell>
-                <TableCell align="center" sx={{ fontWeight: 800 }}>מקור</TableCell>
-                <TableCell align="center" sx={{ fontWeight: 800 }}>סטטוס</TableCell>
+                <TableCell align="right" sx={{ fontWeight: 800 }}>
+                  שם מלא
+                </TableCell>
+                <TableCell align="right" sx={{ fontWeight: 800 }}>
+                  פרטי קשר
+                </TableCell>
+                <TableCell align="center" sx={{ fontWeight: 800 }}>
+                  תאריך פנייה
+                </TableCell>
+                <TableCell align="center" sx={{ fontWeight: 800 }}>
+                  מקור
+                </TableCell>
+                <TableCell align="center" sx={{ fontWeight: 800 }}>
+                  סטטוס
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -121,18 +188,28 @@ export default function ContactList() {
                 <TableRow key={contact.id} hover>
                   <TableCell align="right">
                     <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                      <Avatar sx={{ bgcolor: "primary.main", width: 40, height: 40 }}>{contact.initial}</Avatar>
+                      <Avatar
+                        sx={{ bgcolor: "#9CCC65", width: 40, height: 40 }}
+                      >
+                        {contact.initial}
+                      </Avatar>
                       <Typography fontWeight={700}>{contact.name}</Typography>
                     </Box>
                   </TableCell>
                   <TableCell align="right">
                     <Box>
-                      <Typography variant="body2">{contact.phone} 📞</Typography>
-                      <Typography variant="body2" color="text.secondary">{contact.email} ✉️</Typography>
+                      <Typography variant="body2">
+                        {contact.phone} 📞
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {contact.email} ✉️
+                      </Typography>
                     </Box>
                   </TableCell>
                   <TableCell align="center">
-                    <Typography variant="body2">{contact.submissionDate} 📅</Typography>
+                    <Typography variant="body2">
+                      {contact.submissionDate} 📅
+                    </Typography>
                   </TableCell>
                   <TableCell align="center">{contact.source}</TableCell>
                   <TableCell align="center">
@@ -142,7 +219,7 @@ export default function ContactList() {
                       sx={{
                         fontWeight: 700,
                         bgcolor: getStatusColor(contact.status).bg,
-                        color: "text.primary" // משתמש בצבע טקסט דינמי במקום כחול כהה קבוע
+                        color: "text.primary", // משתמש בצבע טקסט דינמי במקום כחול כהה קבוע
                       }}
                     />
                   </TableCell>

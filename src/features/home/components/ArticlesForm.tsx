@@ -258,7 +258,11 @@ export default function ArticlesForm() {
           variant="contained"
           startIcon={<AddIcon />}
           onClick={handleOpenAddDialog}
-          sx={{ "& .MuiButton-startIcon": { marginLeft: "6px" } }}
+          sx={{
+            bgcolor: "#2c8332ff",
+            "&:hover": { bgcolor: "#689F38" },
+            "& .MuiButton-startIcon": { marginLeft: "6px" },
+          }}
         >
           הוסף מאמר
         </Button>
@@ -298,7 +302,16 @@ export default function ArticlesForm() {
 
               <Box sx={{ display: "flex", gap: 1, mt: 1, flexWrap: "wrap" }}>
                 {(article.tags ?? []).map((tag, index) => (
-                  <Chip key={index} label={tag} size="small" color="primary" />
+                  <Chip
+                    key={index}
+                    label={tag}
+                    size="small"
+                    sx={{
+                      bgcolor: "#2c8332",
+                      color: "#E8F5E9",
+                      fontWeight: 600,
+                    }}
+                  />
                 ))}
               </Box>
             </Box>

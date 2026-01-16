@@ -1,4 +1,10 @@
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, QueryDocumentSnapshot } from "firebase/firestore";
+import type {
+  FirestoreDataConverter,
+  SnapshotOptions,
+  WithFieldValue,
+  DocumentData,
+} from "firebase/firestore";
 import { firestore } from "./config";
 
 // שם ה-Collection וה-Document ID
@@ -10,33 +16,44 @@ export interface GrowthOptions {
   pageDescription: string;
 }
 
+// Converter class
+class GrowthOptionsConverter implements FirestoreDataConverter<GrowthOptions> {
+  toFirestore(data: WithFieldValue<GrowthOptions>): DocumentData {
+    return { ...data };
+  }
+
+  fromFirestore(
+    snapshot: QueryDocumentSnapshot,
+    options: SnapshotOptions
+  ): GrowthOptions {
+    const data = snapshot.data(options);
+    return data as GrowthOptions;
+  }
+}
+
+const growthOptionsConverter = new GrowthOptionsConverter();
+
 /**
  * שליפת כותרת ותיאור דף הצמיחה מ-Firestore
  */
 export async function getGrowthOptions(): Promise<GrowthOptions | null> {
-  try {
-    const docRef = doc(firestore, COLLECTION_NAME, DOCUMENT_ID);
-    const docSnap = await getDoc(docRef);
+  const docRef = doc(firestore, COLLECTION_NAME, DOCUMENT_ID).withConverter(
+    growthOptionsConverter
+  );
+  const docSnap = await getDoc(docRef);
 
-    if (docSnap.exists()) {
-      return docSnap.data() as GrowthOptions;
-    }
-    return null;
-  } catch (error) {
-    console.error("Error getting growth options:", error);
-    throw error;
+  if (docSnap.exists()) {
+    return docSnap.data();
   }
+  return null;
 }
 
 /**
  * שמירת כותרת ותיאור דף הצמיחה ל-Firestore
  */
 export async function saveGrowthOptions(data: GrowthOptions): Promise<void> {
-  try {
-    const docRef = doc(firestore, COLLECTION_NAME, DOCUMENT_ID);
-    await setDoc(docRef, data);
-  } catch (error) {
-    console.error("Error saving growth options:", error);
-    throw error;
-  }
+  const docRef = doc(firestore, COLLECTION_NAME, DOCUMENT_ID).withConverter(
+    growthOptionsConverter
+  );
+  await setDoc(docRef, data);
 }

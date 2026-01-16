@@ -127,7 +127,7 @@ export default function TestimonialsForm() {
         initial: editedName.charAt(0),
       };
 
-      await updateTestimonial(currentTestimonial.id, updated);
+      await updateTestimonial({ ...currentTestimonial, ...updated });
 
       setTestimonials((prev) =>
         prev.map((t) =>

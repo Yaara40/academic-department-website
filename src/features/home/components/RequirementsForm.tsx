@@ -131,7 +131,11 @@ export default function RequirementsForm() {
         value: editedValue.trim(),
       };
 
-      await updateRequirement(currentReq.id, updated);
+      const fullRequirement: Requirement = {
+        ...currentReq,
+        ...updated,
+      };
+      await updateRequirement(fullRequirement);
 
       setRequirements((prev) =>
         prev.map((r) => (r.id === currentReq.id ? { ...r, ...updated } : r))

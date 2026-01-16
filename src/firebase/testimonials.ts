@@ -2,30 +2,68 @@ import {
   collection,
   getDocs,
   addDoc,
-  updateDoc,
   deleteDoc,
   doc,
+  getDoc,
+  setDoc,
+  QueryDocumentSnapshot,
+} from "firebase/firestore";
+import type {
+  FirestoreDataConverter,
+  SnapshotOptions,
+  WithFieldValue,
+  DocumentData,
 } from "firebase/firestore";
 import { firestore } from "./config";
 import type { Testimonial } from "../models/Home";
 
 const COLLECTION_NAME = "testimonials";
 
+// Converter class
+class TestimonialConverter implements FirestoreDataConverter<Testimonial> {
+  toFirestore(testimonial: WithFieldValue<Testimonial>): DocumentData {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id, ...data } = testimonial as Testimonial;
+    return data;
+  }
+
+  fromFirestore(
+    snapshot: QueryDocumentSnapshot,
+    options: SnapshotOptions
+  ): Testimonial {
+    const data = snapshot.data(options);
+    return {
+      id: snapshot.id,
+      ...data,
+    } as Testimonial;
+  }
+}
+
+const testimonialConverter = new TestimonialConverter();
+
 /**
  * שליפת כל ההמלצות
  */
 export async function getAllTestimonials(): Promise<Testimonial[]> {
-  try {
-    const testimonialsCollection = collection(firestore, COLLECTION_NAME);
-    const testimonialsSnapshot = await getDocs(testimonialsCollection);
-    return testimonialsSnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    })) as Testimonial[];
-  } catch (error) {
-    console.error("Error getting testimonials:", error);
-    throw error;
+  const testimonialsSnapshot = await getDocs(
+    collection(firestore, COLLECTION_NAME).withConverter(testimonialConverter)
+  );
+  return testimonialsSnapshot.docs.map((doc) => doc.data());
+}
+
+/**
+ * שליפת המלצה בודדת
+ */
+export async function getTestimonial(id: string): Promise<Testimonial | null> {
+  const testimonialDocRef = doc(firestore, COLLECTION_NAME, id).withConverter(
+    testimonialConverter
+  );
+  const docSnap = await getDoc(testimonialDocRef);
+
+  if (docSnap.exists()) {
+    return docSnap.data();
   }
+  return null;
 }
 
 /**
@@ -34,41 +72,35 @@ export async function getAllTestimonials(): Promise<Testimonial[]> {
 export async function addTestimonial(
   testimonial: Omit<Testimonial, "id">
 ): Promise<string> {
-  try {
-    const testimonialsCollection = collection(firestore, COLLECTION_NAME);
-    const docRef = await addDoc(testimonialsCollection, testimonial);
-    return docRef.id;
-  } catch (error) {
-    console.error("Error adding testimonial:", error);
-    throw error;
-  }
+  const testimonialsCollection = collection(
+    firestore,
+    COLLECTION_NAME
+  ).withConverter(testimonialConverter);
+  const docRef = await addDoc(
+    testimonialsCollection,
+    testimonial as Testimonial
+  );
+  return docRef.id;
 }
 
 /**
  * עדכון המלצה
  */
 export async function updateTestimonial(
-  id: string,
-  testimonial: Partial<Testimonial>
+  testimonial: Testimonial
 ): Promise<void> {
-  try {
-    const testimonialDoc = doc(firestore, COLLECTION_NAME, id);
-    await updateDoc(testimonialDoc, testimonial);
-  } catch (error) {
-    console.error("Error updating testimonial:", error);
-    throw error;
-  }
+  const testimonialDocRef = doc(
+    firestore,
+    COLLECTION_NAME,
+    testimonial.id
+  ).withConverter(testimonialConverter);
+  await setDoc(testimonialDocRef, testimonial);
 }
 
 /**
  * מחיקת המלצה
  */
 export async function deleteTestimonial(id: string): Promise<void> {
-  try {
-    const testimonialDoc = doc(firestore, COLLECTION_NAME, id);
-    await deleteDoc(testimonialDoc);
-  } catch (error) {
-    console.error("Error deleting testimonial:", error);
-    throw error;
-  }
+  const testimonialDoc = doc(firestore, COLLECTION_NAME, id);
+  await deleteDoc(testimonialDoc);
 }

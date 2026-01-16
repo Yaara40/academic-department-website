@@ -146,7 +146,7 @@ export default function ArticlesForm() {
           .filter(Boolean),
       };
 
-      await updateArticle(currentArticle.id, updated);
+      await updateArticle({ ...currentArticle, ...updated });
 
       setArticles((prev) =>
         prev.map((a) => (a.id === currentArticle.id ? { ...a, ...updated } : a))

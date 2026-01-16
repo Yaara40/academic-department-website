@@ -28,6 +28,15 @@ import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import TipsAndUpdatesOutlinedIcon from "@mui/icons-material/TipsAndUpdatesOutlined";
 
+// 🎨 מערך צבעים ירוקים מ-MUI
+const COLORS = {
+  GREEN_LIGHTEST: "#E8F5E9", // green[50]
+  GREEN_LIGHT: "#C5E1A5", // lightGreen[200]
+  GREEN_MEDIUM: "#A5D6A7", // green[200]
+  GREEN_MAIN: "#81C784", // green[300]
+  GREEN_PRIMARY: "#2c8332", // הירוק העיקרי שלנו
+};
+
 type SectionId =
   | "contact"
   | "openDays"
@@ -40,7 +49,7 @@ type Category = {
   id: SectionId;
   title: string;
   description: string;
-  colorName: string; // משתמשת בצבעים מה-theme שלך (כמו בקובץ AdminHelp)
+  colorName: string;
   icon: React.ReactNode;
 };
 
@@ -147,42 +156,42 @@ export default function HelpUser() {
         id: "contact",
         title: "צור קשר",
         description: "איך יוצרים קשר עם יועץ/ת רישום או מזכירות",
-        colorName: "cardBlue",
+        colorName: COLORS.GREEN_LIGHTEST,
         icon: <PhoneInTalkRoundedIcon sx={{ fontSize: 34 }} />,
       },
       {
         id: "openDays",
         title: "ימים פתוחים",
         description: "הרשמה והגעה, מה להביא ומה קורה ביום פתוח",
-        colorName: "cardGreen",
+        colorName: COLORS.GREEN_LIGHT,
         icon: <EventAvailableRoundedIcon sx={{ fontSize: 34 }} />,
       },
       {
         id: "schedule",
         title: "לוחות זמנים",
         description: "שעות לימוד, מועדי סמסטר ומבחנים",
-        colorName: "cardPurple",
+        colorName: COLORS.GREEN_MEDIUM,
         icon: <CalendarMonthRoundedIcon sx={{ fontSize: 34 }} />,
       },
       {
         id: "tuition",
         title: "שכר לימוד ומימון",
         description: "שכר לימוד, מלגות ואפשרויות תשלום",
-        colorName: "cardOrange",
+        colorName: COLORS.GREEN_MAIN,
         icon: <AttachMoneyRoundedIcon sx={{ fontSize: 34 }} />,
       },
       {
         id: "admission",
         title: "תנאי קבלה והרשמה",
         description: "מסמכים, דרישות, ותהליך הרשמה מלא",
-        colorName: "cardBlue",
+        colorName: COLORS.GREEN_LIGHTEST,
         icon: <SchoolRoundedIcon sx={{ fontSize: 34 }} />,
       },
       {
         id: "program",
         title: "על התוכנית",
         description: "מידע כללי על התואר, קורסים וקריירה",
-        colorName: "cardGreen",
+        colorName: COLORS.GREEN_LIGHT,
         icon: <InfoRoundedIcon sx={{ fontSize: 34 }} />,
       },
     ],
@@ -201,47 +210,87 @@ export default function HelpUser() {
 
   // FAQs לכל סקשן
   const contactFaq: FAQ[] = [
-    { q: "איך יוצרים קשר?", a: "אפשר דרך טופס יצירת קשר באתר או דרך הטלפון/מייל שמופיעים בעמוד." },
-    { q: "מתי חוזרים אליי?", a: "בדרך כלל בשעות הפעילות. אם דחוף – עדיף לציין זאת בפנייה." },
+    {
+      q: "איך יוצרים קשר?",
+      a: "אפשר דרך טופס יצירת קשר באתר או דרך הטלפון/מייל שמופיעים בעמוד.",
+    },
+    {
+      q: "מתי חוזרים אליי?",
+      a: "בדרך כלל בשעות הפעילות. אם דחוף – עדיף לציין זאת בפנייה.",
+    },
   ];
 
   const openDaysFaq: FAQ[] = [
-    { q: "איך נרשמים ליום פתוח?", a: "נרשמים דרך עמוד הימים הפתוחים/אירועים באתר." },
-    { q: "מה להביא?", a: "מומלץ להביא תעודה מזהה, שאלות מוכנות, ואם יש – מסמכי בגרות/פסיכומטרי." },
+    {
+      q: "איך נרשמים ליום פתוח?",
+      a: "נרשמים דרך עמוד הימים הפתוחים/אירועים באתר.",
+    },
+    {
+      q: "מה להביא?",
+      a: "מומלץ להביא תעודה מזהה, שאלות מוכנות, ואם יש – מסמכי בגרות/פסיכומטרי.",
+    },
   ];
 
   const scheduleFaq: FAQ[] = [
-    { q: "האם יש מסלול ערב?", a: "בחלק מהמסלולים כן. בדקי בעמוד לוחות הזמנים של המסלול." },
-    { q: "אפשר לשלב עבודה?", a: "כן, אבל כדאי לבחור מסלול מתאים ולהיערך לעומס בהתאם." },
+    {
+      q: "האם יש מסלול ערב?",
+      a: "בחלק מהמסלולים כן. בדקי בעמוד לוחות הזמנים של המסלול.",
+    },
+    {
+      q: "אפשר לשלב עבודה?",
+      a: "כן, אבל כדאי לבחור מסלול מתאים ולהיערך לעומס בהתאם.",
+    },
   ];
 
   const tuitionFaq: FAQ[] = [
-    { q: "איך משלמים שכר לימוד?", a: "לרוב יש אפשרויות תשלום לפי תנאי המוסד (תשלומים/הוראת קבע וכו')." },
-    { q: "יש מלגות?", a: "כן, קיימות מלגות שונות לפי קריטריונים. מומלץ לבדוק בעמוד מלגות." },
+    {
+      q: "איך משלמים שכר לימוד?",
+      a: "לרוב יש אפשרויות תשלום לפי תנאי המוסד (תשלומים/הוראת קבע וכו').",
+    },
+    {
+      q: "יש מלגות?",
+      a: "כן, קיימות מלגות שונות לפי קריטריונים. מומלץ לבדוק בעמוד מלגות.",
+    },
   ];
 
   const admissionFaq: FAQ[] = [
-    { q: "מה תנאי הקבלה?", a: "תלוי במסלול. יש מסלולים עם חלופות (מכינה/מסלולים ייעודיים)." },
-    { q: "איך נרשמים?", a: "ממלאים טופס הרשמה, מצרפים מסמכים וממתינים להמשך תהליך." },
+    {
+      q: "מה תנאי הקבלה?",
+      a: "תלוי במסלול. יש מסלולים עם חלופות (מכינה/מסלולים ייעודיים).",
+    },
+    {
+      q: "איך נרשמים?",
+      a: "ממלאים טופס הרשמה, מצרפים מסמכים וממתינים להמשך תהליך.",
+    },
   ];
 
   const programFaq: FAQ[] = [
-    { q: "מה לומדים בתואר?", a: "קורסי יסוד במדמ\"ח, מתמטיקה, פרויקטים וקורסים מתקדמים בהתאם למסלול." },
-    { q: "מה אפשר לעשות אחרי התואר?", a: "פיתוח תוכנה, QA, DevOps, Data ועוד — בהתאם להתמחות ולניסיון." },
+    {
+      q: "מה לומדים בתואר?",
+      a: 'קורסי יסוד במדמ"ח, מתמטיקה, פרויקטים וקורסים מתקדמים בהתאם למסלול.',
+    },
+    {
+      q: "מה אפשר לעשות אחרי התואר?",
+      a: "פיתוח תוכנה, QA, DevOps, Data ועוד — בהתאם להתמחות ולניסיון.",
+    },
   ];
 
-  // חיפוש פשוט: אם יש טקסט, נציג רק שאלות שמכילות אותו (בכל הסקשנים)
+  // חיפוש פשוט
   const filterFaqs = (faqs: FAQ[]) => {
     const q = query.trim();
     if (!q) return faqs;
     const qq = q.toLowerCase();
-    return faqs.filter(
-      (x) => `${x.q} ${x.a}`.toLowerCase().includes(qq)
-    );
+    return faqs.filter((x) => `${x.q} ${x.a}`.toLowerCase().includes(qq));
   };
 
   return (
-    <Box sx={{ direction: "rtl", textAlign: "right", bgcolor: "background.default" }}>
+    <Box
+      sx={{
+        direction: "rtl",
+        textAlign: "right",
+        bgcolor: "background.default",
+      }}
+    >
       <Box
         sx={{
           maxWidth: 1200,
@@ -254,9 +303,15 @@ export default function HelpUser() {
         }}
       >
         {/* Header */}
-        <motion.div initial={{ opacity: 0, y: -18 }} animate={{ opacity: 1, y: 0 }}>
+        <motion.div
+          initial={{ opacity: 0, y: -18 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
           <Box sx={{ textAlign: "center", mb: 1 }}>
-            <Typography variant="h3" sx={{ fontWeight: 900, color: "text.primary", mb: 1 }}>
+            <Typography
+              variant="h3"
+              sx={{ fontWeight: 900, color: "text.primary", mb: 1 }}
+            >
               מרכז העזרה
             </Typography>
             <Typography sx={{ fontSize: 18, color: "text.secondary" }}>
@@ -282,11 +337,19 @@ export default function HelpUser() {
         </motion.div>
 
         {/* Quick Links (Cards) */}
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 }}>
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.08 }}
+        >
           <Box
             sx={{
               display: "grid",
-              gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" },
+              gridTemplateColumns: {
+                xs: "1fr",
+                sm: "repeat(2, 1fr)",
+                lg: "repeat(3, 1fr)",
+              },
               gap: 2,
             }}
           >
@@ -308,15 +371,30 @@ export default function HelpUser() {
                     "&:hover": { transform: "translateY(-4px)", boxShadow: 3 },
                   }}
                 >
-                  <CardActionArea onClick={() => scrollToSection(cat.id)} sx={{ p: 2 }}>
+                  <CardActionArea
+                    onClick={() => scrollToSection(cat.id)}
+                    sx={{ p: 2 }}
+                  >
                     <CardContent sx={{ p: 0, textAlign: "center" }}>
-                      <Box sx={{ mb: 1, display: "flex", justifyContent: "center" }}>
+                      <Box
+                        sx={{
+                          mb: 1,
+                          display: "flex",
+                          justifyContent: "center",
+                        }}
+                      >
                         {cat.icon}
                       </Box>
-                      <Typography fontWeight={900} sx={{ mb: 0.5, color: "text.primary" }}>
+                      <Typography
+                        fontWeight={900}
+                        sx={{ mb: 0.5, color: "text.primary" }}
+                      >
                         {cat.title}
                       </Typography>
-                      <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                      <Typography
+                        variant="body2"
+                        sx={{ color: "text.secondary" }}
+                      >
                         {cat.description}
                       </Typography>
                     </CardContent>
@@ -328,22 +406,40 @@ export default function HelpUser() {
         </motion.div>
 
         {/* Section: Contact */}
-        <motion.section id="section-contact" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 }}>
+        <motion.section
+          id="section-contact"
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.18 }}
+        >
           <Paper sx={{ p: 3, borderRadius: 3, boxShadow: 3 }}>
-            <SectionHeader title="צור קשר" icon={<PhoneInTalkRoundedIcon />} colorName="cardBlue" />
+            <SectionHeader
+              title="צור קשר"
+              icon={<PhoneInTalkRoundedIcon />}
+              colorName={COLORS.GREEN_LIGHTEST}
+            />
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <Box>
-                <Typography variant="h6" fontWeight={900} sx={{ mb: 1, color: "text.primary" }}>
+                <Typography
+                  variant="h6"
+                  fontWeight={900}
+                  sx={{ mb: 1, color: "text.primary" }}
+                >
                   🎯 מטרה
                 </Typography>
                 <Typography sx={{ color: "text.secondary", lineHeight: 1.8 }}>
-                  לעזור לכם להגיע מהר לגורם הנכון (יועץ/ת רישום, מזכירות, תמיכה טכנית).
+                  לעזור לכם להגיע מהר לגורם הנכון (יועץ/ת רישום, מזכירות, תמיכה
+                  טכנית).
                 </Typography>
               </Box>
 
               <Box>
-                <Typography variant="h6" fontWeight={900} sx={{ mb: 1, color: "text.primary" }}>
+                <Typography
+                  variant="h6"
+                  fontWeight={900}
+                  sx={{ mb: 1, color: "text.primary" }}
+                >
                   📋 מה עושים?
                 </Typography>
                 <List sx={{ pt: 0 }}>
@@ -355,7 +451,11 @@ export default function HelpUser() {
                   ].map((s, i) => (
                     <ListItem key={i} sx={{ py: 0.5 }}>
                       <ListItemText
-                        primary={<Typography color="text.primary">{`${i + 1}. ${s}`}</Typography>}
+                        primary={
+                          <Typography color="text.primary">{`${
+                            i + 1
+                          }. ${s}`}</Typography>
+                        }
                       />
                     </ListItem>
                   ))}
@@ -373,13 +473,26 @@ export default function HelpUser() {
         </motion.section>
 
         {/* Section: Open Days */}
-        <motion.section id="section-openDays" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.22 }}>
+        <motion.section
+          id="section-openDays"
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.22 }}
+        >
           <Paper sx={{ p: 3, borderRadius: 3, boxShadow: 3 }}>
-            <SectionHeader title="ימים פתוחים" icon={<EventAvailableRoundedIcon />} colorName="cardGreen" />
+            <SectionHeader
+              title="ימים פתוחים"
+              icon={<EventAvailableRoundedIcon />}
+              colorName={COLORS.GREEN_LIGHT}
+            />
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <Box>
-                <Typography variant="h6" fontWeight={900} sx={{ mb: 1, color: "text.primary" }}>
+                <Typography
+                  variant="h6"
+                  fontWeight={900}
+                  sx={{ mb: 1, color: "text.primary" }}
+                >
                   📌 מה יש ביום פתוח?
                 </Typography>
                 <List sx={{ pt: 0 }}>
@@ -389,7 +502,11 @@ export default function HelpUser() {
                     "מידע על תנאי קבלה ומלגות",
                   ].map((x, i) => (
                     <ListItem key={i} sx={{ py: 0 }}>
-                      <ListItemText primary={<Typography color="text.primary">{`• ${x}`}</Typography>} />
+                      <ListItemText
+                        primary={
+                          <Typography color="text.primary">{`• ${x}`}</Typography>
+                        }
+                      />
                     </ListItem>
                   ))}
                 </List>
@@ -406,13 +523,26 @@ export default function HelpUser() {
         </motion.section>
 
         {/* Section: Schedule */}
-        <motion.section id="section-schedule" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.26 }}>
+        <motion.section
+          id="section-schedule"
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.26 }}
+        >
           <Paper sx={{ p: 3, borderRadius: 3, boxShadow: 3 }}>
-            <SectionHeader title="לוחות זמנים" icon={<CalendarMonthRoundedIcon />} colorName="cardPurple" />
+            <SectionHeader
+              title="לוחות זמנים"
+              icon={<CalendarMonthRoundedIcon />}
+              colorName={COLORS.GREEN_MEDIUM}
+            />
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <Box>
-                <Typography variant="h6" fontWeight={900} sx={{ mb: 1, color: "text.primary" }}>
+                <Typography
+                  variant="h6"
+                  fontWeight={900}
+                  sx={{ mb: 1, color: "text.primary" }}
+                >
                   📋 למה זה חשוב?
                 </Typography>
                 <Typography sx={{ color: "text.secondary", lineHeight: 1.8 }}>
@@ -431,13 +561,26 @@ export default function HelpUser() {
         </motion.section>
 
         {/* Section: Tuition */}
-        <motion.section id="section-tuition" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+        <motion.section
+          id="section-tuition"
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
           <Paper sx={{ p: 3, borderRadius: 3, boxShadow: 3 }}>
-            <SectionHeader title="שכר לימוד ומימון" icon={<AttachMoneyRoundedIcon />} colorName="cardOrange" />
+            <SectionHeader
+              title="שכר לימוד ומימון"
+              icon={<AttachMoneyRoundedIcon />}
+              colorName={COLORS.GREEN_MAIN}
+            />
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <Box>
-                <Typography variant="h6" fontWeight={900} sx={{ mb: 1, color: "text.primary" }}>
+                <Typography
+                  variant="h6"
+                  fontWeight={900}
+                  sx={{ mb: 1, color: "text.primary" }}
+                >
                   ⚠️ דגשים
                 </Typography>
                 <List sx={{ pt: 0 }}>
@@ -447,7 +590,11 @@ export default function HelpUser() {
                     "שמרו אישורים על תשלום/פנייה",
                   ].map((w, i) => (
                     <ListItem key={i} sx={{ py: 0 }}>
-                      <ListItemText primary={<Typography color="text.primary">{`• ${w}`}</Typography>} />
+                      <ListItemText
+                        primary={
+                          <Typography color="text.primary">{`• ${w}`}</Typography>
+                        }
+                      />
                     </ListItem>
                   ))}
                 </List>
@@ -464,13 +611,26 @@ export default function HelpUser() {
         </motion.section>
 
         {/* Section: Admission */}
-        <motion.section id="section-admission" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.34 }}>
+        <motion.section
+          id="section-admission"
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.34 }}
+        >
           <Paper sx={{ p: 3, borderRadius: 3, boxShadow: 3 }}>
-            <SectionHeader title="תנאי קבלה והרשמה" icon={<SchoolRoundedIcon />} colorName="cardBlue" />
+            <SectionHeader
+              title="תנאי קבלה והרשמה"
+              icon={<SchoolRoundedIcon />}
+              colorName={COLORS.GREEN_LIGHTEST}
+            />
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <Box>
-                <Typography variant="h6" fontWeight={900} sx={{ mb: 1, color: "text.primary" }}>
+                <Typography
+                  variant="h6"
+                  fontWeight={900}
+                  sx={{ mb: 1, color: "text.primary" }}
+                >
                   ✅ מסמכים נפוצים
                 </Typography>
                 <List sx={{ pt: 0 }}>
@@ -480,7 +640,11 @@ export default function HelpUser() {
                     "תעודה מזהה",
                   ].map((x, i) => (
                     <ListItem key={i} sx={{ py: 0 }}>
-                      <ListItemText primary={<Typography color="text.primary">{`• ${x}`}</Typography>} />
+                      <ListItemText
+                        primary={
+                          <Typography color="text.primary">{`• ${x}`}</Typography>
+                        }
+                      />
                     </ListItem>
                   ))}
                 </List>
@@ -497,9 +661,18 @@ export default function HelpUser() {
         </motion.section>
 
         {/* Section: Program */}
-        <motion.section id="section-program" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.38 }}>
+        <motion.section
+          id="section-program"
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.38 }}
+        >
           <Paper sx={{ p: 3, borderRadius: 3, boxShadow: 3 }}>
-            <SectionHeader title="על התוכנית" icon={<InfoRoundedIcon />} colorName="cardGreen" />
+            <SectionHeader
+              title="על התוכנית"
+              icon={<InfoRoundedIcon />}
+              colorName={COLORS.GREEN_LIGHT}
+            />
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <FAQBlock
@@ -511,22 +684,31 @@ export default function HelpUser() {
 
               <Box
                 sx={{
-                  bgcolor: "cardGreen",
+                  bgcolor: COLORS.GREEN_LIGHTEST,
                   borderRight: "4px solid",
-                  borderColor: "success.main",
+                  borderColor: COLORS.GREEN_PRIMARY,
                   p: 2,
                   borderRadius: 2,
                 }}
               >
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-                  <TipsAndUpdatesOutlinedIcon sx={{ color: "success.main" }} />
-                  <Typography variant="h6" fontWeight={900} sx={{ color: "text.primary" }}>
+                <Box
+                  sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}
+                >
+                  <TipsAndUpdatesOutlinedIcon
+                    sx={{ color: COLORS.GREEN_PRIMARY }}
+                  />
+                  <Typography
+                    variant="h6"
+                    fontWeight={900}
+                    sx={{ color: "text.primary" }}
+                  >
                     💡 טיפ קטן
                   </Typography>
                 </Box>
                 <Typography sx={{ color: "text.secondary", lineHeight: 1.8 }}>
-                  אם יש לכם רק שאלה אחת — חפשו אותה למעלה. אם אתם לא בטוחים מאיפה להתחיל —
-                  לחצו על אחד הכרטיסים למעלה ותגיעו ישר לסקשן המתאים.
+                  אם יש לכם רק שאלה אחת — חפשו אותה למעלה. אם אתם לא בטוחים
+                  מאיפה להתחיל — לחצו על אחד הכרטיסים למעלה ותגיעו ישר לסקשן
+                  המתאים.
                 </Typography>
               </Box>
             </Box>

@@ -17,6 +17,8 @@ import HelpManagement from "./pages/HelpManagement";
 import UserHome from "./pages/UserHome";
 import UserCourses from "./pages/UserCourses";
 import UserContact from "./pages/UserContact.tsx";
+import HelpUser from "./pages/HelpUser.tsx";
+import UserGrowth from "./pages/UserGrowth.tsx";
 
 const App = () => {
   const location = useLocation();
@@ -44,6 +46,8 @@ const App = () => {
           <Route path="/user" element={<UserHome />} />
           <Route path="/user/courses" element={<UserCourses />} />
           <Route path="/user/contact" element={<UserContact />} />
+          <Route path="/user/help" element={<HelpUser />} />
+          <Route path="/user/growth" element={<UserGrowth />} />
 
           {/* Admin Routes */}
           <Route path="/" element={<Home />} />

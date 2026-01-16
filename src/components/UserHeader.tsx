@@ -21,6 +21,7 @@ import ContactMailIcon from "@mui/icons-material/ContactMail";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import MenuIcon from "@mui/icons-material/Menu";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
 export default function UserHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -35,6 +36,7 @@ export default function UserHeader() {
     { text: "קורסים", icon: <MenuBookIcon />, path: "/user/courses" },
     { text: "אפשרויות צמיחה", icon: <TrendingUpIcon />, path: "/user/growth" },
     { text: "צור קשר", icon: <ContactMailIcon />, path: "/user/contact" },
+    { text: "עזרה", icon: <HelpOutlineIcon />, path: "/user/help" },
   ];
 
   const drawerContent = (

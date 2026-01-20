@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -8,23 +8,11 @@ import {
   ToggleButtonGroup,
   Typography,
   CircularProgress,
+  Alert,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Course } from "../../../models/Course";
-import { addCourse } from "../../../firebase/courses";
-
-interface FormValues {
-  courseId: string;
-  name: string;
-  description: string;
-  credits: number;
-  year: string;
-  semester: string;
-  syllabus: string;
-  isMandatory: boolean;
-  isActive: boolean;
-  instructor: string;
-}
+import { addCourse, getCourseById, updateCourse } from "../../../firebase/courses";
 
 interface FormErrors {
   [key: string]: boolean | string;
@@ -32,8 +20,10 @@ interface FormErrors {
 
 export default function CoursesForm() {
   const navigate = useNavigate();
+  const { existingCourseId } = useParams<{ existingCourseId: string }>();
 
-  const initialValues: FormValues = {
+  const initialValues: Partial<Course> = {
+    id: "",
     courseId: "",
     name: "",
     description: "",
@@ -46,9 +36,35 @@ export default function CoursesForm() {
     instructor: "",
   };
 
-  const [values, setValues] = useState<FormValues>(initialValues);
+  const [values, setValues] = useState<Partial<Course>>(initialValues);
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // ✅ טעינת קורס קיים אם יש existingCourseId
+  useEffect(() => {
+    if (existingCourseId) {
+      setIsEditMode(true);
+      setLoading(true);
+
+      getCourseById(existingCourseId)
+        .then((courseData) => {
+          if (courseData) {
+            setValues(courseData);
+          } else {
+            setError("הקורס לא נמצא במערכת");
+          }
+        })
+        .catch((err) => {
+          console.error("Error fetching course:", err);
+          setError("שגיאה בטעינת הקורס");
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }, [existingCourseId]);
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -78,47 +94,45 @@ export default function CoursesForm() {
 
     const newErrors: FormErrors = {};
 
-    // 1. מזהה קורס - חובה: 8 מספרים
-    if (!values.courseId.trim()) {
-      newErrors.courseId = 'מזהה קורס הוא שדה חובה';
+    // בדיקות תקינות
+    if (!values.courseId?.trim()) {
+      newErrors.courseId = "מזהה קורס הוא שדה חובה";
     } else if (!/^\d{8}$/.test(values.courseId)) {
-      newErrors.courseId = 'מזהה קורס חייב להיות בדיוק 8 ספרות';
+      newErrors.courseId = "מזהה קורס חייב להיות בדיוק 8 ספרות";
     }
 
-    // 2. שם הקורס - חובה: 2-80 תווים
-    if (!values.name.trim()) {
-      newErrors.name = 'שם הקורס הוא שדה חובה';
+    if (!values.name?.trim()) {
+      newErrors.name = "שם הקורס הוא שדה חובה";
     } else if (values.name.length < 2 || values.name.length > 80) {
-      newErrors.name = 'שם הקורס חייב להיות בין 2-80 תווים';
+      newErrors.name = "שם הקורס חייב להיות בין 2-80 תווים";
     } else if (/<|>|script/i.test(values.name)) {
-      newErrors.name = 'שם הקורס מכיל תווים אסורים';
+      newErrors.name = "שם הקורס מכיל תווים אסורים";
     }
 
-    // 3. תיאור הקורס - חובה: 100-300 תווים
-    if (!values.description.trim()) {
-      newErrors.description = 'תיאור הקורס הוא שדה חובה';
-    } else if (values.description.length < 100 || values.description.length > 300) {
-      newErrors.description = 'תיאור הקורס חייב להיות בין 100-300 תווים';
+    if (!values.description?.trim()) {
+      newErrors.description = "תיאור הקורס הוא שדה חובה";
+    } else if (
+      values.description.length < 100 ||
+      values.description.length > 300
+    ) {
+      newErrors.description = "תיאור הקורס חייב להיות בין 100-300 תווים";
     }
 
-    // 4. נקודות זכות - חובה: מספר בין 1-10
-    if (values.credits < 1 || values.credits > 10) {
-      newErrors.credits = 'נקודות זכות חייבות להיות מספר בין 1-10';
+    if (!values.credits || values.credits < 1 || values.credits > 10) {
+      newErrors.credits = "נקודות זכות חייבות להיות מספר בין 1-10";
     }
 
-    // 5. שנה - חובה
     if (!values.year) {
-      newErrors.year = 'שנה היא שדה חובה';
+      newErrors.year = "שנה היא שדה חובה";
     }
 
-    // 6. סמסטר - חובה
     if (!values.semester) {
-      newErrors.semester = 'סמסטר הוא שדה חובה';
+      newErrors.semester = "סמסטר הוא שדה חובה";
     }
 
-    // 7. קישור לסילבוס - אופציונלי, אבל אם יש - חייב להיות URL תקין
-    if (values.syllabus.trim() && !/^https?:\/\/.+/.test(values.syllabus)) {
-      newErrors.syllabus = 'קישור לסילבוס חייב להתחיל ב-http:// או https://';
+    if (values.syllabus?.trim() && !/^https?:\/\/.+/.test(values.syllabus)) {
+      newErrors.syllabus =
+        "קישור לסילבוס חייב להתחיל ב-http:// או https://";
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -126,38 +140,88 @@ export default function CoursesForm() {
       return;
     }
 
-    // יצירת אובייקט קורס חדש
-    const newCourse = new Course(
-      "",  // Firestore ייצור ID אוטומטית
-      values.courseId,
-      values.name,
-      values.credits,
-      values.semester,
-      values.year,
-      values.description,
-      values.syllabus,
-      values.isMandatory,
-      values.isActive,
-      values.instructor
-    );
-
-    // שמירה ב-Firestore
     setLoading(true);
-    addCourse(newCourse)
-      .then(() => {
-        setLoading(false);
-        alert('✅ הקורס נשמר בהצלחה ב-Firestore!');
-        navigate("/courses");
-      })
-      .catch((error) => {
-        setLoading(false);
-        alert('❌ שגיאה בשמירת הקורס: ' + error.message);
-      });
+
+    // ✅ אם במצב עריכה - עדכן, אחרת הוסף
+    if (isEditMode && existingCourseId) {
+      updateCourse(existingCourseId, {
+        ...values,
+        id: existingCourseId,
+      } as Course)
+        .then(() => {
+          setLoading(false);
+          alert("✅ הקורס עודכן בהצלחה!");
+          navigate("/admin/courses");
+        })
+        .catch((error) => {
+          setLoading(false);
+          alert("❌ שגיאה בעדכון הקורס: " + error.message);
+        });
+    } else {
+      addCourse({
+        ...values,
+        id: "",
+      } as Course)
+        .then(() => {
+          setLoading(false);
+          alert("✅ הקורס נשמר בהצלחה ב-Firestore!");
+          navigate("/admin/courses");
+        })
+        .catch((error) => {
+          setLoading(false);
+          alert("❌ שגיאה בשמירת הקורס: " + error.message);
+        });
+    }
   };
 
   const handleCancel = () => {
-    navigate("/courses");
+    navigate("/admin/courses");
   };
+
+  // ✅ Loading indicator
+  if (loading && isEditMode) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "50vh",
+        }}
+      >
+        <CircularProgress size={60} />
+      </Box>
+    );
+  }
+
+  // ✅ הודעת שגיאה אם הקורס לא נמצא
+  if (error) {
+    return (
+      <Box
+        sx={{
+          m: 4,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 2,
+        }}
+      >
+        <Alert severity="error" sx={{ width: "100%", maxWidth: 600 }}>
+          <Typography variant="h6">{error}</Typography>
+          <Typography variant="body2" sx={{ mt: 1 }}>
+            מזהה הקורס: {existingCourseId}
+          </Typography>
+        </Alert>
+        <Button
+          variant="contained"
+          onClick={() => navigate("/admin/courses")}
+          size="large"
+        >
+          חזור לרשימת הקורסים
+        </Button>
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -178,7 +242,7 @@ export default function CoursesForm() {
       noValidate
       autoComplete="off"
     >
-      <h2>הוספת קורס חדש</h2>
+      <h2>{isEditMode ? "עריכת קורס" : "הוספת קורס חדש"}</h2>
 
       {/* מזהה קורס */}
       <TextField
@@ -189,7 +253,7 @@ export default function CoursesForm() {
         name="courseId"
         label="מזהה קורס (8 ספרות)"
         placeholder="12345678"
-        value={values.courseId}
+        value={values.courseId || ""}
         onChange={(e) => {
           const value = e.target.value;
           if (/^\d{0,8}$/.test(value)) {
@@ -209,9 +273,9 @@ export default function CoursesForm() {
         name="name"
         label="שם הקורס (2-80 תווים)"
         placeholder="הזן שם קורס..."
-        value={values.name}
+        value={values.name || ""}
         onChange={handleChange}
-        helperText={errors.name || `${values.name.length}/80 תווים`}
+        helperText={errors.name || `${(values.name || "").length}/80 תווים`}
       />
 
       {/* תיאור */}
@@ -225,9 +289,11 @@ export default function CoursesForm() {
         placeholder="תיאור מפורט של הקורס..."
         multiline
         rows={4}
-        value={values.description}
+        value={values.description || ""}
         onChange={handleChange}
-        helperText={errors.description || `${values.description.length}/300 תווים`}
+        helperText={
+          errors.description || `${(values.description || "").length}/300 תווים`
+        }
       />
 
       <Box sx={{ display: "flex", gap: 2 }}>
@@ -239,7 +305,7 @@ export default function CoursesForm() {
           name="credits"
           label="נקודות זכות (1-10)"
           type="number"
-          value={values.credits}
+          value={values.credits || 3}
           onChange={handleChange}
           helperText={errors.credits || ""}
           slotProps={{
@@ -256,7 +322,7 @@ export default function CoursesForm() {
           id="year"
           name="year"
           label="שנה"
-          value={values.year}
+          value={values.year || ""}
           onChange={handleChange}
           helperText={errors.year || ""}
           sx={{ flex: 1 }}
@@ -275,7 +341,7 @@ export default function CoursesForm() {
           id="semester"
           name="semester"
           label="סמסטר"
-          value={values.semester}
+          value={values.semester || ""}
           onChange={handleChange}
           helperText={errors.semester || ""}
           sx={{ flex: 1 }}
@@ -295,7 +361,7 @@ export default function CoursesForm() {
         label="קישור לסילבוס (אופציונלי)"
         placeholder="https://..."
         type="url"
-        value={values.syllabus}
+        value={values.syllabus || ""}
         onChange={handleChange}
         helperText={errors.syllabus || "חייב להתחיל ב-http:// או https://"}
       />
@@ -307,7 +373,7 @@ export default function CoursesForm() {
         name="instructor"
         label="מרצה (אופציונלי)"
         placeholder="ד״ר..."
-        value={values.instructor}
+        value={values.instructor || ""}
         onChange={handleChange}
         helperText="שם המרצה שמלמד את הקורס"
       />
@@ -327,11 +393,6 @@ export default function CoursesForm() {
           <ToggleButton value="yes">כן</ToggleButton>
           <ToggleButton value="no">לא</ToggleButton>
         </ToggleButtonGroup>
-        {errors.isMandatory && (
-          <Typography color="error" variant="caption" sx={{ mt: 0.5, display: "block" }}>
-            {errors.isMandatory}
-          </Typography>
-        )}
       </Box>
 
       {/* קורס פעיל */}
@@ -349,27 +410,35 @@ export default function CoursesForm() {
           <ToggleButton value="yes">כן</ToggleButton>
           <ToggleButton value="no">לא</ToggleButton>
         </ToggleButtonGroup>
-        {errors.isActive && (
-          <Typography color="error" variant="caption" sx={{ mt: 0.5, display: "block" }}>
-            {errors.isActive}
-          </Typography>
-        )}
       </Box>
 
       {/* כפתורים */}
-      <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-start", mt: 2, alignItems: "center" }}>
-        <Button 
-          type="submit" 
-          variant="contained" 
-          color="primary" 
+      <Box
+        sx={{
+          display: "flex",
+          gap: 2,
+          justifyContent: "flex-start",
+          mt: 2,
+        }}
+      >
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
           size="large"
           disabled={loading}
         >
-          {loading ? <CircularProgress size={24} /> : "שמור"}
+          {loading ? (
+            <CircularProgress size={24} />
+          ) : isEditMode ? (
+            "עדכן"
+          ) : (
+            "שמור"
+          )}
         </Button>
-        <Button 
-          variant="outlined" 
-          onClick={handleCancel} 
+        <Button
+          variant="outlined"
+          onClick={handleCancel}
           size="large"
           disabled={loading}
         >

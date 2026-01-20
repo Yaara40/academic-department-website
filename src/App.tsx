@@ -54,12 +54,15 @@ const App = () => {
           <Route path="/admin" element={<Home />} />
           <Route path="/admin/courses" element={<CoursesManagement />} />
           <Route path="/admin/courses/new" element={<CoursesForm />} />
+          
+          {/* ✅ קישור ישיר לעריכת קורס */}
+          <Route path="/admin/courses/edit/:existingCourseId" element={<CoursesForm />} />
+          
           <Route path="/admin/growth" element={<GrowthManagement />} />
           <Route path="/admin/contact" element={<ContactManagement />} />
           <Route path="/admin/help" element={<HelpManagement />} />
         </Routes>
       </Box>
-
       <Footer />
     </Box>
   );

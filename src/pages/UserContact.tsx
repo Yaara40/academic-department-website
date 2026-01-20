@@ -5,11 +5,39 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import ContactForm from "../features/contact/ContactForm";
 
+// ✅ הוספה
+import LinearProgress from "@mui/material/LinearProgress";
+import { useEffect, useState } from "react";
+
 const GREEN_COLOR = "#2c8332";
 
 export default function UserContact() {
+  // ✅ הוספה
+  const [pageLoading, setPageLoading] = useState(true);
+
+  // ✅ הוספה
+  useEffect(() => {
+    const t = setTimeout(() => setPageLoading(false), 350);
+
+    const onPageLoading = (e: Event) => {
+      const ce = e as CustomEvent<{ loading?: boolean }>;
+      if (typeof ce.detail?.loading === "boolean") {
+        setPageLoading(ce.detail.loading);
+      }
+    };
+
+    window.addEventListener("page-loading", onPageLoading as EventListener);
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener("page-loading", onPageLoading as EventListener);
+    };
+  }, []);
+
   return (
     <Box sx={{ direction: "rtl" }}>
+      {/* ✅ הוספה */}
+      {pageLoading && <LinearProgress />}
+
       {/* Hero Section */}
       <Box
         sx={{

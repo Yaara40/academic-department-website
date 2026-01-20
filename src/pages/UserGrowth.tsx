@@ -7,6 +7,7 @@ import {
   CardContent,
   Chip,
   CircularProgress,
+  LinearProgress,
 } from "@mui/material";
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import PublicIcon from "@mui/icons-material/Public";
@@ -123,254 +124,259 @@ export default function UserGrowth() {
 
   if (loading) {
     return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "60vh",
-        }}
-      >
-        <CircularProgress sx={{ color: GREEN_COLOR }} />
+      <Box sx={{ direction: "rtl" }}>
+        {/* ✅ הוספה */}
+        <LinearProgress />
+
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "60vh",
+          }}
+        >
+          <CircularProgress sx={{ color: GREEN_COLOR }} />
+        </Box>
       </Box>
     );
   }
 
   return (
-    <Box sx={{ direction: "rtl" }}>
-      {/* Hero Section */}
-      <Box
-        sx={{
-          bgcolor: "#1a2332",
-          color: "white",
-          py: 8,
-          textAlign: "center",
-        }}
-      >
-        <Container maxWidth="lg">
-          <Typography variant="h3" fontWeight={900} gutterBottom>
-            {headerTitle}
-          </Typography>
-          <Typography variant="h6" sx={{ opacity: 0.9 }}>
-            {headerDescription}
-          </Typography>
-        </Container>
-      </Box>
-
-      {/* Content */}
-      <Container maxWidth="lg" sx={{ mt: 6, mb: 8 }}>
-        {/* קטע "לאן אפשר להגיע?" */}
-        <Box sx={{ mb: 8 }}>
-          <Typography
-            variant="h4"
-            fontWeight={900}
-            gutterBottom
-            sx={{ textAlign: "center", mb: 1 }}
-          >
-            לאן אפשר להגיע?
-          </Typography>
-          <Typography
-            variant="body1"
-            color="text.secondary"
-            sx={{ textAlign: "center", mb: 4 }}
-          >
-            התואר פותח דלתות למגוון רחב של אפשרויות קריירה
-          </Typography>
-
-          {/* 6 כרטיסים */}
+        <Box sx={{ direction: "rtl" }}>
+          {/* Hero Section */}
           <Box
             sx={{
-              display: "grid",
-              gridTemplateColumns: {
-                xs: "1fr",
-                md: "repeat(2, 1fr)",
-                lg: "repeat(3, 1fr)",
-              },
-              gap: 3,
+              bgcolor: "#1a2332",
+              color: "white",
+              py: 8,
+              textAlign: "center",
             }}
           >
-            {[
-              {
-                title: "לימודים מתקדמים",
-                description: "המשך לתואר שני ודוקטורט במוסדות מובילים",
-                iconKey: "advanced",
-              },
-              {
-                title: "יזמות",
-                description: "הקמת סטארט-אפ והפיכה ליזם עם הכלים והידע הנכונים",
-                iconKey: "startup",
-              },
-              {
-                title: "קריירה בהייטק",
-                description:
-                  "תפקידים מובילים בחברות הייטק כמו Google, Microsoft, Meta ועוד",
-                iconKey: "hitech",
-              },
-              {
-                title: "מחקר",
-                description: "עבודה במכוני מחקר ואקדמיה",
-                iconKey: "research",
-              },
-              {
-                title: "קריירה בינלאומית",
-                description: 'הזדמנויות עבודה בחברות גלובליות ובחו"ל',
-                iconKey: "international",
-              },
-              {
-                title: "ניהול",
-                description: "תפקידי ניהול בכירים כמו CTO, VP R&D, ומנהל פיתוח",
-                iconKey: "management",
-              },
-            ].map((item, index) => {
-              const iconData = ICONS[item.iconKey] || ICONS["hitech"];
-              return (
-                <Card
-                  key={index}
-                  sx={{
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                    transition: "transform 0.2s, box-shadow 0.2s",
-                    "&:hover": {
-                      transform: "translateY(-4px)",
-                      boxShadow: 4,
-                    },
-                  }}
-                >
-                  <CardContent sx={{ flexGrow: 1, textAlign: "center", p: 3 }}>
-                    <Box
-                      sx={{
-                        width: 80,
-                        height: 80,
-                        borderRadius: 3,
-                        bgcolor: CATEGORY_COLORS[item.iconKey] || "#E3F2FD",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        mx: "auto",
-                        mb: 2,
-                        color: iconData.color,
-                      }}
-                    >
-                      {iconData.icon}
-                    </Box>
-
-                    <Typography variant="h6" fontWeight={700} gutterBottom>
-                      {item.title}
-                    </Typography>
-
-                    <Typography variant="body2" color="text.secondary">
-                      {item.description}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </Box>
-        </Box>
-
-        {/* מסלולי קריירה נפוצים - סטטי! */}
-        <Box>
-          <Box sx={{ textAlign: "center", mb: 4 }}>
-            <TrendingUpIcon sx={{ fontSize: 48, color: GREEN_COLOR, mb: 1 }} />
-            <Typography variant="h4" fontWeight={900} gutterBottom>
-              מסלולי קריירה
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              תפקידים מבוקשים בשוק ההייטק
-            </Typography>
+            <Container maxWidth="lg">
+              <Typography variant="h3" fontWeight={900} gutterBottom>
+                {headerTitle}
+              </Typography>
+              <Typography variant="h6" sx={{ opacity: 0.9 }}>
+                {headerDescription}
+              </Typography>
+            </Container>
           </Box>
 
-          {/* בוקסים קטנים */}
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: {
-                xs: "1fr",
-                md: "repeat(2, 1fr)",
-                lg: "repeat(3, 1fr)",
-              },
-              gap: 3,
-            }}
-          >
-            {CAREER_TRACKS.map((track, index) => (
-              <Card
-                key={index}
+          {/* Content */}
+          <Container maxWidth="lg" sx={{ mt: 6, mb: 8 }}>
+            {/* קטע "לאן אפשר להגיע?" */}
+            <Box sx={{ mb: 8 }}>
+              <Typography
+                variant="h4"
+                fontWeight={900}
+                gutterBottom
+                sx={{ textAlign: "center", mb: 1 }}
+              >
+                לאן אפשר להגיע?
+              </Typography>
+              <Typography
+                variant="body1"
+                color="text.secondary"
+                sx={{ textAlign: "center", mb: 4 }}
+              >
+                התואר פותח דלתות למגוון רחב של אפשרויות קריירה
+              </Typography>
+
+              {/* 6 כרטיסים */}
+              <Box
                 sx={{
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  transition: "transform 0.2s, box-shadow 0.2s",
-                  "&:hover": {
-                    transform: "translateY(-4px)",
-                    boxShadow: 4,
+                  display: "grid",
+                  gridTemplateColumns: {
+                    xs: "1fr",
+                    md: "repeat(2, 1fr)",
+                    lg: "repeat(3, 1fr)",
                   },
+                  gap: 3,
                 }}
               >
-                <CardContent sx={{ flexGrow: 1, p: 3 }}>
-                  <Typography
-                    variant="h6"
-                    fontWeight={700}
-                    gutterBottom
-                    sx={{ textAlign: "center", mb: 3 }}
-                  >
-                    {track.role}
-                  </Typography>
+                {[
+                  {
+                    title: "לימודים מתקדמים",
+                    description: "המשך לתואר שני ודוקטורט במוסדות מובילים",
+                    iconKey: "advanced",
+                  },
+                  {
+                    title: "יזמות",
+                    description: "הקמת סטארט-אפ והפיכה ליזם עם הכלים והידע הנכונים",
+                    iconKey: "startup",
+                  },
+                  {
+                    title: "קריירה בהייטק",
+                    description:
+                      "תפקידים מובילים בחברות הייטק כמו Google, Microsoft, Meta ועוד",
+                    iconKey: "hitech",
+                  },
+                  {
+                    title: "מחקר",
+                    description: "עבודה במכוני מחקר ואקדמיה",
+                    iconKey: "research",
+                  },
+                  {
+                    title: "קריירה בינלאומית",
+                    description: 'הזדמנויות עבודה בחברות גלובליות ובחו"ל',
+                    iconKey: "international",
+                  },
+                  {
+                    title: "ניהול",
+                    description: "תפקידי ניהול בכירים כמו CTO, VP R&D, ומנהל פיתוח",
+                    iconKey: "management",
+                  },
+                ].map((item, index) => {
+                  const iconData = ICONS[item.iconKey] || ICONS["hitech"];
+                  return (
+                    <Card
+                      key={index}
+                      sx={{
+                        height: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        transition: "transform 0.2s, box-shadow 0.2s",
+                        "&:hover": {
+                          transform: "translateY(-4px)",
+                          boxShadow: 4,
+                        },
+                      }}
+                    >
+                      <CardContent sx={{ flexGrow: 1, textAlign: "center", p: 3 }}>
+                        <Box
+                          sx={{
+                            width: 80,
+                            height: 80,
+                            borderRadius: 3,
+                            bgcolor: CATEGORY_COLORS[item.iconKey] || "#E3F2FD",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            mx: "auto",
+                            mb: 2,
+                            color: iconData.color,
+                          }}
+                        >
+                          {iconData.icon}
+                        </Box>
 
-                  <Box
+                        <Typography variant="h6" fontWeight={700} gutterBottom>
+                          {item.title}
+                        </Typography>
+
+                        <Typography variant="body2" color="text.secondary">
+                          {item.description}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </Box>
+            </Box>
+
+            {/* מסלולי קריירה נפוצים - סטטי! */}
+            <Box>
+              <Box sx={{ textAlign: "center", mb: 4 }}>
+                <TrendingUpIcon sx={{ fontSize: 48, color: GREEN_COLOR, mb: 1 }} />
+                <Typography variant="h4" fontWeight={900} gutterBottom>
+                  מסלולי קריירה
+                </Typography>
+                <Typography variant="body1" color="text.secondary">
+                  תפקידים מבוקשים בשוק ההייטק
+                </Typography>
+              </Box>
+
+              {/* בוקסים קטנים */}
+              <Box
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: {
+                    xs: "1fr",
+                    md: "repeat(2, 1fr)",
+                    lg: "repeat(3, 1fr)",
+                  },
+                  gap: 3,
+                }}
+              >
+                {CAREER_TRACKS.map((track, index) => (
+                  <Card
+                    key={index}
                     sx={{
+                      height: "100%",
                       display: "flex",
                       flexDirection: "column",
-                      gap: 2,
+                      transition: "transform 0.2s, box-shadow 0.2s",
+                      "&:hover": {
+                        transform: "translateY(-4px)",
+                        boxShadow: 4,
+                      },
                     }}
                   >
-                    <Box>
+                    <CardContent sx={{ flexGrow: 1, p: 3 }}>
                       <Typography
-                        variant="caption"
-                        color="text.secondary"
-                        display="block"
-                        sx={{ mb: 0.5, fontWeight: 600 }}
-                      >
-                        טווח שכר
-                      </Typography>
-                      <Typography
-                        variant="body1"
+                        variant="h6"
                         fontWeight={700}
-                        color="primary"
+                        gutterBottom
+                        sx={{ textAlign: "center", mb: 3 }}
                       >
-                        {track.salaryRange}
+                        {track.role}
                       </Typography>
-                    </Box>
 
-                    <Box>
-                      <Typography
-                        variant="caption"
-                        color="text.secondary"
-                        display="block"
-                        sx={{ mb: 0.5, fontWeight: 600 }}
-                      >
-                        ביקוש בשוק
-                      </Typography>
-                      <Chip
-                        label={track.demand}
-                        size="small"
+                      <Box
                         sx={{
-                          bgcolor:
-                            track.demand === "גבוה מאוד"
-                              ? "#C5E1A5"
-                              : "#81C784",
-                          color: "text.primary",
-                          fontWeight: 600,
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 2,
                         }}
-                      />
-                    </Box>
-                  </Box>
-                </CardContent>
-              </Card>
-            ))}
-          </Box>
+                      >
+                        <Box>
+                          <Typography
+                            variant="caption"
+                            color="text.secondary"
+                            display="block"
+                            sx={{ mb: 0.5, fontWeight: 600 }}
+                          >
+                            טווח שכר
+                          </Typography>
+                          <Typography
+                            variant="body1"
+                            fontWeight={700}
+                            color="primary"
+                          >
+                            {track.salaryRange}
+                          </Typography>
+                        </Box>
+
+                        <Box>
+                          <Typography
+                            variant="caption"
+                            color="text.secondary"
+                            display="block"
+                            sx={{ mb: 0.5, fontWeight: 600 }}
+                          >
+                            ביקוש בשוק
+                          </Typography>
+                          <Chip
+                            label={track.demand}
+                            size="small"
+                            sx={{
+                              bgcolor:
+                                track.demand === "גבוה מאוד"
+                                  ? "#C5E1A5"
+                                  : "#81C784",
+                              color: "text.primary",
+                              fontWeight: 600,
+                            }}
+                          />
+                        </Box>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                ))}
+              </Box>
+            </Box>
+          </Container>
         </Box>
-      </Container>
-    </Box>
-  );
+        );
 }

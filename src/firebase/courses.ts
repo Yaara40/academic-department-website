@@ -7,12 +7,13 @@ import {
   updateDoc,
   deleteDoc,
 } from "firebase/firestore";
-import { firestore } from "./config"; // ✅ שינינו מ-db ל-firestore
+import { firestore } from "./config";
 import { Course } from "../models/Course";
 
 // ✅ הוספת קורס חדש
 export async function addCourse(course: Course): Promise<void> {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id, ...courseData } = course; // מסירים את ה-id
     await addDoc(collection(firestore, "courses"), courseData);
   } catch (error) {
@@ -26,7 +27,7 @@ export async function getAllCourses(): Promise<Course[]> {
   try {
     const querySnapshot = await getDocs(collection(firestore, "courses"));
     return querySnapshot.docs.map(
-      (doc) => ({ id: doc.id, ...doc.data() } as Course)
+      (doc) => ({ id: doc.id, ...doc.data() }) as Course,
     );
   } catch (error) {
     console.error("Error getting courses:", error);
@@ -54,6 +55,7 @@ export async function getCourseById(id: string): Promise<Course | null> {
 export async function updateCourse(id: string, course: Course): Promise<void> {
   try {
     const docRef = doc(firestore, "courses", id);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id: _, ...courseData } = course; // מסירים את ה-id
     await updateDoc(docRef, courseData);
   } catch (error) {

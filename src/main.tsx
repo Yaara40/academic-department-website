@@ -1,70 +1,76 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
-import App from './App.tsx';
-import './index.css';
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import App from "./App.tsx";
+import "./index.css";
 
-import { 
-  createTheme, 
-  responsiveFontSizes, 
-  Experimental_CssVarsProvider as CssVarsProvider 
-} from '@mui/material/styles';
-
-import CssBaseline from '@mui/material/CssBaseline';
-import { deepPurple, lightGreen, red, yellow } from '@mui/material/colors';
-
-// 1. הרחבת הגדרות ה-Type של MUI כדי שיכיר בצבעים החדשים שלנו
-declare module '@mui/material/styles' {
+// ✅ הגדרה מחוץ ל-createTheme
+declare module "@mui/material/styles" {
   interface Palette {
-    cardGray: string;
-    cardBlue: string;
-    cardYellow: string;
-    cardGreen: string;
-    cardPurple: string;
-    cardOrange: string;
+    cardGreen: Palette["primary"];
   }
   interface PaletteOptions {
-    cardGray?: string;
-    cardBlue?: string;
-    cardYellow?: string;
-    cardGreen?: string;
-    cardPurple?: string;
-    cardOrange?: string;
+    cardGreen?: PaletteOptions["primary"];
   }
 }
 
-// 2. יצירת ה-Theme עם הצבעים המותאמים אישית
-let theme = createTheme({
+const theme = createTheme({
   colorSchemes: {
     light: {
       palette: {
-        primary: deepPurple,
-        secondary: lightGreen,
-        // צבעים למצב יום (פסטל בהיר) - הטקסט יהיה שחור
-        cardGray: "#f3f4f6",
-        cardBlue: "#e0f2fe",
-        cardYellow: "#fef3c7",
-        cardGreen: "#d1fae5",
-        cardPurple: "#e9d5ff",
-        cardOrange: "#fed7aa",
+        primary: {
+          main: "#2c8332",
+          light: "#4CAF50",
+          dark: "#1B5E20",
+          contrastText: "#fff",
+        },
+        secondary: {
+          main: "#8BC34A",
+          light: "#AED581",
+          dark: "#689F38",
+          contrastText: "#000",
+        },
+        background: {
+          default: "#f5f5f5",
+          paper: "#ffffff",
+        },
+        cardGreen: {
+          main: "#E8F5E9",
+          light: "#F1F8E9",
+          dark: "#C8E6C9",
+        },
       },
     },
     dark: {
       palette: {
-        primary: red,
-        secondary: yellow,
-        // צבעים למצב לילה (כהים ועמוקים) - הטקסט יהיה לבן
-        cardGray: "#374151",   // אפור כהה
-        cardBlue: "#0c4a6e",   // כחול עמוק
-        cardYellow: "#78350f", // חום/כתום כהה
-        cardGreen: "#064e3b",  // ירוק יער כהה
-        cardPurple: "#581c87", // סגול עמוק
-        cardOrange: "#7c2d12", // כתום שרוף
+        primary: {
+          main: "#66BB6A",
+          light: "#81C784",
+          dark: "#388E3C",
+          contrastText: "#fff",
+        },
+        secondary: {
+          main: "#9CCC65",
+          light: "#C5E1A5",
+          dark: "#7CB342",
+          contrastText: "#000",
+        },
+        background: {
+          default: "#121212",
+          paper: "#1e1e1e",
+        },
+        cardGreen: {
+          main: "#1B5E20",
+          light: "#2E7D32",
+          dark: "#1B5E20",
+        },
       },
     },
   },
   typography: {
-    fontFamily: "Roboto, sans-serif",
+    fontFamily: "Heebo, Roboto, Arial, sans-serif",
   },
   components: {
     MuiAppBar: {
@@ -75,15 +81,13 @@ let theme = createTheme({
   },
 });
 
-theme = responsiveFontSizes(theme);
-
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <CssVarsProvider theme={theme}>
+    <ThemeProvider theme={theme}>
       <CssBaseline />
       <BrowserRouter>
         <App />
       </BrowserRouter>
-    </CssVarsProvider>
+    </ThemeProvider>
   </StrictMode>,
 );

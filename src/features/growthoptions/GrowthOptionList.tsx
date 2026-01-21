@@ -19,9 +19,7 @@ import SchoolIcon from "@mui/icons-material/School";
 import LaptopMacIcon from "@mui/icons-material/LaptopMac";
 import NewspaperIcon from "@mui/icons-material/Newspaper";
 
-const GREEN_COLOR = "#2c8332";
-
-// 🎨 צבעי רקע לאייקונים
+// 🎨 צבעי רקע לאייקונים - נשארים כמו שהם!
 const CATEGORY_COLORS: { [key: string]: string } = {
   management: "#FFF3E0",
   international: "#E0F7FA",
@@ -31,7 +29,7 @@ const CATEGORY_COLORS: { [key: string]: string } = {
   hitech: "#E3F2FD",
 };
 
-// אייקונים עם צבעים תואמים
+// אייקונים עם צבעים תואמים - נשארים כמו שהם!
 const ICONS: { [key: string]: { icon: React.ReactNode; color: string } } = {
   management: {
     icon: <NewspaperIcon sx={{ fontSize: 48 }} />,
@@ -47,7 +45,7 @@ const ICONS: { [key: string]: { icon: React.ReactNode; color: string } } = {
   },
   advanced: {
     icon: <SchoolIcon sx={{ fontSize: 48 }} />,
-    color: GREEN_COLOR,
+    color: "#2c8332",
   },
   startup: {
     icon: <RocketLaunchIcon sx={{ fontSize: 48 }} />,
@@ -158,11 +156,8 @@ export default function GrowthOptionList() {
       <Chip
         label={demand}
         size="small"
-        sx={{
-          fontWeight: 700,
-          bgcolor: isVeryHigh ? "cardGreen" : "cardBlue",
-          color: "text.primary",
-        }}
+        color={isVeryHigh ? "success" : "info"}
+        sx={{ fontWeight: 700 }}
       />
     );
   };

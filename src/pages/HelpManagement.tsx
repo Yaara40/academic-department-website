@@ -28,7 +28,7 @@ type Category = {
   id: CategoryId;
   title: string;
   description: string;
-  colorName: "cardBlue" | "cardGreen" | "cardPurple" | "cardOrange";
+  colorName: string;
   icon: React.ReactNode;
 };
 
@@ -63,7 +63,7 @@ const SectionHeader = ({
         bgcolor: colorName,
         display: "grid",
         placeItems: "center",
-        color: "text.primary",
+        color: "primary.main",
       }}
     >
       {icon}
@@ -84,7 +84,7 @@ const FAQBlock = ({
   faqs: FAQ[];
   expanded: string | false;
   handleAccordionChange: (
-    panel: string
+    panel: string,
   ) => (_: React.SyntheticEvent, isExpanded: boolean) => void;
 }) => (
   <Box>
@@ -133,32 +133,32 @@ export default function AdminHelp() {
         id: "leads",
         title: "ניהול מועמדים ופניות",
         description: 'טיפול בפניות שמגיעות מטופס "השארת פרטים"',
-        colorName: "cardBlue",
+        colorName: "cardGreen.main",
         icon: <PeopleAltOutlinedIcon sx={{ fontSize: 34 }} />,
       },
       {
         id: "courses",
         title: "ניהול קורסים ותוכן אקדמי",
         description: "ניהול רשימת הקורסים המוצגת למועמדים",
-        colorName: "cardGreen",
+        colorName: "secondary.light",
         icon: <MenuBookOutlinedIcon sx={{ fontSize: 34 }} />,
       },
       {
         id: "calculator",
         title: "מחשבון קבלה ודרישות",
         description: "הגדרת כללי מחשבון הקבלה והדרישות",
-        colorName: "cardPurple",
+        colorName: "cardGreen.main",
         icon: <CalculateOutlinedIcon sx={{ fontSize: 34 }} />,
       },
       {
         id: "settings",
         title: "הגדרות אתר וניווט",
         description: "שליטה בחוויית המשתמש באתר הציבורי",
-        colorName: "cardOrange",
+        colorName: "secondary.light",
         icon: <SettingsOutlinedIcon sx={{ fontSize: 34 }} />,
       },
     ],
-    []
+    [],
   );
 
   const scrollToSection = (id: CategoryId) => {
@@ -312,7 +312,7 @@ export default function AdminHelp() {
                       <CardContent sx={{ p: 0, textAlign: "center" }}>
                         <Box
                           sx={{
-                            color: "text.primary",
+                            color: "primary.main",
                             mb: 1,
                             display: "flex",
                             justifyContent: "center",
@@ -352,7 +352,7 @@ export default function AdminHelp() {
             <SectionHeader
               title="ניהול מועמדים ופניות (Leads)"
               icon={<PeopleAltOutlinedIcon />}
-              colorName="cardBlue"
+              colorName="cardGreen.main"
             />
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -440,9 +440,9 @@ export default function AdminHelp() {
 
               <Box
                 sx={{
-                  bgcolor: "cardGreen",
+                  bgcolor: "cardGreen.main",
                   borderRight: "4px solid",
-                  borderColor: "success.main",
+                  borderColor: "primary.main",
                   p: 2,
                   borderRadius: 2,
                 }}
@@ -450,7 +450,7 @@ export default function AdminHelp() {
                 <Box
                   sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}
                 >
-                  <TipsAndUpdatesOutlinedIcon sx={{ color: "success.main" }} />
+                  <TipsAndUpdatesOutlinedIcon color="primary" />
                   <Typography
                     variant="h6"
                     fontWeight={900}
@@ -490,7 +490,7 @@ export default function AdminHelp() {
             <SectionHeader
               title="ניהול קורסים ותוכן אקדמי"
               icon={<MenuBookOutlinedIcon />}
-              colorName="cardGreen"
+              colorName="secondary.light"
             />
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -578,9 +578,9 @@ export default function AdminHelp() {
 
               <Box
                 sx={{
-                  bgcolor: "cardGreen",
+                  bgcolor: "cardGreen.main",
                   borderRight: "4px solid",
-                  borderColor: "success.main",
+                  borderColor: "primary.main",
                   p: 2,
                   borderRadius: 2,
                 }}
@@ -588,7 +588,7 @@ export default function AdminHelp() {
                 <Box
                   sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}
                 >
-                  <TipsAndUpdatesOutlinedIcon sx={{ color: "success.main" }} />
+                  <TipsAndUpdatesOutlinedIcon color="primary" />
                   <Typography
                     variant="h6"
                     fontWeight={900}
@@ -627,7 +627,7 @@ export default function AdminHelp() {
             <SectionHeader
               title="מחשבון קבלה ודרישות קבלה"
               icon={<CalculateOutlinedIcon />}
-              colorName="cardPurple"
+              colorName="cardGreen.main"
             />
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -716,9 +716,9 @@ export default function AdminHelp() {
 
               <Box
                 sx={{
-                  bgcolor: "cardGreen",
+                  bgcolor: "cardGreen.main",
                   borderRight: "4px solid",
-                  borderColor: "success.main",
+                  borderColor: "primary.main",
                   p: 2,
                   borderRadius: 2,
                 }}
@@ -726,7 +726,7 @@ export default function AdminHelp() {
                 <Box
                   sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}
                 >
-                  <TipsAndUpdatesOutlinedIcon sx={{ color: "success.main" }} />
+                  <TipsAndUpdatesOutlinedIcon color="primary" />
                   <Typography
                     variant="h6"
                     fontWeight={900}
@@ -765,7 +765,7 @@ export default function AdminHelp() {
             <SectionHeader
               title="הגדרות אתר, ניווט ותוכן כללי"
               icon={<SettingsOutlinedIcon />}
-              colorName="cardOrange"
+              colorName="secondary.light"
             />
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -878,9 +878,9 @@ export default function AdminHelp() {
 
               <Box
                 sx={{
-                  bgcolor: "cardGreen",
+                  bgcolor: "cardGreen.main",
                   borderRight: "4px solid",
-                  borderColor: "success.main",
+                  borderColor: "primary.main",
                   p: 2,
                   borderRadius: 2,
                 }}
@@ -888,7 +888,7 @@ export default function AdminHelp() {
                 <Box
                   sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}
                 >
-                  <TipsAndUpdatesOutlinedIcon sx={{ color: "success.main" }} />
+                  <TipsAndUpdatesOutlinedIcon color="primary" />
                   <Typography
                     variant="h6"
                     fontWeight={900}
@@ -927,13 +927,13 @@ export default function AdminHelp() {
               p: 3,
               borderRadius: 3,
               border: "2px solid",
-              borderColor: "success.main",
-              bgcolor: "cardGreen",
+              borderColor: "primary.main",
+              bgcolor: "cardGreen.main",
               boxShadow: 3,
             }}
           >
             <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-              <TipsAndUpdatesOutlinedIcon sx={{ color: "success.main" }} />
+              <TipsAndUpdatesOutlinedIcon color="primary" />
               <Typography
                 variant="h5"
                 fontWeight={900}

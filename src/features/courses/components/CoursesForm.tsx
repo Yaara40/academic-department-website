@@ -12,7 +12,11 @@ import {
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { Course } from "../../../models/Course";
-import { addCourse, getCourseById, updateCourse } from "../../../firebase/courses";
+import {
+  addCourse,
+  getCourseById,
+  updateCourse,
+} from "../../../firebase/courses";
 
 interface FormErrors {
   [key: string]: boolean | string;
@@ -42,32 +46,33 @@ export default function CoursesForm() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // ✅ טעינת קורס קיים אם יש existingCourseId
   useEffect(() => {
-    if (existingCourseId) {
+    const loadCourse = async () => {
+      if (!existingCourseId) return;
+
       setIsEditMode(true);
       setLoading(true);
 
-      getCourseById(existingCourseId)
-        .then((courseData) => {
-          if (courseData) {
-            setValues(courseData);
-          } else {
-            setError("הקורס לא נמצא במערכת");
-          }
-        })
-        .catch((err) => {
-          console.error("Error fetching course:", err);
-          setError("שגיאה בטעינת הקורס");
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    }
+      try {
+        const courseData = await getCourseById(existingCourseId);
+        if (courseData) {
+          setValues(courseData);
+        } else {
+          setError("הקורס לא נמצא במערכת");
+        }
+      } catch (err) {
+        console.error("Error fetching course:", err);
+        setError("שגיאה בטעינת הקורס");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadCourse();
   }, [existingCourseId]);
 
   const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = event.target;
 
@@ -94,7 +99,6 @@ export default function CoursesForm() {
 
     const newErrors: FormErrors = {};
 
-    // בדיקות תקינות
     if (!values.courseId?.trim()) {
       newErrors.courseId = "מזהה קורס הוא שדה חובה";
     } else if (!/^\d{8}$/.test(values.courseId)) {
@@ -131,8 +135,7 @@ export default function CoursesForm() {
     }
 
     if (values.syllabus?.trim() && !/^https?:\/\/.+/.test(values.syllabus)) {
-      newErrors.syllabus =
-        "קישור לסילבוס חייב להתחיל ב-http:// או https://";
+      newErrors.syllabus = "קישור לסילבוס חייב להתחיל ב-http:// או https://";
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -142,7 +145,6 @@ export default function CoursesForm() {
 
     setLoading(true);
 
-    // ✅ אם במצב עריכה - עדכן, אחרת הוסף
     if (isEditMode && existingCourseId) {
       updateCourse(existingCourseId, {
         ...values,
@@ -178,7 +180,6 @@ export default function CoursesForm() {
     navigate("/admin/courses");
   };
 
-  // ✅ Loading indicator
   if (loading && isEditMode) {
     return (
       <Box
@@ -189,12 +190,11 @@ export default function CoursesForm() {
           height: "50vh",
         }}
       >
-        <CircularProgress size={60} />
+        <CircularProgress size={60} color="primary" />
       </Box>
     );
   }
 
-  // ✅ הודעת שגיאה אם הקורס לא נמצא
   if (error) {
     return (
       <Box
@@ -214,6 +214,7 @@ export default function CoursesForm() {
         </Alert>
         <Button
           variant="contained"
+          color="primary"
           onClick={() => navigate("/admin/courses")}
           size="large"
         >
@@ -234,7 +235,7 @@ export default function CoursesForm() {
         gap: 2,
         maxWidth: 800,
         direction: "rtl",
-        backgroundColor: "#fff",
+        backgroundColor: "background.paper",
         padding: 4,
         borderRadius: 2,
         boxShadow: 2,
@@ -242,7 +243,9 @@ export default function CoursesForm() {
       noValidate
       autoComplete="off"
     >
-      <h2>{isEditMode ? "עריכת קורס" : "הוספת קורס חדש"}</h2>
+      <Typography variant="h5" component="h2" fontWeight={700}>
+        {isEditMode ? "עריכת קורס" : "הוספת קורס חדש"}
+      </Typography>
 
       {/* מזהה קורס */}
       <TextField
@@ -262,6 +265,7 @@ export default function CoursesForm() {
         }}
         helperText={errors.courseId || "הזן בדיוק 8 ספרות"}
         inputProps={{ maxLength: 8 }}
+        color="primary"
       />
 
       {/* שם הקורס */}
@@ -276,6 +280,7 @@ export default function CoursesForm() {
         value={values.name || ""}
         onChange={handleChange}
         helperText={errors.name || `${(values.name || "").length}/80 תווים`}
+        color="primary"
       />
 
       {/* תיאור */}
@@ -294,6 +299,7 @@ export default function CoursesForm() {
         helperText={
           errors.description || `${(values.description || "").length}/300 תווים`
         }
+        color="primary"
       />
 
       <Box sx={{ display: "flex", gap: 2 }}>
@@ -312,6 +318,7 @@ export default function CoursesForm() {
             htmlInput: { min: 1, max: 10 },
           }}
           sx={{ flex: 1 }}
+          color="primary"
         />
 
         {/* שנה */}
@@ -326,6 +333,7 @@ export default function CoursesForm() {
           onChange={handleChange}
           helperText={errors.year || ""}
           sx={{ flex: 1 }}
+          color="primary"
         >
           <MenuItem value="שנה א">שנה א</MenuItem>
           <MenuItem value="שנה ב">שנה ב</MenuItem>
@@ -345,6 +353,7 @@ export default function CoursesForm() {
           onChange={handleChange}
           helperText={errors.semester || ""}
           sx={{ flex: 1 }}
+          color="primary"
         >
           <MenuItem value="א">סמסטר א</MenuItem>
           <MenuItem value="ב">סמסטר ב</MenuItem>
@@ -364,6 +373,7 @@ export default function CoursesForm() {
         value={values.syllabus || ""}
         onChange={handleChange}
         helperText={errors.syllabus || "חייב להתחיל ב-http:// או https://"}
+        color="primary"
       />
 
       {/* מרצה */}
@@ -376,6 +386,7 @@ export default function CoursesForm() {
         value={values.instructor || ""}
         onChange={handleChange}
         helperText="שם המרצה שמלמד את הקורס"
+        color="primary"
       />
 
       {/* קורס חובה */}
@@ -429,7 +440,7 @@ export default function CoursesForm() {
           disabled={loading}
         >
           {loading ? (
-            <CircularProgress size={24} />
+            <CircularProgress size={24} color="inherit" />
           ) : isEditMode ? (
             "עדכן"
           ) : (
@@ -438,6 +449,7 @@ export default function CoursesForm() {
         </Button>
         <Button
           variant="outlined"
+          color="primary"
           onClick={handleCancel}
           size="large"
           disabled={loading}

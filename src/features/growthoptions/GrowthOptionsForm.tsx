@@ -22,7 +22,7 @@ type SnackState = {
 export default function GrowthOptionsForm() {
   const [pageTitle, setPageTitle] = useState("ניהול אפשרויות צמיחה");
   const [pageDescription, setPageDescription] = useState(
-    "ערוך את המידע על אפשרויות הקריירה והצמיחה לבוגרים"
+    "ערוך את המידע על אפשרויות הקריירה והצמיחה לבוגרים",
   );
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
@@ -102,7 +102,7 @@ export default function GrowthOptionsForm() {
   if (loading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
-        <CircularProgress />
+        <CircularProgress color="primary" />
       </Box>
     );
   }
@@ -110,7 +110,8 @@ export default function GrowthOptionsForm() {
   return (
     <Box
       sx={{
-        border: "1px solid #eee",
+        border: "1px solid",
+        borderColor: "divider",
         borderRadius: 3,
         p: 3,
         mb: 4,
@@ -128,6 +129,7 @@ export default function GrowthOptionsForm() {
         error={Boolean(errors.pageTitle)}
         helperText={errors.pageTitle || `${pageTitle.length}/80 תווים`}
         fullWidth
+        color="primary"
         sx={{ mb: 2 }}
       />
       <TextField
@@ -141,21 +143,14 @@ export default function GrowthOptionsForm() {
         fullWidth
         multiline
         rows={2}
+        color="primary"
         sx={{ mb: 2 }}
       />
       <Button
         variant="contained"
+        color="primary"
         onClick={handleSave}
         disabled={saving}
-        sx={{
-          bgcolor: "#2c8332",
-          "&:hover": {
-            bgcolor: "#236a28",
-          },
-          "&:disabled": {
-            bgcolor: "#a5d6a7", // ירוק בהיר כש-disabled
-          },
-        }}
       >
         {saving ? "שומר..." : "שמור ל-Firestore"}
       </Button>

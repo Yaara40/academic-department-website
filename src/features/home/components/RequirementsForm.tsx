@@ -35,9 +35,6 @@ type SnackState = {
 
 const isOnlyDigits = (value: string) => /^[0-9]+$/.test(value.trim());
 
-// צבע ירוק פסטל - כמו בHeader
-const GREEN_COLOR = "#7CB342";
-
 export default function RequirementsForm() {
   const [requirements, setRequirements] = useState<Requirement[]>([]);
   const [loading, setLoading] = useState(true);
@@ -62,7 +59,7 @@ export default function RequirementsForm() {
     "#AED581", // ירוק בהיר
     "#9CCC65", // ירוק בינוני בהיר
     "#8BC34A", // ירוק בינוני
-    "#7CB342", // ירוק כהה יותר (כמו ה-Header)
+    "#7CB342", // ירוק כהה יותר
   ];
 
   // טעינה מ-Firestore
@@ -138,7 +135,7 @@ export default function RequirementsForm() {
       await updateRequirement(fullRequirement);
 
       setRequirements((prev) =>
-        prev.map((r) => (r.id === currentReq.id ? { ...r, ...updated } : r))
+        prev.map((r) => (r.id === currentReq.id ? { ...r, ...updated } : r)),
       );
 
       setEditDialogOpen(false);
@@ -210,7 +207,7 @@ export default function RequirementsForm() {
   if (loading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
-        <CircularProgress sx={{ color: GREEN_COLOR }} />
+        <CircularProgress color="primary" />
       </Box>
     );
   }
@@ -241,11 +238,10 @@ export default function RequirementsForm() {
 
         <Button
           variant="contained"
+          color="primary"
           startIcon={<AddIcon />}
           onClick={handleOpenAddDialog}
           sx={{
-            bgcolor: "#2c8332ff",
-            "&:hover": { bgcolor: "#689F38" },
             "& .MuiButton-startIcon": { marginLeft: "6px" },
           }}
         >
@@ -264,7 +260,7 @@ export default function RequirementsForm() {
           <Card
             key={req.id}
             sx={{
-              bgcolor: "#E8F5E9",
+              bgcolor: "secondary.light",
               boxShadow: 0,
               transition: "all 0.2s",
               "&:hover": {
@@ -282,11 +278,16 @@ export default function RequirementsForm() {
                 </Typography>
 
                 <Box>
-                  <IconButton size="small" onClick={() => handleEditClick(req)}>
+                  <IconButton
+                    size="small"
+                    color="primary"
+                    onClick={() => handleEditClick(req)}
+                  >
                     <EditOutlinedIcon fontSize="small" />
                   </IconButton>
                   <IconButton
                     size="small"
+                    color="error"
                     onClick={() => handleAskDelete(req.id)}
                   >
                     <DeleteOutlineOutlinedIcon fontSize="small" />
@@ -314,6 +315,7 @@ export default function RequirementsForm() {
             onChange={(e) => setEditedTitle(e.target.value)}
             error={Boolean(errors.title)}
             helperText={errors.title || " "}
+            color="primary"
             sx={{ mt: 2, mb: 2 }}
           />
           <TextField
@@ -321,6 +323,7 @@ export default function RequirementsForm() {
             label="תת כותרת"
             value={editedSubtitle}
             onChange={(e) => setEditedSubtitle(e.target.value)}
+            color="primary"
             sx={{ mb: 2 }}
           />
           <TextField
@@ -330,18 +333,12 @@ export default function RequirementsForm() {
             onChange={(e) => setEditedValue(e.target.value)}
             error={Boolean(errors.value)}
             helperText={errors.value || " "}
+            color="primary"
           />
         </DialogContent>
         <DialogActions sx={{ direction: "rtl" }}>
           <Button onClick={() => setEditDialogOpen(false)}>ביטול</Button>
-          <Button
-            onClick={handleSaveEdit}
-            variant="contained"
-            sx={{
-              bgcolor: GREEN_COLOR,
-              "&:hover": { bgcolor: "#689F38" },
-            }}
-          >
+          <Button onClick={handleSaveEdit} variant="contained" color="primary">
             שמור
           </Button>
         </DialogActions>
@@ -358,6 +355,7 @@ export default function RequirementsForm() {
             onChange={(e) => setEditedTitle(e.target.value)}
             error={Boolean(errors.title)}
             helperText={errors.title || " "}
+            color="primary"
             sx={{ mt: 2, mb: 2 }}
           />
           <TextField
@@ -365,6 +363,7 @@ export default function RequirementsForm() {
             label="תת כותרת"
             value={editedSubtitle}
             onChange={(e) => setEditedSubtitle(e.target.value)}
+            color="primary"
             sx={{ mb: 2 }}
           />
           <TextField
@@ -374,18 +373,12 @@ export default function RequirementsForm() {
             onChange={(e) => setEditedValue(e.target.value)}
             error={Boolean(errors.value)}
             helperText={errors.value || " "}
+            color="primary"
           />
         </DialogContent>
         <DialogActions sx={{ direction: "rtl" }}>
           <Button onClick={() => setAddDialogOpen(false)}>ביטול</Button>
-          <Button
-            onClick={handleAddNew}
-            variant="contained"
-            sx={{
-              bgcolor: GREEN_COLOR,
-              "&:hover": { bgcolor: "#689F38" },
-            }}
-          >
+          <Button onClick={handleAddNew} variant="contained" color="primary">
             הוסף
           </Button>
         </DialogActions>

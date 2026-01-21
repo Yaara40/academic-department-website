@@ -131,8 +131,8 @@ export default function TestimonialsForm() {
 
       setTestimonials((prev) =>
         prev.map((t) =>
-          t.id === currentTestimonial.id ? { ...t, ...updated } : t
-        )
+          t.id === currentTestimonial.id ? { ...t, ...updated } : t,
+        ),
       );
 
       setEditDialogOpen(false);
@@ -162,7 +162,7 @@ export default function TestimonialsForm() {
         company: editedCompany,
         text: editedText,
         initial: editedName.charAt(0),
-        color: "#10b981",
+        color: "#2c8332",
       };
 
       const id = await addTestimonial(newTestimonial);
@@ -181,7 +181,7 @@ export default function TestimonialsForm() {
     if (testimonials.length === 1) {
       openSnack(
         "❌ לא ניתן למחוק את ההמלצה היחידה. חייבת להישאר לפחות המלצה אחת.",
-        "error"
+        "error",
       );
       return;
     }
@@ -207,7 +207,7 @@ export default function TestimonialsForm() {
   if (loading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
-        <CircularProgress />
+        <CircularProgress color="primary" />
       </Box>
     );
   }
@@ -215,7 +215,8 @@ export default function TestimonialsForm() {
   return (
     <Box
       sx={{
-        border: "1px solid #eee",
+        border: "1px solid",
+        borderColor: "divider",
         borderRadius: 3,
         p: 3,
         mb: 4,
@@ -236,11 +237,10 @@ export default function TestimonialsForm() {
         </Typography>
         <Button
           variant="contained"
+          color="primary"
           startIcon={<AddIcon />}
           onClick={handleOpenAddDialog}
           sx={{
-            bgcolor: "#2c8332ff",
-            "&:hover": { bgcolor: "#689F38" },
             "& .MuiButton-startIcon": { marginLeft: "6px" },
           }}
         >
@@ -257,7 +257,7 @@ export default function TestimonialsForm() {
             justifyContent: "space-between",
             p: 2,
             mb: 2,
-            bgcolor: "cardGray",
+            bgcolor: "action.hover",
             borderRadius: 2,
           }}
         >
@@ -280,12 +280,14 @@ export default function TestimonialsForm() {
             <Chip label="מוצג" size="small" color="success" />
             <IconButton
               size="small"
+              color="primary"
               onClick={() => handleEditClick(testimonial)}
             >
               <EditOutlinedIcon fontSize="small" />
             </IconButton>
             <IconButton
               size="small"
+              color="error"
               onClick={() => handleAskDelete(testimonial.id)}
             >
               <DeleteOutlineOutlinedIcon fontSize="small" />
@@ -305,6 +307,7 @@ export default function TestimonialsForm() {
             onChange={(e) => setEditedName(e.target.value)}
             error={Boolean(errors.name)}
             helperText={errors.name || " "}
+            color="primary"
             sx={{ mt: 2, mb: 2 }}
           />
           <TextField
@@ -314,6 +317,7 @@ export default function TestimonialsForm() {
             onChange={(e) => setEditedCompany(e.target.value)}
             error={Boolean(errors.company)}
             helperText={errors.company || " "}
+            color="primary"
             sx={{ mb: 2 }}
           />
           <TextField
@@ -323,13 +327,14 @@ export default function TestimonialsForm() {
             onChange={(e) => setEditedText(e.target.value)}
             error={Boolean(errors.text)}
             helperText={errors.text || " "}
+            color="primary"
             multiline
             rows={3}
           />
         </DialogContent>
         <DialogActions sx={{ direction: "rtl" }}>
           <Button onClick={() => setEditDialogOpen(false)}>ביטול</Button>
-          <Button onClick={handleSaveEdit} variant="contained">
+          <Button onClick={handleSaveEdit} variant="contained" color="primary">
             שמור
           </Button>
         </DialogActions>
@@ -346,6 +351,7 @@ export default function TestimonialsForm() {
             onChange={(e) => setEditedName(e.target.value)}
             error={Boolean(errors.name)}
             helperText={errors.name || " "}
+            color="primary"
             sx={{ mt: 2, mb: 2 }}
           />
           <TextField
@@ -355,6 +361,7 @@ export default function TestimonialsForm() {
             onChange={(e) => setEditedCompany(e.target.value)}
             error={Boolean(errors.company)}
             helperText={errors.company || " "}
+            color="primary"
             sx={{ mb: 2 }}
           />
           <TextField
@@ -364,13 +371,14 @@ export default function TestimonialsForm() {
             onChange={(e) => setEditedText(e.target.value)}
             error={Boolean(errors.text)}
             helperText={errors.text || " "}
+            color="primary"
             multiline
             rows={3}
           />
         </DialogContent>
         <DialogActions sx={{ direction: "rtl" }}>
           <Button onClick={() => setAddDialogOpen(false)}>ביטול</Button>
-          <Button onClick={handleAddNew} variant="contained">
+          <Button onClick={handleAddNew} variant="contained" color="primary">
             הוסף
           </Button>
         </DialogActions>

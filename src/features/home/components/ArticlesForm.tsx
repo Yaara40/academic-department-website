@@ -56,7 +56,7 @@ export default function ArticlesForm() {
   const [editedTags, setEditedTags] = useState("");
 
   const [errors, setErrors] = useState<Record<string, string>>({});
-  
+
   const [snack, setSnack] = useState<SnackState>({
     open: false,
     message: "",
@@ -148,7 +148,9 @@ export default function ArticlesForm() {
       await updateArticle({ ...currentArticle, ...updated });
 
       setArticles((prev) =>
-        prev.map((a) => (a.id === currentArticle.id ? { ...a, ...updated } : a))
+        prev.map((a) =>
+          a.id === currentArticle.id ? { ...a, ...updated } : a,
+        ),
       );
 
       setEditDialogOpen(false);
@@ -199,7 +201,7 @@ export default function ArticlesForm() {
     if (articles.length === 1) {
       openSnack(
         "❌ לא ניתן למחוק את המאמר היחיד. חייב להישאר לפחות מאמר אחד.",
-        "error"
+        "error",
       );
       return;
     }
@@ -225,7 +227,7 @@ export default function ArticlesForm() {
   if (loading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
-        <CircularProgress />
+        <CircularProgress color="primary" />
       </Box>
     );
   }
@@ -233,7 +235,8 @@ export default function ArticlesForm() {
   return (
     <Box
       sx={{
-        border: "1px solid #eee",
+        border: "1px solid",
+        borderColor: "divider",
         borderRadius: 3,
         p: 3,
         mb: 4,
@@ -255,11 +258,10 @@ export default function ArticlesForm() {
 
         <Button
           variant="contained"
+          color="primary"
           startIcon={<AddIcon />}
           onClick={handleOpenAddDialog}
           sx={{
-            bgcolor: "#2c8332ff",
-            "&:hover": { bgcolor: "#689F38" },
             "& .MuiButton-startIcon": { marginLeft: "6px" },
           }}
         >
@@ -276,7 +278,7 @@ export default function ArticlesForm() {
             justifyContent: "space-between",
             p: 2,
             mb: 2,
-            bgcolor: "cardGray",
+            bgcolor: "action.hover",
             borderRadius: 2,
           }}
         >
@@ -305,11 +307,8 @@ export default function ArticlesForm() {
                     key={index}
                     label={tag}
                     size="small"
-                    sx={{
-                      bgcolor: "#2c8332",
-                      color: "#E8F5E9",
-                      fontWeight: 600,
-                    }}
+                    color="primary"
+                    sx={{ fontWeight: 600 }}
                   />
                 ))}
               </Box>
@@ -317,11 +316,16 @@ export default function ArticlesForm() {
           </Box>
 
           <Box>
-            <IconButton size="small" onClick={() => handleEditClick(article)}>
+            <IconButton
+              size="small"
+              color="primary"
+              onClick={() => handleEditClick(article)}
+            >
               <EditOutlinedIcon fontSize="small" />
             </IconButton>
             <IconButton
               size="small"
+              color="error"
               onClick={() => handleAskDelete(article.id)}
             >
               <DeleteOutlineOutlinedIcon fontSize="small" />
@@ -341,6 +345,7 @@ export default function ArticlesForm() {
             onChange={(e) => setEditedTitle(e.target.value)}
             error={Boolean(errors.title)}
             helperText={errors.title || " "}
+            color="primary"
             sx={{ mt: 2, mb: 2 }}
           />
 
@@ -351,6 +356,7 @@ export default function ArticlesForm() {
             onChange={(e) => setEditedImageUrl(e.target.value)}
             error={Boolean(errors.imageUrl)}
             helperText={errors.imageUrl || "חייב להתחיל ב-http:// או https://"}
+            color="primary"
             sx={{ mb: 2 }}
           />
 
@@ -360,12 +366,13 @@ export default function ArticlesForm() {
             value={editedTags}
             onChange={(e) => setEditedTags(e.target.value)}
             placeholder="קריירה, AI, חדש"
+            color="primary"
           />
         </DialogContent>
 
         <DialogActions sx={{ direction: "rtl" }}>
           <Button onClick={() => setEditDialogOpen(false)}>ביטול</Button>
-          <Button onClick={handleSaveEdit} variant="contained">
+          <Button onClick={handleSaveEdit} variant="contained" color="primary">
             שמור
           </Button>
         </DialogActions>
@@ -382,6 +389,7 @@ export default function ArticlesForm() {
             onChange={(e) => setEditedTitle(e.target.value)}
             error={Boolean(errors.title)}
             helperText={errors.title || " "}
+            color="primary"
             sx={{ mt: 2, mb: 2 }}
           />
 
@@ -392,6 +400,7 @@ export default function ArticlesForm() {
             onChange={(e) => setEditedImageUrl(e.target.value)}
             error={Boolean(errors.imageUrl)}
             helperText={errors.imageUrl || "חייב להתחיל ב-http:// או https://"}
+            color="primary"
             sx={{ mb: 2 }}
           />
 
@@ -401,12 +410,13 @@ export default function ArticlesForm() {
             value={editedTags}
             onChange={(e) => setEditedTags(e.target.value)}
             placeholder="קריירה, AI, חדש"
+            color="primary"
           />
         </DialogContent>
 
         <DialogActions sx={{ direction: "rtl" }}>
           <Button onClick={() => setAddDialogOpen(false)}>ביטול</Button>
-          <Button onClick={handleAddNew} variant="contained">
+          <Button onClick={handleAddNew} variant="contained" color="primary">
             הוסף
           </Button>
         </DialogActions>

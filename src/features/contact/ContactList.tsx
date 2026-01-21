@@ -69,15 +69,15 @@ export default function ContactList() {
   const getStatusColor = (status: Contact["status"]) => {
     switch (status) {
       case "חדש":
-        return { bg: "cardBlue" };
+        return "info";
       case "ממתין":
-        return { bg: "cardYellow" };
+        return "warning";
       case "נוצר קשר":
-        return { bg: "cardGreen" };
+        return "success";
       case "נסגר":
-        return { bg: "cardGray" };
+        return "default";
       default:
-        return { bg: "cardGray" };
+        return "default";
     }
   };
 
@@ -95,10 +95,10 @@ export default function ContactList() {
           mb: 4,
         }}
       >
-        <Card sx={{ bgcolor: "#E8F5E9" }}>
+        <Card sx={{ bgcolor: "cardGreen.main" }}>
           <CardContent sx={{ textAlign: "center" }}>
             <Box sx={{ display: "flex", justifyContent: "center", mb: 1 }}>
-              <Avatar sx={{ bgcolor: "rgba(0,0,0,0.1)" }}>
+              <Avatar sx={{ bgcolor: "action.hover" }}>
                 <PeopleOutlineIcon color="action" />
               </Avatar>
             </Box>
@@ -109,10 +109,10 @@ export default function ContactList() {
           </CardContent>
         </Card>
 
-        <Card sx={{ bgcolor: "#E8F5E9" }}>
+        <Card sx={{ bgcolor: "cardGreen.main" }}>
           <CardContent sx={{ textAlign: "center" }}>
             <Box sx={{ display: "flex", justifyContent: "center", mb: 1 }}>
-              <Avatar sx={{ bgcolor: "rgba(0,0,0,0.1)" }}>
+              <Avatar sx={{ bgcolor: "action.hover" }}>
                 <AccessTimeIcon color="action" />
               </Avatar>
             </Box>
@@ -123,10 +123,10 @@ export default function ContactList() {
           </CardContent>
         </Card>
 
-        <Card sx={{ bgcolor: "#E8F5E9" }}>
+        <Card sx={{ bgcolor: "cardGreen.main" }}>
           <CardContent sx={{ textAlign: "center" }}>
             <Box sx={{ display: "flex", justifyContent: "center", mb: 1 }}>
-              <Avatar sx={{ bgcolor: "rgba(0,0,0,0.1)" }}>
+              <Avatar sx={{ bgcolor: "action.hover" }}>
                 <PeopleOutlineIcon color="action" />
               </Avatar>
             </Box>
@@ -137,10 +137,10 @@ export default function ContactList() {
           </CardContent>
         </Card>
 
-        <Card sx={{ bgcolor: "#E8F5E9" }}>
+        <Card sx={{ bgcolor: "cardGreen.main" }}>
           <CardContent sx={{ textAlign: "center" }}>
             <Box sx={{ display: "flex", justifyContent: "center", mb: 1 }}>
-              <Avatar sx={{ bgcolor: "rgba(0,0,0,0.1)" }}>
+              <Avatar sx={{ bgcolor: "action.hover" }}>
                 <PeopleOutlineIcon color="action" />
               </Avatar>
             </Box>
@@ -189,7 +189,7 @@ export default function ContactList() {
                   <TableCell align="right">
                     <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                       <Avatar
-                        sx={{ bgcolor: "#9CCC65", width: 40, height: 40 }}
+                        sx={{ bgcolor: "primary.main", width: 40, height: 40 }}
                       >
                         {contact.initial}
                       </Avatar>
@@ -216,11 +216,8 @@ export default function ContactList() {
                     <Chip
                       label={contact.status}
                       size="small"
-                      sx={{
-                        fontWeight: 700,
-                        bgcolor: getStatusColor(contact.status).bg,
-                        color: "text.primary", // משתמש בצבע טקסט דינמי במקום כחול כהה קבוע
-                      }}
+                      color={getStatusColor(contact.status)}
+                      sx={{ fontWeight: 700 }}
                     />
                   </TableCell>
                 </TableRow>

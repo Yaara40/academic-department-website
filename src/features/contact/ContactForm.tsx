@@ -32,7 +32,7 @@ export default function ContactForm() {
   const [snackOpen, setSnackOpen] = useState(false);
   const [snackMsg, setSnackMsg] = useState("");
   const [snackSeverity, setSnackSeverity] = useState<"success" | "error">(
-    "success"
+    "success",
   );
 
   const availableSources = ["אתר", "רשתות חברתיות", "יום פתוח", "המלצה מחבר"];
@@ -41,7 +41,7 @@ export default function ContactForm() {
     setSources((prev) =>
       prev.includes(source)
         ? prev.filter((s) => s !== source)
-        : [...prev, source]
+        : [...prev, source],
     );
   };
 
@@ -114,7 +114,8 @@ export default function ContactForm() {
   return (
     <Box
       sx={{
-        border: "1px solid #eee",
+        border: "1px solid",
+        borderColor: "divider",
         borderRadius: 3,
         p: 3,
         mb: 4,
@@ -129,7 +130,7 @@ export default function ContactForm() {
       <Box sx={{ display: "grid", gap: 2 }}>
         {/* שם */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <PersonIcon />
+          <PersonIcon color="primary" />
           <TextField
             fullWidth
             label="שם מלא *"
@@ -137,12 +138,13 @@ export default function ContactForm() {
             onChange={(e) => setName(e.target.value)}
             error={Boolean(errors.name)}
             helperText={errors.name || " "}
+            color="primary"
           />
         </Box>
 
         {/* אימייל */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <EmailIcon />
+          <EmailIcon color="primary" />
           <TextField
             fullWidth
             label="אימייל *"
@@ -152,12 +154,13 @@ export default function ContactForm() {
             helperText={errors.email || "לדוגמה: name@example.com"}
             type="email"
             inputProps={{ inputMode: "email", dir: "ltr" }}
+            color="primary"
           />
         </Box>
 
         {/* טלפון */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <PhoneIcon />
+          <PhoneIcon color="primary" />
           <TextField
             fullWidth
             label="טלפון *"
@@ -167,12 +170,13 @@ export default function ContactForm() {
             helperText={errors.phone || "לדוגמה: 050-1234567"}
             type="tel"
             inputProps={{ inputMode: "tel", dir: "ltr" }}
+            color="primary"
           />
         </Box>
 
         {/* הודעה */}
         <Box sx={{ display: "flex", alignItems: "flex-start", gap: 2 }}>
-          <MessageIcon sx={{ mt: 2 }} />
+          <MessageIcon color="primary" sx={{ mt: 2 }} />
           <TextField
             fullWidth
             label="הודעה *"
@@ -185,12 +189,13 @@ export default function ContactForm() {
             }
             multiline
             rows={4}
+            color="primary"
           />
         </Box>
 
         {/* איפה שמעת עלינו */}
         <Box sx={{ display: "flex", alignItems: "flex-start", gap: 2 }}>
-          <SourceIcon sx={{ mt: 1 }} />
+          <SourceIcon color="primary" sx={{ mt: 1 }} />
           <FormControl
             error={Boolean(errors.sources)}
             component="fieldset"
@@ -207,6 +212,7 @@ export default function ContactForm() {
                     <Checkbox
                       checked={sources.includes(source)}
                       onChange={() => handleSourceChange(source)}
+                      color="primary"
                     />
                   }
                   label={source}
@@ -219,14 +225,9 @@ export default function ContactForm() {
 
         <Button
           variant="contained"
+          color="primary"
           onClick={handleSubmit}
-          sx={{
-            mt: 2,
-            bgcolor: "#2c8332",
-            "&:hover": {
-              bgcolor: "#236a28", // צבע כהה יותר ב-hover
-            },
-          }}
+          sx={{ mt: 2 }}
         >
           שלח פרטים
         </Button>

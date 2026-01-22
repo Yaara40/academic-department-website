@@ -4,18 +4,12 @@ import EmailIcon from "@mui/icons-material/Email";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import ContactForm from "../features/contact/ContactForm";
-
-// ✅ הוספה
 import LinearProgress from "@mui/material/LinearProgress";
 import { useEffect, useState } from "react";
 
-const GREEN_COLOR = "#2c8332";
-
 export default function UserContact() {
-  // ✅ הוספה
   const [pageLoading, setPageLoading] = useState(true);
 
-  // ✅ הוספה
   useEffect(() => {
     const t = setTimeout(() => setPageLoading(false), 350);
 
@@ -29,20 +23,22 @@ export default function UserContact() {
     window.addEventListener("page-loading", onPageLoading as EventListener);
     return () => {
       clearTimeout(t);
-      window.removeEventListener("page-loading", onPageLoading as EventListener);
+      window.removeEventListener(
+        "page-loading",
+        onPageLoading as EventListener,
+      );
     };
   }, []);
 
   return (
     <Box sx={{ direction: "rtl" }}>
-      {/* ✅ הוספה */}
-      {pageLoading && <LinearProgress />}
+      {pageLoading && <LinearProgress color="primary" />}
 
       {/* Hero Section */}
       <Box
         sx={{
-          bgcolor: "#1a2332",
-          color: "white",
+          bgcolor: "hero.main",
+          color: "hero.contrastText",
           py: 8,
           textAlign: "center",
         }}
@@ -93,14 +89,14 @@ export default function UserContact() {
                         width: 48,
                         height: 48,
                         borderRadius: 2,
-                        bgcolor: "#C5E1A5",
+                        bgcolor: "secondary.light",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         mr: 2,
                       }}
                     >
-                      <PhoneIcon sx={{ color: GREEN_COLOR }} />
+                      <PhoneIcon color="primary" />
                     </Box>
                     <Box>
                       <Typography variant="body2" color="text.secondary">
@@ -126,14 +122,14 @@ export default function UserContact() {
                         width: 48,
                         height: 48,
                         borderRadius: 2,
-                        bgcolor: "#C5E1A5",
+                        bgcolor: "secondary.light",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         mr: 2,
                       }}
                     >
-                      <EmailIcon sx={{ color: GREEN_COLOR }} />
+                      <EmailIcon color="primary" />
                     </Box>
                     <Box>
                       <Typography variant="body2" color="text.secondary">
@@ -159,14 +155,14 @@ export default function UserContact() {
                         width: 48,
                         height: 48,
                         borderRadius: 2,
-                        bgcolor: "#C5E1A5",
+                        bgcolor: "secondary.light",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         mr: 2,
                       }}
                     >
-                      <LocationOnIcon sx={{ color: GREEN_COLOR }} />
+                      <LocationOnIcon color="primary" />
                     </Box>
                     <Box>
                       <Typography variant="body2" color="text.secondary">
@@ -192,14 +188,14 @@ export default function UserContact() {
                         width: 48,
                         height: 48,
                         borderRadius: 2,
-                        bgcolor: "#C5E1A5",
+                        bgcolor: "secondary.light",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         mr: 2,
                       }}
                     >
-                      <AccessTimeIcon sx={{ color: GREEN_COLOR }} />
+                      <AccessTimeIcon color="primary" />
                     </Box>
                     <Box>
                       <Typography variant="body2" color="text.secondary">

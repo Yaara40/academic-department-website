@@ -10,6 +10,7 @@ export interface Article {
   id: string;
   title: string;
   imageUrl: string;
+  articleUrl: string;
   tags: string[];
 }
 

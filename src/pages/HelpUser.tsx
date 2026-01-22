@@ -28,15 +28,6 @@ import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import TipsAndUpdatesOutlinedIcon from "@mui/icons-material/TipsAndUpdatesOutlined";
 
-// 🎨 מערך צבעים ירוקים מ-MUI
-const COLORS = {
-  GREEN_LIGHTEST: "#E8F5E9", // green[50]
-  GREEN_LIGHT: "#C5E1A5", // lightGreen[200]
-  GREEN_MEDIUM: "#A5D6A7", // green[200]
-  GREEN_MAIN: "#81C784", // green[300]
-  GREEN_PRIMARY: "#2c8332", // הירוק העיקרי שלנו
-};
-
 type SectionId =
   | "contact"
   | "openDays"
@@ -105,7 +96,7 @@ const FAQBlock = ({
   faqs: FAQ[];
   expanded: string | false;
   handleAccordionChange: (
-    panel: string
+    panel: string,
   ) => (_: React.SyntheticEvent, isExpanded: boolean) => void;
 }) => (
   <Box>
@@ -156,46 +147,46 @@ export default function HelpUser() {
         id: "contact",
         title: "צור קשר",
         description: "איך יוצרים קשר עם יועץ/ת רישום או מזכירות",
-        colorName: COLORS.GREEN_LIGHTEST,
+        colorName: "secondary.light",
         icon: <PhoneInTalkRoundedIcon sx={{ fontSize: 34 }} />,
       },
       {
         id: "openDays",
         title: "ימים פתוחים",
         description: "הרשמה והגעה, מה להביא ומה קורה ביום פתוח",
-        colorName: COLORS.GREEN_LIGHT,
+        colorName: "primary.light",
         icon: <EventAvailableRoundedIcon sx={{ fontSize: 34 }} />,
       },
       {
         id: "schedule",
         title: "לוחות זמנים",
         description: "שעות לימוד, מועדי סמסטר ומבחנים",
-        colorName: COLORS.GREEN_MEDIUM,
+        colorName: "secondary.main",
         icon: <CalendarMonthRoundedIcon sx={{ fontSize: 34 }} />,
       },
       {
         id: "tuition",
         title: "שכר לימוד ומימון",
         description: "שכר לימוד, מלגות ואפשרויות תשלום",
-        colorName: COLORS.GREEN_MAIN,
+        colorName: "primary.main",
         icon: <AttachMoneyRoundedIcon sx={{ fontSize: 34 }} />,
       },
       {
         id: "admission",
         title: "תנאי קבלה והרשמה",
         description: "מסמכים, דרישות, ותהליך הרשמה מלא",
-        colorName: COLORS.GREEN_LIGHTEST,
+        colorName: "secondary.light",
         icon: <SchoolRoundedIcon sx={{ fontSize: 34 }} />,
       },
       {
         id: "program",
         title: "על התוכנית",
         description: "מידע כללי על התואר, קורסים וקריירה",
-        colorName: COLORS.GREEN_LIGHT,
+        colorName: "primary.light",
         icon: <InfoRoundedIcon sx={{ fontSize: 34 }} />,
       },
     ],
-    []
+    [],
   );
 
   const scrollToSection = (id: SectionId) => {
@@ -322,6 +313,7 @@ export default function HelpUser() {
           <Box sx={{ maxWidth: 520, mx: "auto", mt: 2 }}>
             <TextField
               fullWidth
+              color="primary"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="חפשו שאלה..."
@@ -416,7 +408,7 @@ export default function HelpUser() {
             <SectionHeader
               title="צור קשר"
               icon={<PhoneInTalkRoundedIcon />}
-              colorName={COLORS.GREEN_LIGHTEST}
+              colorName="secondary.light"
             />
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -483,7 +475,7 @@ export default function HelpUser() {
             <SectionHeader
               title="ימים פתוחים"
               icon={<EventAvailableRoundedIcon />}
-              colorName={COLORS.GREEN_LIGHT}
+              colorName="primary.light"
             />
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -533,7 +525,7 @@ export default function HelpUser() {
             <SectionHeader
               title="לוחות זמנים"
               icon={<CalendarMonthRoundedIcon />}
-              colorName={COLORS.GREEN_MEDIUM}
+              colorName="secondary.main"
             />
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -571,7 +563,7 @@ export default function HelpUser() {
             <SectionHeader
               title="שכר לימוד ומימון"
               icon={<AttachMoneyRoundedIcon />}
-              colorName={COLORS.GREEN_MAIN}
+              colorName="primary.main"
             />
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -621,7 +613,7 @@ export default function HelpUser() {
             <SectionHeader
               title="תנאי קבלה והרשמה"
               icon={<SchoolRoundedIcon />}
-              colorName={COLORS.GREEN_LIGHTEST}
+              colorName="secondary.light"
             />
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -671,7 +663,7 @@ export default function HelpUser() {
             <SectionHeader
               title="על התוכנית"
               icon={<InfoRoundedIcon />}
-              colorName={COLORS.GREEN_LIGHT}
+              colorName="primary.light"
             />
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -684,9 +676,9 @@ export default function HelpUser() {
 
               <Box
                 sx={{
-                  bgcolor: COLORS.GREEN_LIGHTEST,
+                  bgcolor: "secondary.light",
                   borderRight: "4px solid",
-                  borderColor: COLORS.GREEN_PRIMARY,
+                  borderColor: "primary.main",
                   p: 2,
                   borderRadius: 2,
                 }}
@@ -694,9 +686,7 @@ export default function HelpUser() {
                 <Box
                   sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}
                 >
-                  <TipsAndUpdatesOutlinedIcon
-                    sx={{ color: COLORS.GREEN_PRIMARY }}
-                  />
+                  <TipsAndUpdatesOutlinedIcon color="primary" />
                   <Typography
                     variant="h6"
                     fontWeight={900}

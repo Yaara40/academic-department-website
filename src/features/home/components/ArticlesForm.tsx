@@ -53,6 +53,7 @@ export default function ArticlesForm() {
 
   const [editedTitle, setEditedTitle] = useState("");
   const [editedImageUrl, setEditedImageUrl] = useState("");
+  const [editedArticleUrl, setEditedArticleUrl] = useState("");
   const [editedTags, setEditedTags] = useState("");
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -91,6 +92,7 @@ export default function ArticlesForm() {
   const resetFormFields = () => {
     setEditedTitle("");
     setEditedImageUrl("");
+    setEditedArticleUrl("");
     setEditedTags("");
     setErrors({});
   };
@@ -99,6 +101,7 @@ export default function ArticlesForm() {
     const newErrors: Record<string, string> = {};
     const title = editedTitle.trim();
     const img = editedImageUrl.trim();
+    const articleUrl = editedArticleUrl.trim();
 
     if (!title) {
       newErrors.title = "כותרת המאמר היא שדה חובה";
@@ -114,6 +117,13 @@ export default function ArticlesForm() {
         "קישור לתמונה חייב להיות URL תקין שמתחיל ב-http:// או https://";
     }
 
+    if (!articleUrl) {
+      newErrors.articleUrl = "קישור למאמר הוא שדה חובה";
+    } else if (!isValidHttpUrl(articleUrl)) {
+      newErrors.articleUrl =
+        "קישור למאמר חייב להיות URL תקין שמתחיל ב-http:// או https://";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -122,6 +132,7 @@ export default function ArticlesForm() {
     setCurrentArticle(article);
     setEditedTitle(article.title ?? "");
     setEditedImageUrl(article.imageUrl ?? "");
+    setEditedArticleUrl(article.articleUrl ?? "");
     setEditedTags((article.tags ?? []).join(", "));
     setErrors({});
     setEditDialogOpen(true);
@@ -139,6 +150,7 @@ export default function ArticlesForm() {
       const updated = {
         title: editedTitle.trim(),
         imageUrl: editedImageUrl.trim(),
+        articleUrl: editedArticleUrl.trim(),
         tags: editedTags
           .split(",")
           .map((t) => t.trim())
@@ -179,6 +191,7 @@ export default function ArticlesForm() {
       const newArticle = {
         title: editedTitle.trim(),
         imageUrl: editedImageUrl.trim(),
+        articleUrl: editedArticleUrl.trim(),
         tags: editedTags
           .split(",")
           .map((t) => t.trim())
@@ -300,6 +313,11 @@ export default function ArticlesForm() {
 
             <Box>
               <Typography fontWeight={700}>{article.title}</Typography>
+              {article.articleUrl && (
+                <Typography variant="caption" color="text.secondary">
+                  {article.articleUrl}
+                </Typography>
+              )}
 
               <Box sx={{ display: "flex", gap: 1, mt: 1, flexWrap: "wrap" }}>
                 {(article.tags ?? []).map((tag, index) => (
@@ -362,6 +380,19 @@ export default function ArticlesForm() {
 
           <TextField
             fullWidth
+            label="קישור למאמר *"
+            value={editedArticleUrl}
+            onChange={(e) => setEditedArticleUrl(e.target.value)}
+            error={Boolean(errors.articleUrl)}
+            helperText={
+              errors.articleUrl || "חייב להתחיל ב-http:// או https://"
+            }
+            color="primary"
+            sx={{ mb: 2 }}
+          />
+
+          <TextField
+            fullWidth
             label="תגיות (מופרדות בפסיק)"
             value={editedTags}
             onChange={(e) => setEditedTags(e.target.value)}
@@ -400,6 +431,19 @@ export default function ArticlesForm() {
             onChange={(e) => setEditedImageUrl(e.target.value)}
             error={Boolean(errors.imageUrl)}
             helperText={errors.imageUrl || "חייב להתחיל ב-http:// או https://"}
+            color="primary"
+            sx={{ mb: 2 }}
+          />
+
+          <TextField
+            fullWidth
+            label="קישור למאמר *"
+            value={editedArticleUrl}
+            onChange={(e) => setEditedArticleUrl(e.target.value)}
+            error={Boolean(errors.articleUrl)}
+            helperText={
+              errors.articleUrl || "חייב להתחיל ב-http:// או https://"
+            }
             color="primary"
             sx={{ mb: 2 }}
           />

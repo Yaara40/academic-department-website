@@ -156,7 +156,7 @@ export default function GrowthOptionList() {
       <Chip
         label={demand}
         size="small"
-        color={isVeryHigh ? "success" : "info"}
+        color={isVeryHigh ? "secondary" : "primary"}
         sx={{ fontWeight: 700 }}
       />
     );

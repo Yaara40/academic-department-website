@@ -69,8 +69,8 @@ export default function UserHome() {
             bottom: 0,
             backgroundImage: `url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50" font-size="12" fill="%23ffffff" opacity="0.05" font-family="monospace"></text></svg>')`,
             backgroundRepeat: "repeat",
-            bgcolor: "rgba(26, 35, 50, 0.85)", // שכבה כהה כדי שהטקסט יהיה קריא
-            opacity: 1,
+            bgcolor: "hero.main",
+            opacity: 0.85,
           },
         }}
       >
@@ -79,9 +79,8 @@ export default function UserHome() {
             {/* תג הרשמה פתוחה */}
             <Chip
               label="ההרשמה לשנת הלימודים 2026 פתוחה"
+              color="primary"
               sx={{
-                bgcolor: "success.main",
-                color: "white",
                 fontWeight: 700,
                 mb: 3,
                 fontSize: "0.9rem",
@@ -126,14 +125,13 @@ export default function UserHome() {
             >
               <Button
                 variant="contained"
+                color="primary"
                 size="large"
                 sx={{
-                  bgcolor: "success.main",
                   px: 4,
                   py: 1.5,
                   fontSize: "1.1rem",
                   fontWeight: 700,
-                  "&:hover": { bgcolor: "success.dark" },
                 }}
                 onClick={() => navigate("/user/contact")}
               >
@@ -205,7 +203,7 @@ export default function UserHome() {
                   key={index}
                   sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}
                 >
-                  <CheckCircleIcon sx={{ color: "success.main" }} />
+                  <CheckCircleIcon color="primary" />
                   <Typography variant="body1">{item}</Typography>
                 </Box>
               ))}
@@ -251,7 +249,7 @@ export default function UserHome() {
                 sx={{
                   textAlign: "center",
                   p: 3,
-                  bgcolor: "#E8F5E9",
+                  bgcolor: "secondary.light",
                   height: "100%",
                   transition: "transform 0.2s",
                   "&:hover": { transform: "translateY(-8px)" },
@@ -260,7 +258,7 @@ export default function UserHome() {
                 <Typography
                   variant="h2"
                   fontWeight={900}
-                  color="#2c8332ff"
+                  color="primary"
                   gutterBottom
                 >
                   {req.value}
@@ -315,7 +313,12 @@ export default function UserHome() {
                 "&:hover": { transform: "translateY(-8px)", boxShadow: 6 },
               }}
             >
-              <CardActionArea>
+              <CardActionArea
+                component="a"
+                href={article.articleUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <CardMedia
                   component="img"
                   height="200"
@@ -334,9 +337,8 @@ export default function UserHome() {
                         key={index}
                         label={tag}
                         size="small"
+                        color="primary"
                         sx={{
-                          bgcolor: "#2c8332",
-                          color: "white",
                           fontWeight: 600,
                         }}
                       />
@@ -352,8 +354,8 @@ export default function UserHome() {
       {/* המלצות בוגרים */}
       <Box
         sx={{
-          bgcolor: "#1a2332",
-          color: "white",
+          bgcolor: "hero.main",
+          color: "hero.contrastText",
           py: 8,
         }}
       >
@@ -388,8 +390,7 @@ export default function UserHome() {
               <Card
                 key={testimonial.id}
                 sx={{
-                  bgcolor: "#2d3748",
-                  color: "white",
+                  bgcolor: "background.paper",
                   p: 3,
                   height: "100%",
                 }}
@@ -397,13 +398,14 @@ export default function UserHome() {
                 {/* כוכבים */}
                 <Box sx={{ display: "flex", gap: 0.5, mb: 2 }}>
                   {[1, 2, 3, 4, 5].map((star) => (
-                    <StarIcon key={star} sx={{ color: "success.main" }} />
+                    <StarIcon key={star} color="primary" />
                   ))}
                 </Box>
 
                 {/* טקסט */}
                 <Typography
                   variant="body1"
+                  color="text.primary"
                   sx={{ mb: 3, fontStyle: "italic", lineHeight: 1.8 }}
                 >
                   "{testimonial.text}"
@@ -413,7 +415,7 @@ export default function UserHome() {
                 <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                   <Avatar
                     sx={{
-                      bgcolor: testimonial.color || "success.main",
+                      bgcolor: testimonial.color || "primary.main",
                       width: 50,
                       height: 50,
                     }}
@@ -424,7 +426,7 @@ export default function UserHome() {
                     <Typography variant="body1" fontWeight={700}>
                       {testimonial.name}
                     </Typography>
-                    <Typography variant="body2" sx={{ opacity: 0.7 }}>
+                    <Typography variant="body2" color="text.secondary">
                       {testimonial.company}
                     </Typography>
                   </Box>

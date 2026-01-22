@@ -9,10 +9,10 @@ import "./index.css";
 // ✅ הגדרה מחוץ ל-createTheme
 declare module "@mui/material/styles" {
   interface Palette {
-    cardGreen: Palette["primary"];
+    hero: Palette["primary"];
   }
   interface PaletteOptions {
-    cardGreen?: PaletteOptions["primary"];
+    hero?: PaletteOptions["primary"];
   }
 }
 
@@ -32,14 +32,14 @@ const theme = createTheme({
           dark: "#689F38",
           contrastText: "#000",
         },
+        // ✅ הוספה חדשה - צבע כחול כהה ל-Hero Section
+        hero: {
+          main: "#1a2332", // כחול כהה
+          contrastText: "#fff",
+        },
         background: {
           default: "#f5f5f5",
           paper: "#ffffff",
-        },
-        cardGreen: {
-          main: "#E8F5E9",
-          light: "#F1F8E9",
-          dark: "#C8E6C9",
         },
       },
     },
@@ -53,18 +53,18 @@ const theme = createTheme({
         },
         secondary: {
           main: "#9CCC65",
-          light: "#C5E1A5",
+          light: "#D7FFD7",
           dark: "#7CB342",
           contrastText: "#000",
+        },
+        // ✅ הוספה חדשה - צבע כהה יותר ב-dark mode
+        hero: {
+          main: "#0d1117", // כחול כהה מאוד
+          contrastText: "#fff",
         },
         background: {
           default: "#121212",
           paper: "#1e1e1e",
-        },
-        cardGreen: {
-          main: "#1B5E20",
-          light: "#2E7D32",
-          dark: "#1B5E20",
         },
       },
     },

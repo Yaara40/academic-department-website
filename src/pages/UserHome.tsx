@@ -11,6 +11,7 @@ import {
   Chip,
   CardMedia,
   CardActionArea,
+  LinearProgress,
 } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -26,8 +27,20 @@ export default function UserHome() {
   const [requirements, setRequirements] = useState<Requirement[]>([]);
   const [articles, setArticles] = useState<Article[]>([]);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [pageLoading, setPageLoading] = useState(true);
 
   useEffect(() => {
+    const t = setTimeout(() => setPageLoading(false), 350);
+
+    const onPageLoading = (e: Event) => {
+      const ce = e as CustomEvent<{ loading?: boolean }>;
+      if (typeof ce.detail?.loading === "boolean") {
+        setPageLoading(ce.detail.loading);
+      }
+    };
+
+    window.addEventListener("page-loading", onPageLoading as EventListener);
+
     const loadData = async () => {
       try {
         const [reqData, artData, testData] = await Promise.all([
@@ -44,10 +57,21 @@ export default function UserHome() {
     };
 
     loadData();
+
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener(
+        "page-loading",
+        onPageLoading as EventListener,
+      );
+    };
   }, []);
 
   return (
     <Box sx={{ direction: "rtl" }}>
+      {/* פס טעינה */}
+      {pageLoading && <LinearProgress color="primary" sx={{ mb: 2 }} />}
+
       {/* Hero Section */}
       <Box
         sx={{

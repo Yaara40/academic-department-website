@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Box,
@@ -13,6 +13,9 @@ import {
   List,
   ListItem,
   ListItemText,
+  LinearProgress,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -34,7 +37,6 @@ type Category = {
 
 type FAQ = { q: string; a: string };
 
-// 👇 הקומפוננטות מחוץ ל-AdminHelp
 const SectionHeader = ({
   title,
   icon,
@@ -125,7 +127,30 @@ const FAQBlock = ({
 );
 
 export default function AdminHelp() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [expanded, setExpanded] = useState<string | false>(false);
+  const [pageLoading, setPageLoading] = useState(true);
+
+  useEffect(() => {
+    const t = setTimeout(() => setPageLoading(false), 350);
+
+    const onPageLoading = (e: Event) => {
+      const ce = e as CustomEvent<{ loading?: boolean }>;
+      if (typeof ce.detail?.loading === "boolean") {
+        setPageLoading(ce.detail.loading);
+      }
+    };
+
+    window.addEventListener("page-loading", onPageLoading as EventListener);
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener(
+        "page-loading",
+        onPageLoading as EventListener,
+      );
+    };
+  }, []);
 
   const categories: Category[] = useMemo(
     () => [
@@ -234,9 +259,25 @@ export default function AdminHelp() {
       a: 'ערכו את הכרטיס ושנו את הסטטוס ל"מוסתר". הכרטיס יישמר אך לא יוצג למועמדים.',
     },
   ];
+  // אם מסך קטן מדי - הצג הודעה
+  if (isMobile) {
+    return (
+      <Box sx={{ p: 3, textAlign: "center", direction: "rtl" }}>
+        <Typography variant="h4" gutterBottom>
+          מסך מנהל
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          מסך זה מיועד לשימוש במחשב שולחני בלבד. אנא גש ממכשיר עם מסך גדול יותר.
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ direction: "rtl", textAlign: "right" }}>
+      {/* פס טעינה */}
+      {pageLoading && <LinearProgress color="primary" sx={{ mb: 2 }} />}
+
       <Box
         sx={{
           maxWidth: 1200,

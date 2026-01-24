@@ -1,17 +1,17 @@
 import LinearProgress from "@mui/material/LinearProgress";
-import { Box, Typography } from "@mui/material";
+import { useMediaQuery, useTheme, Box, Typography } from "@mui/material";
 import ContactList from "../features/contact/ContactList";
 import ContactForm from "../features/contact/ContactForm";
 import { useEffect, useState } from "react";
 
 export default function ContactManagement() {
-  // ✅ הוספה
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
   const [pageLoading, setPageLoading] = useState(true);
 
-  // ✅ הוספה
   useEffect(() => {
-    // מציג אינדיקציה קצרה בטעינת עמוד (ובנוסף מאפשר חיבור לטענת דאטה “אמיתית” דרך event)
-    const t = setTimeout(() => setPageLoading(false), 500);
+    const t = setTimeout(() => setPageLoading(false), 350);
 
     const onPageLoading = (e: Event) => {
       const ce = e as CustomEvent<{ loading?: boolean }>;
@@ -29,6 +29,20 @@ export default function ContactManagement() {
       );
     };
   }, []);
+
+  // אם מסך קטן מדי - הצג הודעה
+  if (isMobile) {
+    return (
+      <Box sx={{ p: 3, textAlign: "center", direction: "rtl" }}>
+        <Typography variant="h4" gutterBottom>
+          מסך מנהל
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          מסך זה מיועד לשימוש במחשב שולחני בלבד. אנא גש ממכשיר עם מסך גדול יותר.
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ p: 3, direction: "rtl" }}>

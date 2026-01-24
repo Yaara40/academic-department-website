@@ -1,9 +1,12 @@
-import { Box, Typography, LinearProgress } from "@mui/material";
+import LinearProgress from "@mui/material/LinearProgress";
+import { useMediaQuery, useTheme, Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import GrowthOptionsForm from "../features/growthoptions/GrowthOptionsForm";
 import GrowthOptionList from "../features/growthoptions/GrowthOptionList";
 
 export default function GrowthManagement() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [pageLoading, setPageLoading] = useState(true);
 
   useEffect(() => {
@@ -23,6 +26,20 @@ export default function GrowthManagement() {
       );
     };
   }, []);
+
+  // אם מסך קטן מדי - הצג הודעה
+  if (isMobile) {
+    return (
+      <Box sx={{ p: 3, textAlign: "center", direction: "rtl" }}>
+        <Typography variant="h4" gutterBottom>
+          מסך מנהל
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          מסך זה מיועד לשימוש במחשב שולחני בלבד. אנא גש ממכשיר עם מסך גדול יותר.
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ p: 3, direction: "rtl" }}>

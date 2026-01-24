@@ -1,7 +1,11 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import {
+  createTheme,
+  ThemeProvider,
+  responsiveFontSizes,
+} from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import App from "./App.tsx";
 import "./index.css";
@@ -16,7 +20,7 @@ declare module "@mui/material/styles" {
   }
 }
 
-const theme = createTheme({
+let theme = createTheme({
   colorSchemes: {
     light: {
       palette: {
@@ -80,6 +84,8 @@ const theme = createTheme({
     },
   },
 });
+
+theme = responsiveFontSizes(theme);
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

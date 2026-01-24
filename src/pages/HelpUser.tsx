@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Box,
@@ -15,6 +15,7 @@ import {
   List,
   ListItem,
   ListItemText,
+  LinearProgress,
 } from "@mui/material";
 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -140,6 +141,27 @@ const FAQBlock = ({
 export default function HelpUser() {
   const [expanded, setExpanded] = useState<string | false>(false);
   const [query, setQuery] = useState("");
+  const [pageLoading, setPageLoading] = useState(true);
+
+  useEffect(() => {
+    const t = setTimeout(() => setPageLoading(false), 350);
+
+    const onPageLoading = (e: Event) => {
+      const ce = e as CustomEvent<{ loading?: boolean }>;
+      if (typeof ce.detail?.loading === "boolean") {
+        setPageLoading(ce.detail.loading);
+      }
+    };
+
+    window.addEventListener("page-loading", onPageLoading as EventListener);
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener(
+        "page-loading",
+        onPageLoading as EventListener,
+      );
+    };
+  }, []);
 
   const categories: Category[] = useMemo(
     () => [
@@ -282,6 +304,8 @@ export default function HelpUser() {
         bgcolor: "background.default",
       }}
     >
+      {/* ✅ הוספה: פס טעינה */}
+      {pageLoading && <LinearProgress color="primary" sx={{ mb: 2 }} />}
       <Box
         sx={{
           maxWidth: 1200,

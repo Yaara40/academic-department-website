@@ -21,6 +21,7 @@ import { getAllTestimonials } from "../firebase/testimonials";
 import type { Requirement } from "../models/Home";
 import type { Article } from "../models/Home";
 import type { Testimonial } from "../models/Home";
+import ThemeToggle from "../components/ThemeToggle";
 
 export default function UserHome() {
   const navigate = useNavigate();
@@ -72,6 +73,18 @@ export default function UserHome() {
       {/* פס טעינה */}
       {pageLoading && <LinearProgress color="primary" sx={{ mb: 2 }} />}
 
+      {/* כפתור Dark Mode - פינה שמאלית עליונה */}
+      <Box
+        sx={{
+          position: "absolute",
+          top: 110,
+          right: 40,
+          zIndex: 1000,
+        }}
+      >
+        <ThemeToggle />
+      </Box>
+
       {/* Hero Section */}
       <Box
         sx={{
@@ -122,7 +135,6 @@ export default function UserHome() {
             >
               תואר ראשון במדעי המחשב
             </Typography>
-
             {/* תת-כותרת */}
             <Typography
               variant="h6"
@@ -237,7 +249,7 @@ export default function UserHome() {
       </Container>
 
       {/* דרישות התואר */}
-      <Box sx={{ bgcolor: "grey.50", py: 8 }}>
+      <Box sx={{ py: 8 }}>
         <Container maxWidth="lg">
           <Typography
             variant="h3"
@@ -273,7 +285,7 @@ export default function UserHome() {
                 sx={{
                   textAlign: "center",
                   p: 3,
-                  bgcolor: "secondary.light",
+                  bgcolor: "background.paper",
                   height: "100%",
                   transition: "transform 0.2s",
                   "&:hover": { transform: "translateY(-8px)" },

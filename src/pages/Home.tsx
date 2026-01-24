@@ -53,12 +53,11 @@ export default function Home() {
         <Box
           sx={{
             display: "flex",
-            justifyContent: "space-between", // זה מה שדוחף צדדים מנוגדים
+            justifyContent: "space-between",
             alignItems: "center",
             mb: 3,
           }}
         >
-          {/* צד ימין: הכותרת */}
           <Box>
             <Typography
               variant="h4"
@@ -72,7 +71,6 @@ export default function Home() {
             </Typography>
           </Box>
 
-          {/* צד שמאל: הכפתור החדש */}
           <ThemeToggle />
         </Box>
 

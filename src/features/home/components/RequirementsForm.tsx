@@ -260,7 +260,7 @@ export default function RequirementsForm() {
           <Card
             key={req.id}
             sx={{
-              bgcolor: "secondary.light",
+              bgcolor: "primary.light",
               boxShadow: 0,
               transition: "all 0.2s",
               "&:hover": {

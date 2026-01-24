@@ -165,7 +165,7 @@ export default function AdminHelp() {
         id: "courses",
         title: "ניהול קורסים ותוכן אקדמי",
         description: "ניהול רשימת הקורסים המוצגת למועמדים",
-        colorName: "secondary.light",
+        colorName: "primary.light",
         icon: <MenuBookOutlinedIcon sx={{ fontSize: 34 }} />,
       },
       {
@@ -179,7 +179,7 @@ export default function AdminHelp() {
         id: "settings",
         title: "הגדרות אתר וניווט",
         description: "שליטה בחוויית המשתמש באתר הציבורי",
-        colorName: "secondary.light",
+        colorName: "primary.light",
         icon: <SettingsOutlinedIcon sx={{ fontSize: 34 }} />,
       },
     ],

@@ -65,18 +65,19 @@ export default function ContactList() {
     },
   ];
 
+  // פונקציית צבעים מעודכנת המשתמשת ב-Theme
   const getStatusColor = (status: Contact["status"]) => {
     switch (status) {
       case "חדש":
-        return { bg: "#dbeafe", color: "#1e3a8a" };
+        return "info";
       case "ממתין":
-        return { bg: "#fef3c7", color: "#92400e" };
+        return "warning";
       case "נוצר קשר":
-        return { bg: "#d1fae5", color: "#065f46" };
+        return "success";
       case "נסגר":
-        return { bg: "#f3f4f6", color: "#374151" };
+        return "default";
       default:
-        return { bg: "#f3f4f6", color: "#374151" };
+        return "default";
     }
   };
 
@@ -85,16 +86,20 @@ export default function ContactList() {
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(4, 1fr)" },
+          gridTemplateColumns: {
+            xs: "1fr",
+            sm: "repeat(2, 1fr)",
+            md: "repeat(4, 1fr)",
+          },
           gap: 3,
           mb: 4,
         }}
       >
-        <Card sx={{ bgcolor: "#f9fafb" }}>
+        <Card sx={{ bgcolor: "cardGreen.main" }}>
           <CardContent sx={{ textAlign: "center" }}>
             <Box sx={{ display: "flex", justifyContent: "center", mb: 1 }}>
-              <Avatar sx={{ bgcolor: "#e5e7eb" }}>
-                <PeopleOutlineIcon />
+              <Avatar sx={{ bgcolor: "action.hover" }}>
+                <PeopleOutlineIcon color="action" />
               </Avatar>
             </Box>
             <Typography variant="h4" fontWeight={800}>
@@ -104,39 +109,39 @@ export default function ContactList() {
           </CardContent>
         </Card>
 
-        <Card sx={{ bgcolor: "#e0f2fe" }}>
+        <Card sx={{ bgcolor: "cardGreen.main" }}>
           <CardContent sx={{ textAlign: "center" }}>
             <Box sx={{ display: "flex", justifyContent: "center", mb: 1 }}>
-              <Avatar sx={{ bgcolor: "#bae6fd" }}>
-                <AccessTimeIcon />
+              <Avatar sx={{ bgcolor: "action.hover" }}>
+                <AccessTimeIcon color="action" />
               </Avatar>
             </Box>
-            <Typography variant="h4" fontWeight={800} color="#0369a1">
+            <Typography variant="h4" fontWeight={800}>
               2
             </Typography>
             <Typography color="text.secondary">פניות חדשות</Typography>
           </CardContent>
         </Card>
 
-        <Card sx={{ bgcolor: "#e0f2fe" }}>
+        <Card sx={{ bgcolor: "cardGreen.main" }}>
           <CardContent sx={{ textAlign: "center" }}>
             <Box sx={{ display: "flex", justifyContent: "center", mb: 1 }}>
-              <Avatar sx={{ bgcolor: "#bae6fd" }}>
-                <PeopleOutlineIcon />
+              <Avatar sx={{ bgcolor: "action.hover" }}>
+                <PeopleOutlineIcon color="action" />
               </Avatar>
             </Box>
-            <Typography variant="h4" fontWeight={800} color="#0369a1">
+            <Typography variant="h4" fontWeight={800}>
               1
             </Typography>
             <Typography color="text.secondary">ממתינים</Typography>
           </CardContent>
         </Card>
 
-        <Card sx={{ bgcolor: "#f9fafb" }}>
+        <Card sx={{ bgcolor: "cardGreen.main" }}>
           <CardContent sx={{ textAlign: "center" }}>
             <Box sx={{ display: "flex", justifyContent: "center", mb: 1 }}>
-              <Avatar sx={{ bgcolor: "#e5e7eb" }}>
-                <PeopleOutlineIcon />
+              <Avatar sx={{ bgcolor: "action.hover" }}>
+                <PeopleOutlineIcon color="action" />
               </Avatar>
             </Box>
             <Typography variant="h4" fontWeight={800}>
@@ -149,10 +154,11 @@ export default function ContactList() {
 
       <Box
         sx={{
-          border: "1px solid #eee",
+          border: "1px solid",
+          borderColor: "divider",
           borderRadius: 3,
           p: 2,
-          bgcolor: "#fff",
+          bgcolor: "background.paper",
           mb: 4,
         }}
       >
@@ -182,7 +188,9 @@ export default function ContactList() {
                 <TableRow key={contact.id} hover>
                   <TableCell align="right">
                     <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                      <Avatar sx={{ bgcolor: "#10b981", width: 40, height: 40 }}>
+                      <Avatar
+                        sx={{ bgcolor: "primary.main", width: 40, height: 40 }}
+                      >
                         {contact.initial}
                       </Avatar>
                       <Typography fontWeight={700}>{contact.name}</Typography>
@@ -190,7 +198,9 @@ export default function ContactList() {
                   </TableCell>
                   <TableCell align="right">
                     <Box>
-                      <Typography variant="body2">{contact.phone} 📞</Typography>
+                      <Typography variant="body2">
+                        {contact.phone} 📞
+                      </Typography>
                       <Typography variant="body2" color="text.secondary">
                         {contact.email} ✉️
                       </Typography>
@@ -206,11 +216,8 @@ export default function ContactList() {
                     <Chip
                       label={contact.status}
                       size="small"
-                      sx={{
-                        fontWeight: 700,
-                        bgcolor: getStatusColor(contact.status).bg,
-                        color: getStatusColor(contact.status).color,
-                      }}
+                      color={getStatusColor(contact.status)}
+                      sx={{ fontWeight: 700 }}
                     />
                   </TableCell>
                 </TableRow>

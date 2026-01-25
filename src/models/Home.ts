@@ -10,6 +10,7 @@ export interface Article {
   id: string;
   title: string;
   imageUrl: string;
+  articleUrl: string;
   tags: string[];
 }
 
@@ -22,12 +23,13 @@ export interface Testimonial {
   color: string;
 }
 
-export interface ContactInfo {
-  phone: string;
+export type Contact = {
+  id: string;
+  name: string;
   email: string;
-  address: string;
-  facebook: string;
-  instagram: string;
-  linkedin: string;
-  youtube: string;
-}
+  phone: string;
+  message: string;
+  sources: string[];
+  submissionDate: string;
+  status: "חדש" | "ממתין" | "נוצר קשר" | "נסגר";
+};

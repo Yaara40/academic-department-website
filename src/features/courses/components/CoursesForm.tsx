@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -7,33 +7,27 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   Typography,
+  CircularProgress,
+  Alert,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Course } from "../../../models/Course";
-
-interface FormValues {
-  courseId: string;
-  name: string;
-  description: string;
-  credits: number;
-  year: string;
-  semester: string;
-  syllabus: string;
-  isMandatory: string;
-  isActive: string;
-}
+import {
+  addCourse,
+  getCourseById,
+  updateCourse,
+} from "../../../firebase/courses";
 
 interface FormErrors {
   [key: string]: boolean | string;
 }
 
-const LS_KEY = "courses";
-const COURSES_UPDATED_EVENT = "coursesUpdated";
-
 export default function CoursesForm() {
   const navigate = useNavigate();
+  const { existingCourseId } = useParams<{ existingCourseId: string }>();
 
-  const initialValues: FormValues = {
+  const initialValues: Partial<Course> = {
+    id: "",
     courseId: "",
     name: "",
     description: "",
@@ -41,15 +35,44 @@ export default function CoursesForm() {
     year: "",
     semester: "",
     syllabus: "",
-    isMandatory: "",
-    isActive: "",
+    isMandatory: false,
+    isActive: true,
+    instructor: "",
   };
 
-  const [values, setValues] = useState<FormValues>(initialValues);
+  const [values, setValues] = useState<Partial<Course>>(initialValues);
   const [errors, setErrors] = useState<FormErrors>({});
+  const [loading, setLoading] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadCourse = async () => {
+      if (!existingCourseId) return;
+
+      setIsEditMode(true);
+      setLoading(true);
+
+      try {
+        const courseData = await getCourseById(existingCourseId);
+        if (courseData) {
+          setValues(courseData);
+        } else {
+          setError("הקורס לא נמצא במערכת");
+        }
+      } catch (err) {
+        console.error("Error fetching course:", err);
+        setError("שגיאה בטעינת הקורס");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadCourse();
+  }, [existingCourseId]);
 
   const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = event.target;
 
@@ -63,9 +86,10 @@ export default function CoursesForm() {
 
   const handleToggleChange =
     (field: "isMandatory" | "isActive") =>
-    (event: React.MouseEvent<HTMLElement>, newValue: string | null) => {
+    (_event: React.MouseEvent<HTMLElement>, newValue: string | null) => {
       if (newValue !== null) {
-        setValues({ ...values, [field]: newValue });
+        const boolValue = newValue === "yes";
+        setValues({ ...values, [field]: boolValue });
         setErrors({ ...errors, [field]: false });
       }
     };
@@ -75,57 +99,43 @@ export default function CoursesForm() {
 
     const newErrors: FormErrors = {};
 
-    // 1. מזהה קורס - חובה: 8 מספרים (שינוי מ-5 ל-8)
-    if (!values.courseId.trim()) {
-      newErrors.courseId = 'מזהה קורס הוא שדה חובה';
+    if (!values.courseId?.trim()) {
+      newErrors.courseId = "מזהה קורס הוא שדה חובה";
     } else if (!/^\d{8}$/.test(values.courseId)) {
-      newErrors.courseId = 'מזהה קורס חייב להיות בדיוק 8 ספרות';
+      newErrors.courseId = "מזהה קורס חייב להיות בדיוק 8 ספרות";
     }
 
-    // 2. שם הקורס - חובה: 2-80 תווים, אסור תווים מסוכנים
-    if (!values.name.trim()) {
-      newErrors.name = 'שם הקורס הוא שדה חובה';
+    if (!values.name?.trim()) {
+      newErrors.name = "שם הקורס הוא שדה חובה";
     } else if (values.name.length < 2 || values.name.length > 80) {
-      newErrors.name = 'שם הקורס חייב להיות בין 2-80 תווים';
+      newErrors.name = "שם הקורס חייב להיות בין 2-80 תווים";
     } else if (/<|>|script/i.test(values.name)) {
-      newErrors.name = 'שם הקורס מכיל תווים אסורים';
+      newErrors.name = "שם הקורס מכיל תווים אסורים";
     }
 
-    // 3. תיאור הקורס - חובה: 100-300 תווים
-    if (!values.description.trim()) {
-      newErrors.description = 'תיאור הקורס הוא שדה חובה';
-    } else if (values.description.length < 100 || values.description.length > 300) {
-      newErrors.description = 'תיאור הקורס חייב להיות בין 100-300 תווים';
+    if (!values.description?.trim()) {
+      newErrors.description = "תיאור הקורס הוא שדה חובה";
+    } else if (
+      values.description.length < 100 ||
+      values.description.length > 300
+    ) {
+      newErrors.description = "תיאור הקורס חייב להיות בין 100-300 תווים";
     }
 
-    // 4. נקודות זכות - חובה: מספר בין 1-10
-    if (values.credits < 1 || values.credits > 10) {
-      newErrors.credits = 'נקודות זכות חייבות להיות מספר בין 1-10';
+    if (!values.credits || values.credits < 1 || values.credits > 10) {
+      newErrors.credits = "נקודות זכות חייבות להיות מספר בין 1-10";
     }
 
-    // 5. שנה - חובה
     if (!values.year) {
-      newErrors.year = 'שנה היא שדה חובה';
+      newErrors.year = "שנה היא שדה חובה";
     }
 
-    // 6. סמסטר - חובה
     if (!values.semester) {
-      newErrors.semester = 'סמסטר הוא שדה חובה';
+      newErrors.semester = "סמסטר הוא שדה חובה";
     }
 
-    // 7. קישור לסילבוס - אופציונלי, אבל אם יש - חייב להיות URL תקין
-    if (values.syllabus.trim() && !/^https?:\/\/.+/.test(values.syllabus)) {
-      newErrors.syllabus = 'קישור לסילבוס חייב להתחיל ב-http:// או https://';
-    }
-
-    // 8. סוג קורס (isMandatory) - חובה
-    if (!values.isMandatory) {
-      newErrors.isMandatory = 'יש לבחור אם הקורס חובה';
-    }
-
-    // 9. סטטוס קורס (isActive) - חובה
-    if (!values.isActive) {
-      newErrors.isActive = 'יש לבחור אם הקורס פעיל';
+    if (values.syllabus?.trim() && !/^https?:\/\/.+/.test(values.syllabus)) {
+      newErrors.syllabus = "קישור לסילבוס חייב להתחיל ב-http:// או https://";
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -133,33 +143,86 @@ export default function CoursesForm() {
       return;
     }
 
-    const newCourse = new Course(
-      Date.now().toString(),
-      values.name,
-      values.credits,
-      values.semester,
-      values.courseId,
-      values.description,
-      values.year,
-      values.syllabus,
-      values.isMandatory,
-      values.isActive
-    );
+    setLoading(true);
 
-    const storedCourses = localStorage.getItem(LS_KEY);
-    const existingCourses = storedCourses ? JSON.parse(storedCourses) : [];
-    const updatedCourses = [...existingCourses, newCourse];
-
-    localStorage.setItem(LS_KEY, JSON.stringify(updatedCourses));
-    window.dispatchEvent(new Event(COURSES_UPDATED_EVENT));
-
-    alert('✅ הקורס נשמר בהצלחה!');
-    navigate("/courses");
+    if (isEditMode && existingCourseId) {
+      updateCourse(existingCourseId, {
+        ...values,
+        id: existingCourseId,
+      } as Course)
+        .then(() => {
+          setLoading(false);
+          alert("✅ הקורס עודכן בהצלחה!");
+          navigate("/admin/courses");
+        })
+        .catch((error) => {
+          setLoading(false);
+          alert("❌ שגיאה בעדכון הקורס: " + error.message);
+        });
+    } else {
+      addCourse({
+        ...values,
+        id: "",
+      } as Course)
+        .then(() => {
+          setLoading(false);
+          alert("✅ הקורס נשמר בהצלחה ב-Firestore!");
+          navigate("/admin/courses");
+        })
+        .catch((error) => {
+          setLoading(false);
+          alert("❌ שגיאה בשמירת הקורס: " + error.message);
+        });
+    }
   };
 
   const handleCancel = () => {
-    navigate("/courses");
+    navigate("/admin/courses");
   };
+
+  if (loading && isEditMode) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "50vh",
+        }}
+      >
+        <CircularProgress size={60} color="primary" />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box
+        sx={{
+          m: 4,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 2,
+        }}
+      >
+        <Alert severity="error" sx={{ width: "100%", maxWidth: 600 }}>
+          <Typography variant="h6">{error}</Typography>
+          <Typography variant="body2" sx={{ mt: 1 }}>
+            מזהה הקורס: {existingCourseId}
+          </Typography>
+        </Alert>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => navigate("/admin/courses")}
+          size="large"
+        >
+          חזור לרשימת הקורסים
+        </Button>
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -172,7 +235,7 @@ export default function CoursesForm() {
         gap: 2,
         maxWidth: 800,
         direction: "rtl",
-        backgroundColor: "#fff",
+        backgroundColor: "background.paper",
         padding: 4,
         borderRadius: 2,
         boxShadow: 2,
@@ -180,7 +243,9 @@ export default function CoursesForm() {
       noValidate
       autoComplete="off"
     >
-      <h2>הוספת קורס חדש</h2>
+      <Typography variant="h5" component="h2" fontWeight={700}>
+        {isEditMode ? "עריכת קורס" : "הוספת קורס חדש"}
+      </Typography>
 
       {/* מזהה קורס */}
       <TextField
@@ -191,7 +256,7 @@ export default function CoursesForm() {
         name="courseId"
         label="מזהה קורס (8 ספרות)"
         placeholder="12345678"
-        value={values.courseId}
+        value={values.courseId || ""}
         onChange={(e) => {
           const value = e.target.value;
           if (/^\d{0,8}$/.test(value)) {
@@ -200,6 +265,7 @@ export default function CoursesForm() {
         }}
         helperText={errors.courseId || "הזן בדיוק 8 ספרות"}
         inputProps={{ maxLength: 8 }}
+        color="primary"
       />
 
       {/* שם הקורס */}
@@ -211,9 +277,10 @@ export default function CoursesForm() {
         name="name"
         label="שם הקורס (2-80 תווים)"
         placeholder="הזן שם קורס..."
-        value={values.name}
+        value={values.name || ""}
         onChange={handleChange}
-        helperText={errors.name || `${values.name.length}/80 תווים`}
+        helperText={errors.name || `${(values.name || "").length}/80 תווים`}
+        color="primary"
       />
 
       {/* תיאור */}
@@ -227,9 +294,12 @@ export default function CoursesForm() {
         placeholder="תיאור מפורט של הקורס..."
         multiline
         rows={4}
-        value={values.description}
+        value={values.description || ""}
         onChange={handleChange}
-        helperText={errors.description || `${values.description.length}/300 תווים`}
+        helperText={
+          errors.description || `${(values.description || "").length}/300 תווים`
+        }
+        color="primary"
       />
 
       <Box sx={{ display: "flex", gap: 2 }}>
@@ -241,13 +311,14 @@ export default function CoursesForm() {
           name="credits"
           label="נקודות זכות (1-10)"
           type="number"
-          value={values.credits}
+          value={values.credits || 3}
           onChange={handleChange}
           helperText={errors.credits || ""}
           slotProps={{
             htmlInput: { min: 1, max: 10 },
           }}
           sx={{ flex: 1 }}
+          color="primary"
         />
 
         {/* שנה */}
@@ -258,10 +329,11 @@ export default function CoursesForm() {
           id="year"
           name="year"
           label="שנה"
-          value={values.year}
+          value={values.year || ""}
           onChange={handleChange}
           helperText={errors.year || ""}
           sx={{ flex: 1 }}
+          color="primary"
         >
           <MenuItem value="שנה א">שנה א</MenuItem>
           <MenuItem value="שנה ב">שנה ב</MenuItem>
@@ -277,10 +349,11 @@ export default function CoursesForm() {
           id="semester"
           name="semester"
           label="סמסטר"
-          value={values.semester}
+          value={values.semester || ""}
           onChange={handleChange}
           helperText={errors.semester || ""}
           sx={{ flex: 1 }}
+          color="primary"
         >
           <MenuItem value="א">סמסטר א</MenuItem>
           <MenuItem value="ב">סמסטר ב</MenuItem>
@@ -297,9 +370,23 @@ export default function CoursesForm() {
         label="קישור לסילבוס (אופציונלי)"
         placeholder="https://..."
         type="url"
-        value={values.syllabus}
+        value={values.syllabus || ""}
         onChange={handleChange}
         helperText={errors.syllabus || "חייב להתחיל ב-http:// או https://"}
+        color="primary"
+      />
+
+      {/* מרצה */}
+      <TextField
+        fullWidth
+        id="instructor"
+        name="instructor"
+        label="מרצה (אופציונלי)"
+        placeholder="ד״ר..."
+        value={values.instructor || ""}
+        onChange={handleChange}
+        helperText="שם המרצה שמלמד את הקורס"
+        color="primary"
       />
 
       {/* קורס חובה */}
@@ -308,7 +395,7 @@ export default function CoursesForm() {
           קורס חובה *
         </Typography>
         <ToggleButtonGroup
-          value={values.isMandatory}
+          value={values.isMandatory ? "yes" : "no"}
           exclusive
           onChange={handleToggleChange("isMandatory")}
           fullWidth
@@ -317,11 +404,6 @@ export default function CoursesForm() {
           <ToggleButton value="yes">כן</ToggleButton>
           <ToggleButton value="no">לא</ToggleButton>
         </ToggleButtonGroup>
-        {errors.isMandatory && (
-          <Typography color="error" variant="caption" sx={{ mt: 0.5, display: "block" }}>
-            {errors.isMandatory}
-          </Typography>
-        )}
       </Box>
 
       {/* קורס פעיל */}
@@ -330,7 +412,7 @@ export default function CoursesForm() {
           קורס פעיל *
         </Typography>
         <ToggleButtonGroup
-          value={values.isActive}
+          value={values.isActive ? "yes" : "no"}
           exclusive
           onChange={handleToggleChange("isActive")}
           fullWidth
@@ -339,19 +421,39 @@ export default function CoursesForm() {
           <ToggleButton value="yes">כן</ToggleButton>
           <ToggleButton value="no">לא</ToggleButton>
         </ToggleButtonGroup>
-        {errors.isActive && (
-          <Typography color="error" variant="caption" sx={{ mt: 0.5, display: "block" }}>
-            {errors.isActive}
-          </Typography>
-        )}
       </Box>
 
       {/* כפתורים */}
-      <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-start", mt: 2 }}>
-        <Button type="submit" variant="contained" color="primary" size="large">
-          שמור
+      <Box
+        sx={{
+          display: "flex",
+          gap: 2,
+          justifyContent: "flex-start",
+          mt: 2,
+        }}
+      >
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          size="large"
+          disabled={loading}
+        >
+          {loading ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : isEditMode ? (
+            "עדכן"
+          ) : (
+            "שמור"
+          )}
         </Button>
-        <Button variant="outlined" onClick={handleCancel} size="large">
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={handleCancel}
+          size="large"
+          disabled={loading}
+        >
           ביטול
         </Button>
       </Box>

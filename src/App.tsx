@@ -1,9 +1,11 @@
+import { useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { Box } from "@mui/material";
 import AdminHeader from "./components/AdminHeader";
 import UserHeader from "./components/UserHeader";
 import Sidebar from "./components/Sidebar";
 import Footer from "./components/Footer";
+import { initGA, logPageView } from "./analytics";
 
 // Admin Pages
 import Home from "./pages/Home";
@@ -23,6 +25,16 @@ import UserGrowth from "./pages/UserGrowth.tsx";
 const App = () => {
   const location = useLocation();
   const isUserView = location.pathname.startsWith("/user");
+
+  // אתחול Google Analytics
+  useEffect(() => {
+    initGA();
+  }, []);
+
+  // מעקב אחרי ניווט בין דפים
+  useEffect(() => {
+    logPageView(location.pathname + location.search);
+  }, [location]);
 
   return (
     <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
@@ -54,10 +66,13 @@ const App = () => {
           <Route path="/admin" element={<Home />} />
           <Route path="/admin/courses" element={<CoursesManagement />} />
           <Route path="/admin/courses/new" element={<CoursesForm />} />
-          
+
           {/* ✅ קישור ישיר לעריכת קורס */}
-          <Route path="/admin/courses/edit/:existingCourseId" element={<CoursesForm />} />
-          
+          <Route
+            path="/admin/courses/edit/:existingCourseId"
+            element={<CoursesForm />}
+          />
+
           <Route path="/admin/growth" element={<GrowthManagement />} />
           <Route path="/admin/contact" element={<ContactManagement />} />
           <Route path="/admin/help" element={<HelpManagement />} />

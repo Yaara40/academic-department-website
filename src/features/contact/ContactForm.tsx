@@ -18,6 +18,7 @@ import EmailIcon from "@mui/icons-material/Email";
 import PersonIcon from "@mui/icons-material/Person";
 import MessageIcon from "@mui/icons-material/Message";
 import SourceIcon from "@mui/icons-material/Source";
+import { logEvent } from "../../analytics.ts";
 
 export default function ContactForm() {
   const [name, setName] = useState("");
@@ -89,6 +90,9 @@ export default function ContactForm() {
 
   const handleSubmit = () => {
     if (!validateForm()) {
+      // ✅ מעקב GA - שגיאת ולידציה
+      logEvent("Contact", "Validation Error", "User Contact Form");
+
       setSnackSeverity("error");
       setSnackMsg("❌ יש שדות לא תקינים. תקני את השגיאות ונסי שוב.");
       setSnackOpen(true);
@@ -97,6 +101,9 @@ export default function ContactForm() {
 
     // כאן תוסיפי שמירה ל-Firestore בעתיד
     console.log("Contact submitted:", { name, email, phone, message, sources });
+
+    // ✅ מעקב GA - שליחת טופס מוצלחת
+    logEvent("Contact", "Form Submitted", `Sources: ${sources.join(", ")}`);
 
     setSnackSeverity("success");
     setSnackMsg("✅ הפרטים נשלחו בהצלחה! ניצור איתך קשר בהקדם.");

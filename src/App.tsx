@@ -5,10 +5,13 @@ import AdminHeader from "./components/AdminHeader";
 import UserHeader from "./components/UserHeader";
 import Sidebar from "./components/Sidebar";
 import Footer from "./components/Footer";
+import ProtectedRoute from "./components/ProtectedRoute";
 import { initGA, logPageView } from "./analytics";
 
 // Admin Pages
 import Home from "./pages/Home";
+import Login from "./pages/Login";
+import CreateUser from "./pages/CreateUser";
 import CoursesManagement from "./pages/CoursesManagement";
 import CoursesForm from "./features/courses/components/CoursesForm";
 import GrowthManagement from "./pages/GrowthManagement";
@@ -24,7 +27,9 @@ import UserGrowth from "./pages/UserGrowth.tsx";
 
 const App = () => {
   const location = useLocation();
-  const isUserView = location.pathname.startsWith("/user");
+  const isAdminView = location.pathname.startsWith("/admin");
+  const isLoginPage = location.pathname === "/admin/login";
+  const isCreateUserPage = location.pathname === "/create-admin";
 
   // אתחול Google Analytics
   useEffect(() => {
@@ -38,44 +43,97 @@ const App = () => {
 
   return (
     <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      {/* Header */}
-      {isUserView ? <UserHeader /> : <AdminHeader />}
+      {/* Header - לא מציג בדף Login או CreateUser */}
+      {!isLoginPage &&
+        !isCreateUserPage &&
+        (isAdminView ? <AdminHeader /> : <UserHeader />)}
 
-      {/* Sidebar - רק ל-Admin */}
-      {!isUserView && <Sidebar />}
+      {/* Sidebar - רק ל-Admin ולא בדף Login או CreateUser */}
+      {isAdminView && !isLoginPage && !isCreateUserPage && <Sidebar />}
 
       <Box
         component="main"
         sx={{
           flex: 1,
-          p: 2.5,
-          mr: { xs: 0, md: isUserView ? 0 : "220px" },
-          mt: "72px",
+          p: isLoginPage || isCreateUserPage ? 0 : 2.5,
+          mr: {
+            xs: 0,
+            md: isAdminView && !isLoginPage && !isCreateUserPage ? "220px" : 0,
+          },
+          mt: isLoginPage || isCreateUserPage ? 0 : "72px",
         }}
       >
         <Routes>
-          {/* User Routes */}
+          {/* User Routes - Public */}
           <Route path="/user" element={<UserHome />} />
+          <Route path="/" element={<UserHome />} />
           <Route path="/user/courses" element={<UserCourses />} />
           <Route path="/user/contact" element={<UserContact />} />
           <Route path="/user/help" element={<HelpUser />} />
           <Route path="/user/growth" element={<UserGrowth />} />
 
-          {/* Admin Routes */}
-          <Route path="/" element={<Home />} />
-          <Route path="/admin" element={<Home />} />
-          <Route path="/admin/courses" element={<CoursesManagement />} />
-          <Route path="/admin/courses/new" element={<CoursesForm />} />
+          {/* Admin Routes - Protected */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/admin/login" element={<Login />} />
+          <Route path="/create-admin" element={<CreateUser />} />
+          <Route
+            path="/admin/courses"
+            element={
+              <ProtectedRoute>
+                <CoursesManagement />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/courses/new"
+            element={
+              <ProtectedRoute>
+                <CoursesForm />
+              </ProtectedRoute>
+            }
+          />
 
           {/* ✅ קישור ישיר לעריכת קורס */}
           <Route
             path="/admin/courses/edit/:existingCourseId"
-            element={<CoursesForm />}
+            element={
+              <ProtectedRoute>
+                <CoursesForm />
+              </ProtectedRoute>
+            }
           />
 
-          <Route path="/admin/growth" element={<GrowthManagement />} />
-          <Route path="/admin/contact" element={<ContactManagement />} />
-          <Route path="/admin/help" element={<HelpManagement />} />
+          <Route
+            path="/admin/growth"
+            element={
+              <ProtectedRoute>
+                <GrowthManagement />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/contact"
+            element={
+              <ProtectedRoute>
+                <ContactManagement />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/help"
+            element={
+              <ProtectedRoute>
+                <HelpManagement />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </Box>
       <Footer />

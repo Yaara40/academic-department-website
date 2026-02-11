@@ -70,10 +70,8 @@ export default function UserHome() {
 
   return (
     <Box sx={{ direction: "rtl" }}>
-      {}
       {pageLoading && <LinearProgress color="primary" sx={{ mb: 2 }} />}
 
-      {}
       <Box
         sx={{
           position: "absolute",
@@ -85,7 +83,6 @@ export default function UserHome() {
         <ThemeToggle />
       </Box>
 
-      {}
       <Box
         sx={{
           minHeight: "70vh",
@@ -113,7 +110,6 @@ export default function UserHome() {
       >
         <Container maxWidth="lg" sx={{ position: "relative", zIndex: 1 }}>
           <Box sx={{ textAlign: "center", color: "white" }}>
-            {}
             <Chip
               label="ההרשמה לשנת הלימודים 2026 פתוחה"
               color="primary"
@@ -124,7 +120,6 @@ export default function UserHome() {
               }}
             />
 
-            {}
             <Typography
               variant="h2"
               sx={{
@@ -135,7 +130,7 @@ export default function UserHome() {
             >
               תואר ראשון במדעי המחשב
             </Typography>
-            {}
+
             <Typography
               variant="h6"
               sx={{
@@ -150,7 +145,6 @@ export default function UserHome() {
               ההייטק. למידה מעשית, מרצים מהתעשייה, והכנה מושלמת לשוק העבודה.
             </Typography>
 
-            {}
             <Box
               sx={{
                 display: "flex",
@@ -197,7 +191,6 @@ export default function UserHome() {
         </Container>
       </Box>
 
-      {}
       <Container maxWidth="lg" sx={{ py: 8 }}>
         <Box
           sx={{
@@ -248,7 +241,6 @@ export default function UserHome() {
         </Box>
       </Container>
 
-      {}
       <Box sx={{ py: 8 }}>
         <Container maxWidth="lg">
           <Typography
@@ -311,7 +303,6 @@ export default function UserHome() {
         </Container>
       </Box>
 
-      {}
       <Container maxWidth="lg" sx={{ py: 8 }}>
         <Typography
           variant="h3"
@@ -387,7 +378,6 @@ export default function UserHome() {
         </Box>
       </Container>
 
-      {}
       <Box
         sx={{
           bgcolor: "hero.main",
@@ -431,14 +421,12 @@ export default function UserHome() {
                   height: "100%",
                 }}
               >
-                {}
                 <Box sx={{ display: "flex", gap: 0.5, mb: 2 }}>
                   {[1, 2, 3, 4, 5].map((star) => (
                     <StarIcon key={star} color="primary" />
                   ))}
                 </Box>
 
-                {}
                 <Typography
                   variant="body1"
                   color="text.primary"
@@ -447,7 +435,6 @@ export default function UserHome() {
                   "{testimonial.text}"
                 </Typography>
 
-                {}
                 <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                   <Avatar
                     sx={{

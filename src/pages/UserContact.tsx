@@ -33,8 +33,6 @@ export default function UserContact() {
   return (
     <Box sx={{ direction: "rtl" }}>
       {pageLoading && <LinearProgress color="primary" />}
-
-      {}
       <Box
         sx={{
           bgcolor: "hero.main",
@@ -61,12 +59,11 @@ export default function UserContact() {
             flexDirection: { xs: "column", md: "row" },
           }}
         >
-          {}
+
           <Box sx={{ flex: { md: "1 1 60%" } }}>
             <ContactForm />
           </Box>
 
-          {}
           <Box sx={{ flex: { md: "1 1 40%" } }}>
             <Card sx={{ mb: 3 }}>
               <CardContent>
@@ -108,7 +105,6 @@ export default function UserContact() {
                     </Box>
                   </Box>
 
-                  {}
                   <Box
                     sx={{
                       display: "flex",
@@ -141,7 +137,6 @@ export default function UserContact() {
                     </Box>
                   </Box>
 
-                  {}
                   <Box
                     sx={{
                       display: "flex",
@@ -174,7 +169,6 @@ export default function UserContact() {
                     </Box>
                   </Box>
 
-                  {}
                   <Box
                     sx={{
                       display: "flex",
@@ -210,7 +204,6 @@ export default function UserContact() {
               </CardContent>
             </Card>
 
-            {}
             <Card>
               <CardContent sx={{ p: 0 }}>
                 <Box

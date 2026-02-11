@@ -55,7 +55,6 @@ export default function UserLayout() {
             </Button>
           </Box>
 
-          {}
           <Box
             sx={{
               display: "flex",
@@ -104,12 +103,10 @@ export default function UserLayout() {
         </Toolbar>
       </AppBar>
 
-      {}
       <Box sx={{ px: { xs: 1, md: 2 }, py: 2 }}>
         <Outlet />
       </Box>
 
-      {}
       <Fab
         onClick={() => navigate("/user/help")}
         color="success"

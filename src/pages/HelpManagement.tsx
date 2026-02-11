@@ -274,7 +274,6 @@ export default function AdminHelp() {
 
   return (
     <Box sx={{ direction: "rtl", textAlign: "right" }}>
-      {}
       {pageLoading && <LinearProgress color="primary" sx={{ mb: 2 }} />}
 
       <Box
@@ -288,7 +287,6 @@ export default function AdminHelp() {
           gap: 3,
         }}
       >
-        {}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -306,7 +304,6 @@ export default function AdminHelp() {
           </Box>
         </motion.div>
 
-        {}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -381,7 +378,6 @@ export default function AdminHelp() {
           </Box>
         </motion.div>
 
-        {}
         <motion.section
           id="section-leads"
           initial={{ opacity: 0, y: 20 }}
@@ -519,7 +515,6 @@ export default function AdminHelp() {
           </Paper>
         </motion.section>
 
-        {}
         <motion.section
           id="section-courses"
           initial={{ opacity: 0, y: 20 }}
@@ -656,7 +651,6 @@ export default function AdminHelp() {
           </Paper>
         </motion.section>
 
-        {}
         <motion.section
           id="section-calculator"
           initial={{ opacity: 0, y: 20 }}
@@ -794,7 +788,6 @@ export default function AdminHelp() {
           </Paper>
         </motion.section>
 
-        {}
         <motion.section
           id="section-settings"
           initial={{ opacity: 0, y: 20 }}
@@ -955,8 +948,7 @@ export default function AdminHelp() {
             </Box>
           </Paper>
         </motion.section>
-
-        {}
+        
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

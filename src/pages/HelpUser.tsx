@@ -302,7 +302,6 @@ export default function HelpUser() {
         bgcolor: "background.default",
       }}
     >
-      {}
       {pageLoading && <LinearProgress color="primary" sx={{ mb: 2 }} />}
       <Box
         sx={{
@@ -315,7 +314,6 @@ export default function HelpUser() {
           gap: 3,
         }}
       >
-        {}
         <motion.div
           initial={{ opacity: 0, y: -18 }}
           animate={{ opacity: 1, y: 0 }}
@@ -350,7 +348,6 @@ export default function HelpUser() {
           </Box>
         </motion.div>
 
-        {}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -419,7 +416,6 @@ export default function HelpUser() {
           </Box>
         </motion.div>
 
-        {}
         <motion.section
           id="section-contact"
           initial={{ opacity: 0, y: 18 }}
@@ -486,7 +482,6 @@ export default function HelpUser() {
           </Paper>
         </motion.section>
 
-        {}
         <motion.section
           id="section-openDays"
           initial={{ opacity: 0, y: 18 }}
@@ -536,7 +531,6 @@ export default function HelpUser() {
           </Paper>
         </motion.section>
 
-        {}
         <motion.section
           id="section-schedule"
           initial={{ opacity: 0, y: 18 }}
@@ -574,7 +568,6 @@ export default function HelpUser() {
           </Paper>
         </motion.section>
 
-        {}
         <motion.section
           id="section-tuition"
           initial={{ opacity: 0, y: 18 }}
@@ -624,7 +617,6 @@ export default function HelpUser() {
           </Paper>
         </motion.section>
 
-        {}
         <motion.section
           id="section-admission"
           initial={{ opacity: 0, y: 18 }}
@@ -674,7 +666,6 @@ export default function HelpUser() {
           </Paper>
         </motion.section>
 
-        {}
         <motion.section
           id="section-program"
           initial={{ opacity: 0, y: 18 }}

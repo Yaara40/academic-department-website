@@ -42,10 +42,9 @@ export default function GrowthManagement() {
 
   return (
     <Box sx={{ p: 3, direction: "rtl" }}>
-      {}
+   
       {pageLoading && <LinearProgress color="primary" sx={{ mb: 2 }} />}
 
-      {}
       <Box sx={{ textAlign: "right", mb: 3 }}>
         <Typography variant="h4" fontWeight={800}>
           ניהול אפשרויות צמיחה
@@ -55,10 +54,8 @@ export default function GrowthManagement() {
         </Typography>
       </Box>
 
-      {}
       <GrowthOptionsForm />
 
-      {}
       <GrowthOptionList />
     </Box>
   );

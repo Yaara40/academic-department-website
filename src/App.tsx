@@ -42,12 +42,10 @@ const App = () => {
 
   return (
     <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      {}
       {!isLoginPage &&
         !isCreateUserPage &&
         (isAdminView ? <AdminHeader /> : <UserHeader />)}
 
-      {}
       {isAdminView && !isLoginPage && !isCreateUserPage && <Sidebar />}
 
       <Box
@@ -63,7 +61,6 @@ const App = () => {
         }}
       >
         <Routes>
-          {}
           <Route path="/user" element={<UserHome />} />
           <Route path="/" element={<UserHome />} />
           <Route path="/user/courses" element={<UserCourses />} />
@@ -71,7 +68,6 @@ const App = () => {
           <Route path="/user/help" element={<HelpUser />} />
           <Route path="/user/growth" element={<UserGrowth />} />
 
-          {}
           <Route
             path="/admin"
             element={
@@ -99,7 +95,6 @@ const App = () => {
             }
           />
 
-          {}
           <Route
             path="/admin/courses/edit/:existingCourseId"
             element={

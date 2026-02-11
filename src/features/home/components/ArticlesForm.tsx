@@ -352,7 +352,6 @@ export default function ArticlesForm() {
         </Box>
       ))}
 
-      {}
       <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
         <DialogTitle sx={{ direction: "rtl" }}>עריכת מאמר</DialogTitle>
         <DialogContent sx={{ direction: "rtl", minWidth: 420 }}>
@@ -409,7 +408,6 @@ export default function ArticlesForm() {
         </DialogActions>
       </Dialog>
 
-      {}
       <Dialog open={addDialogOpen} onClose={() => setAddDialogOpen(false)}>
         <DialogTitle sx={{ direction: "rtl" }}>הוספת מאמר חדש</DialogTitle>
         <DialogContent sx={{ direction: "rtl", minWidth: 420 }}>
@@ -466,7 +464,6 @@ export default function ArticlesForm() {
         </DialogActions>
       </Dialog>
 
-      {}
       <Dialog
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}

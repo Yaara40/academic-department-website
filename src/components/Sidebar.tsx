@@ -74,7 +74,6 @@ export default function Sidebar() {
           </ListItem>
         ))}
       </List>
-      {}
     </Box>
   );
 }

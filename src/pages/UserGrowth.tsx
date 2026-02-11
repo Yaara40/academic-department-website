@@ -138,7 +138,6 @@ export default function UserGrowth() {
 
   return (
     <Box sx={{ direction: "rtl" }}>
-      {}
       <Box
         sx={{
           bgcolor: "hero.main",
@@ -157,9 +156,7 @@ export default function UserGrowth() {
         </Container>
       </Box>
 
-      {}
       <Container maxWidth="lg" sx={{ mt: 6, mb: 8 }}>
-        {}
         <Box sx={{ mb: 8 }}>
           <Typography
             variant="h4"
@@ -177,7 +174,6 @@ export default function UserGrowth() {
             התואר פותח דלתות למגוון רחב של אפשרויות קריירה
           </Typography>
 
-          {}
           <Box
             sx={{
               display: "grid",
@@ -269,7 +265,6 @@ export default function UserGrowth() {
           </Box>
         </Box>
 
-        {}
         <Box>
           <Box sx={{ textAlign: "center", mb: 4 }}>
             <TrendingUpIcon
@@ -283,7 +278,6 @@ export default function UserGrowth() {
             </Typography>
           </Box>
 
-          {}
           <Box
             sx={{
               display: "grid",

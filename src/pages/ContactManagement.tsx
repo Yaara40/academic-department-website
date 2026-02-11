@@ -46,10 +46,9 @@ export default function ContactManagement() {
 
   return (
     <Box sx={{ p: 3, direction: "rtl" }}>
-      {}
+
       {pageLoading && <LinearProgress color="primary" sx={{ mb: 2 }} />}
 
-      {}
       <Box sx={{ textAlign: "right", mb: 3 }}>
         <Typography variant="h4" fontWeight={800}>
           ניהול השארת פרטים
@@ -59,10 +58,8 @@ export default function ContactManagement() {
         </Typography>
       </Box>
 
-      {}
       <ContactList />
 
-      {}
       <ContactForm />
     </Box>
   );

@@ -81,7 +81,6 @@ export default function UserCourses() {
 
   return (
     <Box sx={{ direction: "rtl" }}>
-      {}
       <Box
         sx={{
           bgcolor: "hero.main",
@@ -100,7 +99,6 @@ export default function UserCourses() {
         </Container>
       </Box>
 
-      {}
       <Container maxWidth="lg" sx={{ mt: -4 }}>
         <Box
           sx={{
@@ -154,7 +152,6 @@ export default function UserCourses() {
           </Card>
         </Box>
 
-        {}
         <Box sx={{ mb: 4 }}>
           <TextField
             fullWidth
@@ -190,7 +187,6 @@ export default function UserCourses() {
           </Tabs>
         </Box>
 
-        {}
         <Box
           sx={{
             display: "grid",
@@ -217,7 +213,6 @@ export default function UserCourses() {
               }}
             >
               <CardContent sx={{ flexGrow: 1 }}>
-                {}
                 <Box
                   sx={{
                     width: 56,
@@ -233,12 +228,10 @@ export default function UserCourses() {
                   <MenuBookIcon sx={{ fontSize: 32, color: "primary.main" }} />
                 </Box>
 
-                {}
                 <Typography variant="h6" fontWeight={700} gutterBottom>
                   {course.name}
                 </Typography>
 
-                {}
                 <Typography
                   variant="body2"
                   color="text.secondary"
@@ -247,7 +240,6 @@ export default function UserCourses() {
                   {course.year} • סמסטר {course.semester} • {course.credits} נ"ז
                 </Typography>
 
-                {}
                 {course.isMandatory === true && (
                   <Chip
                     label="חובה"
@@ -260,7 +252,6 @@ export default function UserCourses() {
                   />
                 )}
 
-                {}
                 {course.syllabus && (
                   <Button
                     variant="outlined"
@@ -281,7 +272,6 @@ export default function UserCourses() {
           ))}
         </Box>
 
-        {}
         {filteredCourses.length === 0 && (
           <Box sx={{ textAlign: "center", py: 8 }}>
             <Typography variant="h6" color="text.secondary">

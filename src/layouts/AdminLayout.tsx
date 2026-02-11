@@ -6,16 +6,13 @@ import Sidebar from "../components/Sidebar";
 export default function AdminLayout() {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      
-      {}
+   
       <AdminHeader />
 
-      {}
       <Box sx={{ display: { xs: "none", md: "block" } }}>
         <Sidebar />
       </Box>
 
-      {}
       <Box 
         component="main" 
         sx={{ 

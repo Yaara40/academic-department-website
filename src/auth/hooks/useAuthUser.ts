@@ -13,7 +13,7 @@ export const useAuthUser = () => {
       setInitialized(true);
     });
 
-    // Cleanup function
+   
     return unsubscribe;
   }, []);
 

@@ -19,7 +19,6 @@ import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import { doc, getDoc } from "firebase/firestore";
 import { firestore } from "../firebase/config";
 
-// 🎨 צבעי רקע לאייקונים - נשארים כמו שהם!
 const CATEGORY_COLORS: { [key: string]: string } = {
   management: "#FFF3E0",
   international: "#E0F7FA",
@@ -29,7 +28,6 @@ const CATEGORY_COLORS: { [key: string]: string } = {
   hitech: "#E3F2FD",
 };
 
-// אייקונים עם צבעים תואמים - נשארים כמו שהם!
 const ICONS: { [key: string]: { icon: React.ReactNode; color: string } } = {
   management: {
     icon: <NewspaperIcon sx={{ fontSize: 48 }} />,
@@ -57,7 +55,6 @@ const ICONS: { [key: string]: { icon: React.ReactNode; color: string } } = {
   },
 };
 
-// מסלולי קריירה - סטטי!
 const CAREER_TRACKS = [
   {
     role: "מפתח/ת תוכנה",
@@ -141,7 +138,7 @@ export default function UserGrowth() {
 
   return (
     <Box sx={{ direction: "rtl" }}>
-      {/* Hero Section */}
+      {}
       <Box
         sx={{
           bgcolor: "hero.main",
@@ -160,9 +157,9 @@ export default function UserGrowth() {
         </Container>
       </Box>
 
-      {/* Content */}
+      {}
       <Container maxWidth="lg" sx={{ mt: 6, mb: 8 }}>
-        {/* קטע "לאן אפשר להגיע?" */}
+        {}
         <Box sx={{ mb: 8 }}>
           <Typography
             variant="h4"
@@ -180,7 +177,7 @@ export default function UserGrowth() {
             התואר פותח דלתות למגוון רחב של אפשרויות קריירה
           </Typography>
 
-          {/* 6 כרטיסים */}
+          {}
           <Box
             sx={{
               display: "grid",
@@ -272,7 +269,7 @@ export default function UserGrowth() {
           </Box>
         </Box>
 
-        {/* מסלולי קריירה נפוצים - סטטי! */}
+        {}
         <Box>
           <Box sx={{ textAlign: "center", mb: 4 }}>
             <TrendingUpIcon
@@ -286,7 +283,7 @@ export default function UserGrowth() {
             </Typography>
           </Box>
 
-          {/* בוקסים קטנים */}
+          {}
           <Box
             sx={{
               display: "grid",

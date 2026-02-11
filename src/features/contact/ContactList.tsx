@@ -67,7 +67,6 @@ export default function ContactList() {
     },
   ];
 
-  // פונקציית צבעים מעודכנת המשתמשת ב-Theme
   const getStatusColor = (status: Contact["status"]) => {
     switch (status) {
       case "חדש":

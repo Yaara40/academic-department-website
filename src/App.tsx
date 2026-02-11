@@ -31,24 +31,23 @@ const App = () => {
   const isLoginPage = location.pathname === "/admin/login";
   const isCreateUserPage = location.pathname === "/create-admin";
 
-  // אתחול Google Analytics
+  // Google Analytics
   useEffect(() => {
     initGA();
   }, []);
 
-  // מעקב אחרי ניווט בין דפים
   useEffect(() => {
     logPageView(location.pathname + location.search);
   }, [location]);
 
   return (
     <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      {/* Header - לא מציג בדף Login או CreateUser */}
+      {}
       {!isLoginPage &&
         !isCreateUserPage &&
         (isAdminView ? <AdminHeader /> : <UserHeader />)}
 
-      {/* Sidebar - רק ל-Admin ולא בדף Login או CreateUser */}
+      {}
       {isAdminView && !isLoginPage && !isCreateUserPage && <Sidebar />}
 
       <Box
@@ -64,7 +63,7 @@ const App = () => {
         }}
       >
         <Routes>
-          {/* User Routes - Public */}
+          {}
           <Route path="/user" element={<UserHome />} />
           <Route path="/" element={<UserHome />} />
           <Route path="/user/courses" element={<UserCourses />} />
@@ -72,7 +71,7 @@ const App = () => {
           <Route path="/user/help" element={<HelpUser />} />
           <Route path="/user/growth" element={<UserGrowth />} />
 
-          {/* Admin Routes - Protected */}
+          {}
           <Route
             path="/admin"
             element={
@@ -100,7 +99,7 @@ const App = () => {
             }
           />
 
-          {/* ✅ קישור ישיר לעריכת קורס */}
+          {}
           <Route
             path="/admin/courses/edit/:existingCourseId"
             element={

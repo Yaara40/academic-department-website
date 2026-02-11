@@ -29,7 +29,6 @@ export default function ContactForm() {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // Snackbar state
   const [snackOpen, setSnackOpen] = useState(false);
   const [snackMsg, setSnackMsg] = useState("");
   const [snackSeverity, setSnackSeverity] = useState<"success" | "error">(
@@ -49,14 +48,12 @@ export default function ContactForm() {
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    // 1. שם - חובה
     if (!name.trim()) {
       newErrors.name = "שם מלא הוא שדה חובה";
     } else if (name.trim().length < 2) {
       newErrors.name = "שם חייב להכיל לפחות 2 תווים";
     }
 
-    // 2. אימייל - חובה + פורמט
     const emailClean = email.trim().toLowerCase();
     if (!emailClean) {
       newErrors.email = "אימייל הוא שדה חובה";
@@ -64,7 +61,6 @@ export default function ContactForm() {
       newErrors.email = "פורמט אימייל לא תקין (לדוגמה: example@domain.com)";
     }
 
-    // 3. טלפון - חובה + פורמט ישראלי
     const phoneClean = phone.replace(/\s/g, "");
     if (!phoneClean.trim()) {
       newErrors.phone = "טלפון הוא שדה חובה";
@@ -72,14 +68,11 @@ export default function ContactForm() {
       newErrors.phone = "פורמט טלפון לא תקין (לדוגמה: 050-1234567)";
     }
 
-    // 4. הודעה - חובה
     if (!message.trim()) {
       newErrors.message = "הודעה היא שדה חובה";
     } else if (message.trim().length < 10) {
       newErrors.message = "הודעה חייבת להכיל לפחות 10 תווים";
     }
-
-    // 5. מקורות - חובה לבחור לפחות אחד
     if (sources.length === 0) {
       newErrors.sources = "יש לבחור לפחות מקור אחד";
     }
@@ -90,7 +83,6 @@ export default function ContactForm() {
 
   const handleSubmit = () => {
     if (!validateForm()) {
-      // ✅ מעקב GA - שגיאת ולידציה
       logEvent("Contact", "Validation Error", "User Contact Form");
 
       setSnackSeverity("error");
@@ -99,10 +91,8 @@ export default function ContactForm() {
       return;
     }
 
-    // כאן תוסיפי שמירה ל-Firestore בעתיד
     console.log("Contact submitted:", { name, email, phone, message, sources });
 
-    // ✅ מעקב GA - שליחת טופס מוצלחת
     logEvent("Contact", "Form Submitted", `Sources: ${sources.join(", ")}`);
 
     setSnackSeverity("success");
@@ -240,7 +230,7 @@ export default function ContactForm() {
         </Button>
       </Box>
 
-      {/* Snackbar הודעות */}
+      {/* הודעות */}
       <Snackbar
         open={snackOpen}
         autoHideDuration={3000}

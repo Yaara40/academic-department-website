@@ -24,13 +24,11 @@ export default function CreateUser() {
     e.preventDefault();
     setError("");
 
-    // וולידציה שהסיסמאות תואמות
     if (password !== confirmPassword) {
       setError("הסיסמאות אינן תואמות");
       return;
     }
 
-    // וולידציה שהסיסמה לפחות 6 תווים
     if (password.length < 6) {
       setError("הסיסמה חייבת להכיל לפחות 6 תווים");
       return;

@@ -70,10 +70,10 @@ export default function UserHome() {
 
   return (
     <Box sx={{ direction: "rtl" }}>
-      {/* פס טעינה */}
+      {}
       {pageLoading && <LinearProgress color="primary" sx={{ mb: 2 }} />}
 
-      {/* כפתור Dark Mode - פינה שמאלית עליונה */}
+      {}
       <Box
         sx={{
           position: "absolute",
@@ -85,7 +85,7 @@ export default function UserHome() {
         <ThemeToggle />
       </Box>
 
-      {/* Hero Section */}
+      {}
       <Box
         sx={{
           minHeight: "70vh",
@@ -113,7 +113,7 @@ export default function UserHome() {
       >
         <Container maxWidth="lg" sx={{ position: "relative", zIndex: 1 }}>
           <Box sx={{ textAlign: "center", color: "white" }}>
-            {/* תג הרשמה פתוחה */}
+            {}
             <Chip
               label="ההרשמה לשנת הלימודים 2026 פתוחה"
               color="primary"
@@ -124,7 +124,7 @@ export default function UserHome() {
               }}
             />
 
-            {/* כותרת ראשית */}
+            {}
             <Typography
               variant="h2"
               sx={{
@@ -135,7 +135,7 @@ export default function UserHome() {
             >
               תואר ראשון במדעי המחשב
             </Typography>
-            {/* תת-כותרת */}
+            {}
             <Typography
               variant="h6"
               sx={{
@@ -150,7 +150,7 @@ export default function UserHome() {
               ההייטק. למידה מעשית, מרצים מהתעשייה, והכנה מושלמת לשוק העבודה.
             </Typography>
 
-            {/* כפתורים */}
+            {}
             <Box
               sx={{
                 display: "flex",
@@ -197,7 +197,7 @@ export default function UserHome() {
         </Container>
       </Box>
 
-      {/* למה לבחור בנו */}
+      {}
       <Container maxWidth="lg" sx={{ py: 8 }}>
         <Box
           sx={{
@@ -248,7 +248,7 @@ export default function UserHome() {
         </Box>
       </Container>
 
-      {/* דרישות התואר */}
+      {}
       <Box sx={{ py: 8 }}>
         <Container maxWidth="lg">
           <Typography
@@ -311,7 +311,7 @@ export default function UserHome() {
         </Container>
       </Box>
 
-      {/* מאמרים */}
+      {}
       <Container maxWidth="lg" sx={{ py: 8 }}>
         <Typography
           variant="h3"
@@ -387,7 +387,7 @@ export default function UserHome() {
         </Box>
       </Container>
 
-      {/* המלצות בוגרים */}
+      {/}
       <Box
         sx={{
           bgcolor: "hero.main",
@@ -431,14 +431,14 @@ export default function UserHome() {
                   height: "100%",
                 }}
               >
-                {/* כוכבים */}
+                {}
                 <Box sx={{ display: "flex", gap: 0.5, mb: 2 }}>
                   {[1, 2, 3, 4, 5].map((star) => (
                     <StarIcon key={star} color="primary" />
                   ))}
                 </Box>
 
-                {/* טקסט */}
+                {}
                 <Typography
                   variant="body1"
                   color="text.primary"
@@ -447,7 +447,7 @@ export default function UserHome() {
                   "{testimonial.text}"
                 </Typography>
 
-                {/* פרטי הבוגר */}
+                {}
                 <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                   <Avatar
                     sx={{

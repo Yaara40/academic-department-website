@@ -296,7 +296,7 @@ export default function TestimonialsForm() {
         </Box>
       ))}
 
-      {/* Dialog עריכה */}
+      {}
       <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
         <DialogTitle sx={{ direction: "rtl" }}>עריכת המלצה</DialogTitle>
         <DialogContent sx={{ direction: "rtl", minWidth: 400 }}>
@@ -384,7 +384,7 @@ export default function TestimonialsForm() {
         </DialogActions>
       </Dialog>
 
-      {/* Dialog מחיקה */}
+      {}
       <Dialog
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
@@ -405,7 +405,7 @@ export default function TestimonialsForm() {
         </DialogActions>
       </Dialog>
 
-      {/* Snackbar */}
+      {}
       <Snackbar
         open={snack.open}
         autoHideDuration={2500}

@@ -10,7 +10,7 @@ import {
 import { firestore } from "./config";
 import { Course } from "../models/Course";
 
-// ✅ הוספת קורס חדש
+//הוספת קורס חדש
 export async function addCourse(course: Course): Promise<void> {
   try {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -22,7 +22,7 @@ export async function addCourse(course: Course): Promise<void> {
   }
 }
 
-// ✅ קבלת כל הקורסים
+//קבלת כל הקורסים
 export async function getAllCourses(): Promise<Course[]> {
   try {
     const querySnapshot = await getDocs(collection(firestore, "courses"));
@@ -35,7 +35,7 @@ export async function getAllCourses(): Promise<Course[]> {
   }
 }
 
-// ✅ קבלת קורס לפי ID
+//קבלת קורס לפי ID
 export async function getCourseById(id: string): Promise<Course | null> {
   try {
     const docRef = doc(firestore, "courses", id);
@@ -51,7 +51,7 @@ export async function getCourseById(id: string): Promise<Course | null> {
   }
 }
 
-// ✅ עדכון קורס
+//עדכון קורס
 export async function updateCourse(id: string, course: Course): Promise<void> {
   try {
     const docRef = doc(firestore, "courses", id);
@@ -64,7 +64,7 @@ export async function updateCourse(id: string, course: Course): Promise<void> {
   }
 }
 
-// ✅ מחיקת קורס
+//מחיקת קורס
 export async function deleteCourse(id: string): Promise<void> {
   try {
     const docRef = doc(firestore, "courses", id);

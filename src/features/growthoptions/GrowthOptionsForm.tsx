@@ -160,7 +160,7 @@ export default function GrowthOptionsForm() {
         {saving ? "שומר..." : "שמור ל-Firestore"}
       </Button>
 
-      {/* Snackbar */}
+      {}
       <Snackbar
         open={snack.open}
         autoHideDuration={2500}

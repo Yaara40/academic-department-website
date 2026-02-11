@@ -19,7 +19,6 @@ import type { Testimonial } from "../models/Home";
 
 const COLLECTION_NAME = "testimonials";
 
-// Converter class
 class TestimonialConverter implements FirestoreDataConverter<Testimonial> {
   toFirestore(testimonial: WithFieldValue<Testimonial>): DocumentData {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -41,9 +40,6 @@ class TestimonialConverter implements FirestoreDataConverter<Testimonial> {
 
 const testimonialConverter = new TestimonialConverter();
 
-/**
- * שליפת כל ההמלצות
- */
 export async function getAllTestimonials(): Promise<Testimonial[]> {
   const testimonialsSnapshot = await getDocs(
     collection(firestore, COLLECTION_NAME).withConverter(testimonialConverter)
@@ -51,9 +47,6 @@ export async function getAllTestimonials(): Promise<Testimonial[]> {
   return testimonialsSnapshot.docs.map((doc) => doc.data());
 }
 
-/**
- * שליפת המלצה בודדת
- */
 export async function getTestimonial(id: string): Promise<Testimonial | null> {
   const testimonialDocRef = doc(firestore, COLLECTION_NAME, id).withConverter(
     testimonialConverter
@@ -66,9 +59,6 @@ export async function getTestimonial(id: string): Promise<Testimonial | null> {
   return null;
 }
 
-/**
- * הוספת המלצה חדשה
- */
 export async function addTestimonial(
   testimonial: Omit<Testimonial, "id">
 ): Promise<string> {
@@ -83,9 +73,6 @@ export async function addTestimonial(
   return docRef.id;
 }
 
-/**
- * עדכון המלצה
- */
 export async function updateTestimonial(
   testimonial: Testimonial
 ): Promise<void> {
@@ -97,9 +84,6 @@ export async function updateTestimonial(
   await setDoc(testimonialDocRef, testimonial);
 }
 
-/**
- * מחיקת המלצה
- */
 export async function deleteTestimonial(id: string): Promise<void> {
   const testimonialDoc = doc(firestore, COLLECTION_NAME, id);
   await deleteDoc(testimonialDoc);

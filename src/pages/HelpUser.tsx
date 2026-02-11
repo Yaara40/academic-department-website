@@ -221,7 +221,6 @@ export default function HelpUser() {
     (panel: string) => (_: React.SyntheticEvent, isExpanded: boolean) =>
       setExpanded(isExpanded ? panel : false);
 
-  // FAQs לכל סקשן
   const contactFaq: FAQ[] = [
     {
       q: "איך יוצרים קשר?",
@@ -288,7 +287,6 @@ export default function HelpUser() {
     },
   ];
 
-  // חיפוש פשוט
   const filterFaqs = (faqs: FAQ[]) => {
     const q = query.trim();
     if (!q) return faqs;
@@ -304,7 +302,7 @@ export default function HelpUser() {
         bgcolor: "background.default",
       }}
     >
-      {/* ✅ הוספה: פס טעינה */}
+      {}
       {pageLoading && <LinearProgress color="primary" sx={{ mb: 2 }} />}
       <Box
         sx={{
@@ -317,7 +315,7 @@ export default function HelpUser() {
           gap: 3,
         }}
       >
-        {/* Header */}
+        {}
         <motion.div
           initial={{ opacity: 0, y: -18 }}
           animate={{ opacity: 1, y: 0 }}
@@ -352,7 +350,7 @@ export default function HelpUser() {
           </Box>
         </motion.div>
 
-        {/* Quick Links (Cards) */}
+        {}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -421,7 +419,7 @@ export default function HelpUser() {
           </Box>
         </motion.div>
 
-        {/* Section: Contact */}
+        {}
         <motion.section
           id="section-contact"
           initial={{ opacity: 0, y: 18 }}
@@ -488,7 +486,7 @@ export default function HelpUser() {
           </Paper>
         </motion.section>
 
-        {/* Section: Open Days */}
+        {}
         <motion.section
           id="section-openDays"
           initial={{ opacity: 0, y: 18 }}
@@ -538,7 +536,7 @@ export default function HelpUser() {
           </Paper>
         </motion.section>
 
-        {/* Section: Schedule */}
+        {}
         <motion.section
           id="section-schedule"
           initial={{ opacity: 0, y: 18 }}
@@ -576,7 +574,7 @@ export default function HelpUser() {
           </Paper>
         </motion.section>
 
-        {/* Section: Tuition */}
+        {}
         <motion.section
           id="section-tuition"
           initial={{ opacity: 0, y: 18 }}
@@ -626,7 +624,7 @@ export default function HelpUser() {
           </Paper>
         </motion.section>
 
-        {/* Section: Admission */}
+        {}
         <motion.section
           id="section-admission"
           initial={{ opacity: 0, y: 18 }}
@@ -676,7 +674,7 @@ export default function HelpUser() {
           </Paper>
         </motion.section>
 
-        {/* Section: Program */}
+        {}
         <motion.section
           id="section-program"
           initial={{ opacity: 0, y: 18 }}

@@ -74,7 +74,7 @@ export default function Sidebar() {
           </ListItem>
         ))}
       </List>
-      {/* מחקנו את הכפתור התחתון שהיה כאן */}
+      {}
     </Box>
   );
 }

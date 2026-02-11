@@ -43,7 +43,6 @@ export default function UserCourses() {
     loadCourses();
   }, []);
 
-  // סינון לפי חיפוש ושנה
   const filteredCourses = courses.filter((course) => {
     const matchesSearch =
       course.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -54,7 +53,6 @@ export default function UserCourses() {
     return matchesSearch && matchesYear;
   });
 
-  // חישוב סטטיסטיקות
   const totalCourses = courses.length;
   const totalYears = [...new Set(courses.map((c) => c.year))].length;
   const totalCredits = courses.reduce((sum, c: Course) => {
@@ -83,7 +81,7 @@ export default function UserCourses() {
 
   return (
     <Box sx={{ direction: "rtl" }}>
-      {/* Hero Section */}
+      {}
       <Box
         sx={{
           bgcolor: "hero.main",
@@ -102,7 +100,7 @@ export default function UserCourses() {
         </Container>
       </Box>
 
-      {/* סטטיסטיקות */}
+      {}
       <Container maxWidth="lg" sx={{ mt: -4 }}>
         <Box
           sx={{
@@ -156,7 +154,7 @@ export default function UserCourses() {
           </Card>
         </Box>
 
-        {/* חיפוש וסינון */}
+        {}
         <Box sx={{ mb: 4 }}>
           <TextField
             fullWidth
@@ -192,7 +190,7 @@ export default function UserCourses() {
           </Tabs>
         </Box>
 
-        {/* רשימת קורסים */}
+        {}
         <Box
           sx={{
             display: "grid",
@@ -219,7 +217,7 @@ export default function UserCourses() {
               }}
             >
               <CardContent sx={{ flexGrow: 1 }}>
-                {/* אייקון */}
+                {}
                 <Box
                   sx={{
                     width: 56,
@@ -235,12 +233,12 @@ export default function UserCourses() {
                   <MenuBookIcon sx={{ fontSize: 32, color: "primary.main" }} />
                 </Box>
 
-                {/* כותרת */}
+                {}
                 <Typography variant="h6" fontWeight={700} gutterBottom>
                   {course.name}
                 </Typography>
 
-                {/* פרטים */}
+                {}
                 <Typography
                   variant="body2"
                   color="text.secondary"
@@ -249,7 +247,7 @@ export default function UserCourses() {
                   {course.year} • סמסטר {course.semester} • {course.credits} נ"ז
                 </Typography>
 
-                {/* תגית חובה */}
+                {}
                 {course.isMandatory === true && (
                   <Chip
                     label="חובה"
@@ -262,7 +260,7 @@ export default function UserCourses() {
                   />
                 )}
 
-                {/* כפתור סילבוס */}
+                {}
                 {course.syllabus && (
                   <Button
                     variant="outlined"
@@ -283,7 +281,7 @@ export default function UserCourses() {
           ))}
         </Box>
 
-        {/* אין תוצאות */}
+        {}
         {filteredCourses.length === 0 && (
           <Box sx={{ textAlign: "center", py: 8 }}>
             <Typography variant="h6" color="text.secondary">

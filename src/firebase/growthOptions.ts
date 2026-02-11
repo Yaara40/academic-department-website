@@ -7,7 +7,6 @@ import type {
 } from "firebase/firestore";
 import { firestore } from "./config";
 
-// שם ה-Collection וה-Document ID
 const COLLECTION_NAME = "siteSettings";
 const DOCUMENT_ID = "growthOptions";
 
@@ -16,7 +15,6 @@ export interface GrowthOptions {
   pageDescription: string;
 }
 
-// Converter class
 class GrowthOptionsConverter implements FirestoreDataConverter<GrowthOptions> {
   toFirestore(data: WithFieldValue<GrowthOptions>): DocumentData {
     return { ...data };
@@ -33,9 +31,6 @@ class GrowthOptionsConverter implements FirestoreDataConverter<GrowthOptions> {
 
 const growthOptionsConverter = new GrowthOptionsConverter();
 
-/**
- * שליפת כותרת ותיאור דף הצמיחה מ-Firestore
- */
 export async function getGrowthOptions(): Promise<GrowthOptions | null> {
   const docRef = doc(firestore, COLLECTION_NAME, DOCUMENT_ID).withConverter(
     growthOptionsConverter
@@ -48,9 +43,6 @@ export async function getGrowthOptions(): Promise<GrowthOptions | null> {
   return null;
 }
 
-/**
- * שמירת כותרת ותיאור דף הצמיחה ל-Firestore
- */
 export async function saveGrowthOptions(data: GrowthOptions): Promise<void> {
   const docRef = doc(firestore, COLLECTION_NAME, DOCUMENT_ID).withConverter(
     growthOptionsConverter

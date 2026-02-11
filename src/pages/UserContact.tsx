@@ -34,7 +34,7 @@ export default function UserContact() {
     <Box sx={{ direction: "rtl" }}>
       {pageLoading && <LinearProgress color="primary" />}
 
-      {/* Hero Section */}
+      {}
       <Box
         sx={{
           bgcolor: "hero.main",
@@ -61,12 +61,12 @@ export default function UserContact() {
             flexDirection: { xs: "column", md: "row" },
           }}
         >
-          {/* טופס יצירת קשר */}
+          {}
           <Box sx={{ flex: { md: "1 1 60%" } }}>
             <ContactForm />
           </Box>
 
-          {/* פרטי התקשרות */}
+          {}
           <Box sx={{ flex: { md: "1 1 40%" } }}>
             <Card sx={{ mb: 3 }}>
               <CardContent>
@@ -108,7 +108,7 @@ export default function UserContact() {
                     </Box>
                   </Box>
 
-                  {/* אימייל */}
+                  {}
                   <Box
                     sx={{
                       display: "flex",
@@ -141,7 +141,7 @@ export default function UserContact() {
                     </Box>
                   </Box>
 
-                  {/* כתובת */}
+                  {}
                   <Box
                     sx={{
                       display: "flex",
@@ -174,7 +174,7 @@ export default function UserContact() {
                     </Box>
                   </Box>
 
-                  {/* שעות פעילות */}
+                  {}
                   <Box
                     sx={{
                       display: "flex",
@@ -210,7 +210,7 @@ export default function UserContact() {
               </CardContent>
             </Card>
 
-            {/* מפה */}
+            {}
             <Card>
               <CardContent sx={{ p: 0 }}>
                 <Box

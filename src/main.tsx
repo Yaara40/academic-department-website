@@ -37,12 +37,10 @@ let theme = createTheme({
           dark: "#689F38",
           contrastText: "#000",
         },
-        // ✅ צבע כחול כהה ל-Hero Section
         hero: {
           main: "#1a2332",
           contrastText: "#fff",
         },
-        // ✅ צבע ירוק בהיר לכרטיסים
         cardGreen: {
           main: "#f1f8e9",
           contrastText: "#333",
@@ -67,12 +65,10 @@ let theme = createTheme({
           dark: "#7CB342",
           contrastText: "#000",
         },
-        // ✅ צבע כהה יותר ב-dark mode
         hero: {
           main: "#0d1117",
           contrastText: "#fff",
         },
-        // ✅ צבע ירוק כהה לכרטיסים ב-dark mode
         cardGreen: {
           main: "#2c3b2d",
           contrastText: "#eee",

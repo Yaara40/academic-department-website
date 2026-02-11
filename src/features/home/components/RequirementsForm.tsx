@@ -304,7 +304,7 @@ export default function RequirementsForm() {
         ))}
       </Box>
 
-      {/* Dialog עריכה */}
+      {}
       <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
         <DialogTitle sx={{ direction: "rtl" }}>עריכת דרישה</DialogTitle>
         <DialogContent sx={{ direction: "rtl", minWidth: 420 }}>
@@ -344,7 +344,7 @@ export default function RequirementsForm() {
         </DialogActions>
       </Dialog>
 
-      {/* Dialog הוספה */}
+      {}
       <Dialog open={addDialogOpen} onClose={() => setAddDialogOpen(false)}>
         <DialogTitle sx={{ direction: "rtl" }}>הוספת דרישה חדשה</DialogTitle>
         <DialogContent sx={{ direction: "rtl", minWidth: 420 }}>
@@ -384,7 +384,7 @@ export default function RequirementsForm() {
         </DialogActions>
       </Dialog>
 
-      {/* Dialog מחיקה */}
+      {}
       <Dialog
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
@@ -405,7 +405,7 @@ export default function RequirementsForm() {
         </DialogActions>
       </Dialog>
 
-      {/* Snackbar */}
+      {}
       <Snackbar
         open={snack.open}
         autoHideDuration={2500}

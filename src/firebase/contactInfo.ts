@@ -8,11 +8,9 @@ import type {
 import { firestore } from "./config";
 import type { Contact } from "../models/Home";
 
-// שם ה-Collection וה-Document ID
 const COLLECTION_NAME = "contactInfo";
 const DOCUMENT_ID = "contactInfo";
 
-// Converter class
 class ContactConverter implements FirestoreDataConverter<Contact> {
   toFirestore(data: WithFieldValue<Contact>): DocumentData {
     return { ...data };
@@ -29,9 +27,6 @@ class ContactConverter implements FirestoreDataConverter<Contact> {
 
 const contactConverter = new ContactConverter();
 
-/**
- * שליפת פרטי התקשרות מ-Firestore
- */
 export async function getContactInfo(): Promise<Contact | null> {
   const docRef = doc(firestore, COLLECTION_NAME, DOCUMENT_ID).withConverter(
     contactConverter
@@ -44,9 +39,6 @@ export async function getContactInfo(): Promise<Contact | null> {
   return null;
 }
 
-/**
- * שמירת פרטי התקשרות ל-Firestore
- */
 export async function saveContactInfo(contactInfo: Contact): Promise<void> {
   const docRef = doc(firestore, COLLECTION_NAME, DOCUMENT_ID).withConverter(
     contactConverter

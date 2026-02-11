@@ -20,7 +20,7 @@ export default function UserLayout() {
 
   return (
     <Box sx={{ direction: "rtl", minHeight: "100vh" }}>
-      {/* ===== User Header ===== */}
+      {}
       <AppBar
         position="sticky"
         elevation={0}
@@ -32,7 +32,7 @@ export default function UserLayout() {
         }}
       >
         <Toolbar sx={{ position: "relative", minHeight: 64 }}>
-          {/* ===== צד שמאל: Theme + חזרה למנהל ===== */}
+          {}
           <Box
             sx={{
               position: "absolute",
@@ -55,7 +55,7 @@ export default function UserLayout() {
             </Button>
           </Box>
 
-          {/* ===== ניווט משתמש – באמצע ===== */}
+          {}
           <Box
             sx={{
               display: "flex",
@@ -104,12 +104,12 @@ export default function UserLayout() {
         </Toolbar>
       </AppBar>
 
-      {/* ===== תוכן הדפים ===== */}
+      {}
       <Box sx={{ px: { xs: 1, md: 2 }, py: 2 }}>
         <Outlet />
       </Box>
 
-      {/* ===== כפתור עזרה צף ===== */}
+      {}
       <Fab
         onClick={() => navigate("/user/help")}
         color="success"

@@ -142,7 +142,7 @@ export default function UserHeader() {
                   color: "text.primary",
                   display: "flex",
                   alignItems: "center",
-                  gap: 1, // רווח בין אייקון לטקסט
+                  gap: 1, 
                   "&:hover": { bgcolor: "action.hover" },
                 }}
               >

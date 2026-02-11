@@ -259,7 +259,6 @@ export default function AdminHelp() {
       a: 'ערכו את הכרטיס ושנו את הסטטוס ל"מוסתר". הכרטיס יישמר אך לא יוצג למועמדים.',
     },
   ];
-  // אם מסך קטן מדי - הצג הודעה
   if (isMobile) {
     return (
       <Box sx={{ p: 3, textAlign: "center", direction: "rtl" }}>
@@ -275,7 +274,7 @@ export default function AdminHelp() {
 
   return (
     <Box sx={{ direction: "rtl", textAlign: "right" }}>
-      {/* פס טעינה */}
+      {}
       {pageLoading && <LinearProgress color="primary" sx={{ mb: 2 }} />}
 
       <Box
@@ -289,7 +288,7 @@ export default function AdminHelp() {
           gap: 3,
         }}
       >
-        {/* Header */}
+        {}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -307,7 +306,7 @@ export default function AdminHelp() {
           </Box>
         </motion.div>
 
-        {/* Quick Links Grid */}
+        {}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -382,7 +381,7 @@ export default function AdminHelp() {
           </Box>
         </motion.div>
 
-        {/* Section 1: Leads */}
+        {}
         <motion.section
           id="section-leads"
           initial={{ opacity: 0, y: 20 }}
@@ -520,7 +519,7 @@ export default function AdminHelp() {
           </Paper>
         </motion.section>
 
-        {/* Section 2: Courses */}
+        {}
         <motion.section
           id="section-courses"
           initial={{ opacity: 0, y: 20 }}
@@ -657,7 +656,7 @@ export default function AdminHelp() {
           </Paper>
         </motion.section>
 
-        {/* Section 3: Calculator */}
+        {}
         <motion.section
           id="section-calculator"
           initial={{ opacity: 0, y: 20 }}
@@ -795,7 +794,7 @@ export default function AdminHelp() {
           </Paper>
         </motion.section>
 
-        {/* Section 4: Settings */}
+        {}
         <motion.section
           id="section-settings"
           initial={{ opacity: 0, y: 20 }}
@@ -957,7 +956,7 @@ export default function AdminHelp() {
           </Paper>
         </motion.section>
 
-        {/* Bottom Guidelines */}
+        {}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

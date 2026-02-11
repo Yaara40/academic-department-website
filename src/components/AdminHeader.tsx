@@ -97,7 +97,7 @@ export default function AdminHeader() {
           onClick={() => navigate("/user")}
           sx={{
             bgcolor: "background.paper",
-            color: theme.palette.primary.dark, // מגיע מה-theme, לא hardcode
+            color: theme.palette.primary.dark, 
             fontWeight: 700,
             display: { xs: "none", md: "flex" },
             alignItems: "center",

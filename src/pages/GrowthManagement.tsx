@@ -27,7 +27,6 @@ export default function GrowthManagement() {
     };
   }, []);
 
-  // אם מסך קטן מדי - הצג הודעה
   if (isMobile) {
     return (
       <Box sx={{ p: 3, textAlign: "center", direction: "rtl" }}>
@@ -43,10 +42,10 @@ export default function GrowthManagement() {
 
   return (
     <Box sx={{ p: 3, direction: "rtl" }}>
-      {/* פס טעינה */}
+      {}
       {pageLoading && <LinearProgress color="primary" sx={{ mb: 2 }} />}
 
-      {/* כותרת */}
+      {}
       <Box sx={{ textAlign: "right", mb: 3 }}>
         <Typography variant="h4" fontWeight={800}>
           ניהול אפשרויות צמיחה
@@ -56,10 +55,10 @@ export default function GrowthManagement() {
         </Typography>
       </Box>
 
-      {/* טופס עריכה */}
+      {}
       <GrowthOptionsForm />
 
-      {/* כרטיסים + טבלה */}
+      {}
       <GrowthOptionList />
     </Box>
   );

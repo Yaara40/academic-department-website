@@ -26,7 +26,6 @@ const CoursesManagement = () => {
     };
   }, []);
 
-  // אם מסך קטן מדי - הצג הודעה
   if (isMobile) {
     return (
       <Box sx={{ p: 3, textAlign: "center", direction: "rtl" }}>

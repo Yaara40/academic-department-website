@@ -41,9 +41,7 @@ class ArticleConverter implements FirestoreDataConverter<Article> {
 
 const articleConverter = new ArticleConverter();
 
-/**
- * שליפת כל המאמרים
- */
+//שליפת כל המאמרים
 export async function getAllArticles(): Promise<Article[]> {
   const articlesSnapshot = await getDocs(
     collection(firestore, COLLECTION_NAME).withConverter(articleConverter)
@@ -51,9 +49,7 @@ export async function getAllArticles(): Promise<Article[]> {
   return articlesSnapshot.docs.map((doc) => doc.data());
 }
 
-/**
- * שליפת מאמר בודד
- */
+//שליפת מאמר בודד
 export async function getArticle(id: string): Promise<Article | null> {
   const articleDocRef = doc(firestore, COLLECTION_NAME, id).withConverter(
     articleConverter
@@ -66,9 +62,7 @@ export async function getArticle(id: string): Promise<Article | null> {
   return null;
 }
 
-/**
- * הוספת מאמר חדש
- */
+//הוספת מאמר חדש
 export async function addArticle(
   article: Omit<Article, "id">
 ): Promise<string> {
@@ -80,9 +74,9 @@ export async function addArticle(
   return docRef.id;
 }
 
-/**
- * עדכון מאמר
- */
+
+//עדכון מאמר
+ 
 export async function updateArticle(article: Article): Promise<void> {
   const articleDocRef = doc(
     firestore,
@@ -92,9 +86,9 @@ export async function updateArticle(article: Article): Promise<void> {
   await setDoc(articleDocRef, article);
 }
 
-/**
- * מחיקת מאמר
- */
+
+ //מחיקת מאמר
+
 export async function deleteArticle(id: string): Promise<void> {
   const articleDoc = doc(firestore, COLLECTION_NAME, id);
   await deleteDoc(articleDoc);

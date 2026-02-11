@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import HomeIcon from "@mui/icons-material/Home";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import ContactMailIcon from "@mui/icons-material/ContactMail";
@@ -9,6 +10,7 @@ import PersonIcon from "@mui/icons-material/Person";
 
 export default function AdminHeader() {
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const menuItems = [
     { text: "דף הבית", icon: <HomeIcon />, path: "/admin" },
@@ -21,9 +23,8 @@ export default function AdminHeader() {
   return (
     <AppBar
       position="fixed"
+      color="secondary"
       sx={{
-        bgcolor: "#9CCC65", // ירוק ברוקולי בהיר
-        color: "white",
         boxShadow: 2,
         zIndex: 1100,
         direction: "rtl",
@@ -44,11 +45,7 @@ export default function AdminHeader() {
             component="img"
             src="https://upload.wikimedia.org/wikipedia/he/thumb/6/63/OnoAcademic.svg/1200px-OnoAcademic.svg.png"
             alt="Ono Academic College"
-            sx={{
-              height: 45,
-              width: "auto",
-              objectFit: "contain",
-            }}
+            sx={{ height: 45, width: "auto", objectFit: "contain" }}
           />
           <Typography
             variant="h6"
@@ -57,14 +54,14 @@ export default function AdminHeader() {
             sx={{
               fontWeight: 700,
               textDecoration: "none",
-              color: "white",
+              color: "inherit",
             }}
           >
             מערכת ניהול
           </Typography>
         </Box>
 
-        {/* כפתורי הניווט (באמצע) */}
+        {/* כפתורי ניווט */}
         <Box
           sx={{
             flexGrow: 1,
@@ -78,13 +75,13 @@ export default function AdminHeader() {
               key={item.path}
               component={Link}
               to={item.path}
+              color="inherit"
               sx={{
-                color: "white",
                 display: "flex",
                 alignItems: "center",
-                gap: 1, // מרווח בין אייקון לטקסט
+                gap: 1,
                 "&:hover": {
-                  bgcolor: "rgba(255, 255, 255, 0.1)",
+                  bgcolor: "action.hover",
                 },
               }}
             >
@@ -94,20 +91,20 @@ export default function AdminHeader() {
           ))}
         </Box>
 
-        {/* כפתור מעבר לאתר (בצד שמאל) */}
+        {/* מעבר לאתר */}
         <Button
           variant="contained"
           onClick={() => navigate("/user")}
           sx={{
-            bgcolor: "white",
-            color: "#7CB342", // ירוק על רקע לבן
+            bgcolor: "background.paper",
+            color: theme.palette.primary.dark, // מגיע מה-theme, לא hardcode
             fontWeight: 700,
             display: { xs: "none", md: "flex" },
             alignItems: "center",
             gap: 1,
             px: 3,
             "&:hover": {
-              bgcolor: "#f5f5f5",
+              bgcolor: "action.hover",
             },
           }}
         >

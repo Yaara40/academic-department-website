@@ -21,6 +21,8 @@ interface ContactWithInitial extends Contact {
   initial: string;
 }
 
+const AVATAR_SIZE = 40;
+
 export default function ContactList() {
   const contacts: ContactWithInitial[] = [
     {
@@ -189,7 +191,11 @@ export default function ContactList() {
                   <TableCell align="right">
                     <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                       <Avatar
-                        sx={{ bgcolor: "primary.main", width: 40, height: 40 }}
+                        sx={{
+                          bgcolor: "primary.main",
+                          width: AVATAR_SIZE,
+                          height: AVATAR_SIZE,
+                        }}
                       >
                         {contact.initial}
                       </Avatar>

@@ -13,10 +13,12 @@ import {
   saveGrowthOptions,
 } from "../../firebase/growthOptions";
 
+type SnackSeverity = "success" | "error" | "warning" | "info";
+
 type SnackState = {
   open: boolean;
   message: string;
-  severity: "success" | "error";
+  severity: SnackSeverity;
 };
 
 export default function GrowthOptionsForm() {
@@ -55,7 +57,7 @@ export default function GrowthOptionsForm() {
     loadData();
   }, []);
 
-  const openSnack = (message: string, severity: SnackState["severity"]) => {
+  const openSnack = (message: string, severity: SnackSeverity) => {
     setSnack({ open: true, message, severity });
   };
 
@@ -71,7 +73,7 @@ export default function GrowthOptionsForm() {
     if (!pageDescription.trim()) {
       newErrors.pageDescription = "תיאור הדף הוא שדה חובה";
     } else if (pageDescription.length < 10 || pageDescription.length > 300) {
-      newErrors.pageDescription = "תיאור הדף חייב להיות בין 10-300 תווים";
+      newErrors.pageDescription = "תיאור הדף חייבת להיות בין 10-300 תווים";
     }
 
     setErrors(newErrors);
@@ -122,6 +124,7 @@ export default function GrowthOptionsForm() {
       <Typography variant="h6" fontWeight={800} sx={{ mb: 2 }}>
         עריכת כותרת ותיאור
       </Typography>
+
       <TextField
         label="כותרת הדף (2-80 תווים) *"
         value={pageTitle}
@@ -132,6 +135,7 @@ export default function GrowthOptionsForm() {
         color="primary"
         sx={{ mb: 2 }}
       />
+
       <TextField
         label="תיאור (10-300 תווים) *"
         value={pageDescription}
@@ -146,6 +150,7 @@ export default function GrowthOptionsForm() {
         color="primary"
         sx={{ mb: 2 }}
       />
+
       <Button
         variant="contained"
         color="primary"

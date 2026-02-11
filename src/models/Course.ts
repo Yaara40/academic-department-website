@@ -1,15 +1,16 @@
 export class Course {
-  id: string;              // Firestore ID
-  courseId: string;        // קוד הקורס (93102)
-  name: string;            // שם הקורס
-  credits: number;         // נקודות זכות
-  semester: string;        // סמסטר
-  year?: string;           // שנה
-  description?: string;    // תיאור
-  syllabus?: string;       // סילבוס
-  isMandatory?: boolean;   // שינינו מ-string ל-boolean
-  isActive?: boolean;      // שינינו מ-string ל-boolean
-  instructor?: string;     // הוספנו מרצה (כמו בפיירבייס)
+  readonly id: string;      // Firestore document ID (immutable)
+
+  courseId: string;         // קוד הקורס (93102)
+  name: string;             // שם הקורס
+  credits: number;          // נקודות זכות
+  semester: string;         // סמסטר
+  year?: string;            // שנה
+  description?: string;     // תיאור
+  syllabus?: string;        // סילבוס
+  isMandatory?: boolean;    // boolean
+  isActive?: boolean;       // boolean
+  instructor?: string;      // מרצה
 
   constructor(
     id: string,
@@ -24,7 +25,8 @@ export class Course {
     isActive?: boolean,
     instructor?: string
   ) {
-    this.id = id;
+    this.id = id; // אפשר רק פה
+
     this.courseId = courseId;
     this.name = name;
     this.credits = credits;

@@ -387,7 +387,7 @@ export default function UserHome() {
         </Box>
       </Container>
 
-      {/}
+      {}
       <Box
         sx={{
           bgcolor: "hero.main",

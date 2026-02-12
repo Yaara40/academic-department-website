@@ -17,9 +17,8 @@ export default function AdminHeader() {
   const { user } = useAuthUser();
 
   const handleSignOut = () => {
-    signOut(auth)
-      .then(() => navigate("/admin/login"))
-      .catch((err) => console.error("Sign out error:", err));
+    navigate("/user");
+    signOut(auth).catch((err) => console.error("Sign out error:", err));
   };
 
   const menuItems = [

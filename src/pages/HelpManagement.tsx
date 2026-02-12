@@ -948,7 +948,7 @@ export default function AdminHelp() {
             </Box>
           </Paper>
         </motion.section>
-        
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

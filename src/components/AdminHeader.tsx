@@ -6,11 +6,21 @@ import MenuBookIcon from "@mui/icons-material/MenuBook";
 import ContactMailIcon from "@mui/icons-material/ContactMail";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import HelpIcon from "@mui/icons-material/Help";
-import PersonIcon from "@mui/icons-material/Person";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase/config";
+import { useAuthUser } from "../auth/hooks/useAuthUser";
 
 export default function AdminHeader() {
   const navigate = useNavigate();
   const theme = useTheme();
+  const { user } = useAuthUser();
+
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => navigate("/admin/login"))
+      .catch((err) => console.error("Sign out error:", err));
+  };
 
   const menuItems = [
     { text: "דף הבית", icon: <HomeIcon />, path: "/admin" },
@@ -24,11 +34,7 @@ export default function AdminHeader() {
     <AppBar
       position="fixed"
       color="secondary"
-      sx={{
-        boxShadow: 2,
-        zIndex: 1100,
-        direction: "rtl",
-      }}
+      sx={{ boxShadow: 2, zIndex: 1100, direction: "rtl" }}
     >
       <Toolbar>
         {/* לוגו אונו */}
@@ -51,11 +57,7 @@ export default function AdminHeader() {
             variant="h6"
             component={Link}
             to="/admin"
-            sx={{
-              fontWeight: 700,
-              textDecoration: "none",
-              color: "inherit",
-            }}
+            sx={{ fontWeight: 700, textDecoration: "none", color: "inherit" }}
           >
             מערכת ניהול
           </Typography>
@@ -80,9 +82,7 @@ export default function AdminHeader() {
                 display: "flex",
                 alignItems: "center",
                 gap: 1,
-                "&:hover": {
-                  bgcolor: "action.hover",
-                },
+                "&:hover": { bgcolor: "action.hover" },
               }}
             >
               {item.icon}
@@ -91,26 +91,43 @@ export default function AdminHeader() {
           ))}
         </Box>
 
-        {/* מעבר לאתר */}
-        <Button
-          variant="contained"
-          onClick={() => navigate("/user")}
+        {/* אזור משתמש - מייל + logout */}
+        <Box
           sx={{
-            bgcolor: "background.paper",
-            color: theme.palette.primary.dark, 
-            fontWeight: 700,
-            display: { xs: "none", md: "flex" },
+            display: "flex",
             alignItems: "center",
-            gap: 1,
-            px: 3,
-            "&:hover": {
-              bgcolor: "action.hover",
-            },
+            gap: 2,
+            flexShrink: 0,
           }}
         >
-          <PersonIcon />
-          <Box component="span">מעבר לאתר</Box>
-        </Button>
+          {user && (
+            <Typography
+              variant="body2"
+              sx={{ display: { xs: "none", md: "block", fontWeight: 700 } }}
+            >
+              {user.email}
+            </Typography>
+          )}
+
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={handleSignOut}
+            startIcon={<LogoutIcon />}
+            sx={{
+              bgcolor: "background.paper",
+              color: theme.palette.primary.dark,
+              borderColor: "divider",
+              fontWeight: 700,
+              gap: 0.5,
+              "&:hover": { bgcolor: "action.hover" },
+            }}
+          >
+            <Box component="span" sx={{ display: { xs: "none", md: "block" } }}>
+              התנתק
+            </Box>
+          </Button>
+        </Box>
       </Toolbar>
     </AppBar>
   );

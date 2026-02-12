@@ -99,7 +99,7 @@ export default function Footer() {
                   "&:hover": { opacity: 1, textDecoration: "underline" },
                 }}
               >
-                שאלות נפוצות
+                השארת פרטים
               </Link>
             </Box>
           </Box>
@@ -219,33 +219,7 @@ export default function Footer() {
                 fontSize: "0.875rem",
                 "&:hover": { opacity: 1 },
               }}
-            >
-              מדיניות פרטיות
-            </Link>
-            <Link
-              href="#"
-              sx={{
-                color: "white",
-                textDecoration: "none",
-                opacity: 0.6,
-                fontSize: "0.875rem",
-                "&:hover": { opacity: 1 },
-              }}
-            >
-              תנאי שימוש
-            </Link>
-            <Link
-              href="#"
-              sx={{
-                color: "white",
-                textDecoration: "none",
-                opacity: 0.6,
-                fontSize: "0.875rem",
-                "&:hover": { opacity: 1 },
-              }}
-            >
-              נגישות
-            </Link>
+            ></Link>
           </Box>
         </Box>
       </Container>

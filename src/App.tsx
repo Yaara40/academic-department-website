@@ -8,7 +8,7 @@ import Footer from "./components/Footer";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { initGA, logPageView } from "./analytics";
 
-// Admin Pages
+//Admin Pages
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import CreateUser from "./pages/CreateUser";
@@ -18,7 +18,7 @@ import GrowthManagement from "./pages/GrowthManagement";
 import ContactManagement from "./pages/ContactManagement";
 import HelpManagement from "./pages/HelpManagement";
 
-// User Pages
+//User Pages
 import UserHome from "./pages/UserHome";
 import UserCourses from "./pages/UserCourses";
 import UserContact from "./pages/UserContact.tsx";
@@ -31,7 +31,7 @@ const App = () => {
   const isLoginPage = location.pathname === "/admin/login";
   const isCreateUserPage = location.pathname === "/create-admin";
 
-  // Google Analytics
+  //Google Analytics
   useEffect(() => {
     initGA();
   }, []);

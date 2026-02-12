@@ -7,12 +7,15 @@ import {
   ListItemIcon,
   ListItemText,
   Typography,
+  Divider,
+  Button,
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import ContactMailIcon from "@mui/icons-material/ContactMail";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import HelpIcon from "@mui/icons-material/Help";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 
 export default function Sidebar() {
   const navigate = useNavigate();
@@ -40,9 +43,11 @@ export default function Sidebar() {
         borderColor: "divider",
         overflowY: "auto",
         zIndex: 1000,
+        display: "flex",
+        flexDirection: "column",
       }}
     >
-      <List sx={{ pt: 2 }}>
+      <List sx={{ pt: 2, flexGrow: 1 }}>
         {menuItems.map((item) => (
           <ListItem key={item.path} disablePadding>
             <ListItemButton
@@ -51,7 +56,7 @@ export default function Sidebar() {
               sx={{
                 textAlign: "right",
                 "&.Mui-selected": {
-                  bgcolor: "#9CCC65",
+                  bgcolor: "action.selected",
                   borderRight: "3px solid",
                   borderColor: "primary.main",
                   "&:hover": { bgcolor: "action.selected" },
@@ -59,12 +64,7 @@ export default function Sidebar() {
                 "&:hover": { bgcolor: "action.hover" },
               }}
             >
-              <ListItemIcon
-                sx={{
-                  minWidth: 40,
-                  color: "#7CB342",
-                }}
-              >
+              <ListItemIcon sx={{ minWidth: 40, color: "primary.main" }}>
                 {item.icon}
               </ListItemIcon>
               <ListItemText
@@ -74,6 +74,24 @@ export default function Sidebar() {
           </ListItem>
         ))}
       </List>
+
+      <Divider />
+      <Box sx={{ p: 2 }}>
+        <Button
+          fullWidth
+          variant="outlined"
+          size="small"
+          startIcon={<OpenInNewIcon />}
+          onClick={() => navigate("/user")}
+          sx={{
+            color: "primary.main",
+            borderColor: "divider",
+            fontWeight: 700,
+          }}
+        >
+          מעבר לאתר
+        </Button>
+      </Box>
     </Box>
   );
 }

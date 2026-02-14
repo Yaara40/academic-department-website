@@ -1,9 +1,9 @@
 /**
- * Event Management Page - Admin
- * עמוד ניהול אירועים למנהלי מערכת
+ * Event Management Page - Admin with Stats
+ * עמוד ניהול אירועים למנהלי מערכת - עם סטטיסטיקות
  */
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Container,
@@ -31,6 +31,10 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   Refresh as RefreshIcon,
+  CalendarMonth as CalendarIcon,
+  CheckCircle as CheckCircleIcon,
+  People as PeopleIcon,
+  Event as EventIcon,
 } from '@mui/icons-material';
 import { 
   getAllEvents,
@@ -42,7 +46,7 @@ import {
 import type { UserEvent, UserEventInput } from '../models/userEvent.model';
 import { EventType, EventStatus, TargetAudience } from '../models/userEvent.model';
 
-export const EventManagementPage: React.FC = () => {
+export const EventManagementPage = () => {
   const [events, setEvents] = useState<UserEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -172,6 +176,12 @@ export const EventManagementPage: React.FC = () => {
     }
   };
   
+  // Calculate stats
+  const totalEvents = events.length;
+  const openEvents = events.filter(e => e.status === EventStatus.OPEN).length;
+  const fullEvents = events.filter(e => e.status === EventStatus.FULL).length;
+  const endedEvents = events.filter(e => e.status === EventStatus.ENDED).length;
+  
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
@@ -207,6 +217,59 @@ export const EventManagementPage: React.FC = () => {
               אירוע חדש
             </Button>
           </Box>
+        </Box>
+        
+        {/* Stats Cards */}
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: {
+              xs: 'repeat(2, 1fr)',
+              md: 'repeat(4, 1fr)',
+            },
+            gap: 2,
+            mb: 4,
+          }}
+        >
+          <Paper sx={{ p: 2.5, textAlign: 'center', bgcolor: 'cardGreen.main' }}>
+            <CalendarIcon sx={{ fontSize: 32, color: 'primary.main', mb: 1 }} />
+            <Typography variant="h4" fontWeight={700}>
+              {totalEvents}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              סך אירועים
+            </Typography>
+          </Paper>
+          
+          <Paper sx={{ p: 2.5, textAlign: 'center', bgcolor: '#e8f5e9' }}>
+            <CheckCircleIcon sx={{ fontSize: 32, color: 'success.main', mb: 1 }} />
+            <Typography variant="h4" fontWeight={700} color="success.main">
+              {openEvents}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              אירועים פתוחים
+            </Typography>
+          </Paper>
+          
+          <Paper sx={{ p: 2.5, textAlign: 'center', bgcolor: '#fff3e0' }}>
+            <PeopleIcon sx={{ fontSize: 32, color: 'warning.main', mb: 1 }} />
+            <Typography variant="h4" fontWeight={700} color="warning.main">
+              {fullEvents}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              אירועים מלאים
+            </Typography>
+          </Paper>
+          
+          <Paper sx={{ p: 2.5, textAlign: 'center', bgcolor: '#f5f5f5' }}>
+            <EventIcon sx={{ fontSize: 32, color: 'text.secondary', mb: 1 }} />
+            <Typography variant="h4" fontWeight={700} color="text.secondary">
+              {endedEvents}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              אירועים שהסתיימו
+            </Typography>
+          </Paper>
         </Box>
         
         {/* Table */}
@@ -246,8 +309,14 @@ export const EventManagementPage: React.FC = () => {
                     <TableCell align="center">{formatDate(event.dateTime)}</TableCell>
                     <TableCell align="center">{event.targetAudience}</TableCell>
                     <TableCell align="center">
-                      {event.currentParticipants}
-                      {event.maxParticipants && ` / ${event.maxParticipants}`}
+                      {event.status === EventStatus.OPEN ? (
+                        <>
+                          {event.currentParticipants}
+                          {event.maxParticipants && ` / ${event.maxParticipants}`}
+                        </>
+                      ) : (
+                        <Typography color="text.secondary">—</Typography>
+                      )}
                     </TableCell>
                     <TableCell align="center">
                       <Chip 

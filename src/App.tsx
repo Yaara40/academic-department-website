@@ -17,7 +17,7 @@ import CoursesForm from "./features/courses/components/CoursesForm";
 import GrowthManagement from "./pages/GrowthManagement";
 import ContactManagement from "./pages/ContactManagement";
 import HelpManagement from "./pages/HelpManagement";
-import { EventManagementPage } from "./pages/EventManagementPage";  // 👈 חדש
+import { EventManagementPage } from "./pages/EventManagementPage";
 
 //User Pages
 import UserHome from "./pages/UserHome";
@@ -25,7 +25,8 @@ import UserCourses from "./pages/UserCourses";
 import UserContact from "./pages/UserContact.tsx";
 import HelpUser from "./pages/HelpUser.tsx";
 import UserGrowth from "./pages/UserGrowth.tsx";
-import { PersonalAreaPage } from "./pages/PersonalAreaPage";  // 👈 חדש
+import UserEvents from "./pages/UserEvents"; // 👈 חדש!
+import { PersonalAreaPage } from "./pages/PersonalAreaPage";
 
 const App = () => {
   const location = useLocation();
@@ -67,11 +68,12 @@ const App = () => {
           <Route path="/user" element={<UserHome />} />
           <Route path="/" element={<UserHome />} />
           <Route path="/user/courses" element={<UserCourses />} />
+          <Route path="/user/events" element={<UserEvents />} /> {/* 👈 חדש! */}
           <Route path="/user/contact" element={<UserContact />} />
           <Route path="/user/help" element={<HelpUser />} />
           <Route path="/user/growth" element={<UserGrowth />} />
           
-          {/* 👇 חדש - אזור אישי */}
+          {/* אזור אישי */}
           <Route 
             path="/user/personal-area" 
             element={
@@ -142,7 +144,7 @@ const App = () => {
             }
           />
           
-          {/* 👇 חדש - ניהול אירועים */}
+          {/* ניהול אירועים */}
           <Route
             path="/admin/events"
             element={

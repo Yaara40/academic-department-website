@@ -26,9 +26,9 @@ import {
   Person as PersonIcon,
   Email as EmailIcon,
 } from '@mui/icons-material';
-import { 
+import {
   getUpcomingEvents,
-  registerToEvent 
+  registerToEvent
 } from '../features/events/userEvent.service';
 import type { UserEvent } from '../models/userEvent.model';
 import { TargetAudience, EventStatus } from '../models/userEvent.model';
@@ -38,7 +38,7 @@ export default function UserEvents() {
   const [filteredEvents, setFilteredEvents] = useState<UserEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  
+
   // Registration Form State
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<UserEvent | null>(null);
@@ -50,16 +50,16 @@ export default function UserEvents() {
     fullName: '',
     email: '',
   });
-  
+
   useEffect(() => {
     loadEvents();
   }, []);
-  
+
   useEffect(() => {
     if (searchTerm.trim() === '') {
       setFilteredEvents(events);
     } else {
-      const filtered = events.filter(event => 
+      const filtered = events.filter(event =>
         event.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         event.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
         event.location.toLowerCase().includes(searchTerm.toLowerCase())
@@ -67,7 +67,7 @@ export default function UserEvents() {
       setFilteredEvents(filtered);
     }
   }, [searchTerm, events]);
-  
+
   const loadEvents = async () => {
     setLoading(true);
     try {
@@ -80,18 +80,18 @@ export default function UserEvents() {
       setLoading(false);
     }
   };
-  
+
   const handleRegistrationClick = (event: UserEvent) => {
     setSelectedEvent(event);
     setFormData({ fullName: '', email: '' });
     setFormErrors({ fullName: '', email: '' });
     setShowRegistrationForm(true);
   };
-  
+
   const validateForm = (): boolean => {
     const errors = { fullName: '', email: '' };
     let isValid = true;
-    
+
     if (!formData.fullName.trim()) {
       errors.fullName = 'שם מלא הוא שדה חובה';
       isValid = false;
@@ -99,7 +99,7 @@ export default function UserEvents() {
       errors.fullName = 'שם מלא חייב להכיל לפחות 2 תווים';
       isValid = false;
     }
-    
+
     if (!formData.email.trim()) {
       errors.email = 'אימייל הוא שדה חובה';
       isValid = false;
@@ -110,19 +110,19 @@ export default function UserEvents() {
         isValid = false;
       }
     }
-    
+
     setFormErrors(errors);
     return isValid;
   };
-  
+
   const handleSubmitRegistration = async () => {
     if (!validateForm() || !selectedEvent) {
       return;
     }
-    
+
     try {
       const result = await registerToEvent(selectedEvent.eventId);
-      
+
       if (result.success) {
         alert(`הרשמה לאירוע "${selectedEvent.name}" בוצעה בהצלחה! ✅\n\nשם: ${formData.fullName}\nאימייל: ${formData.email}\n\nנשלח אליך אישור במייל.`);
         setShowRegistrationForm(false);
@@ -135,7 +135,7 @@ export default function UserEvents() {
       alert('שגיאה בהרשמה לאירוע. אנא נסה שוב.');
     }
   };
-  
+
   const formatDate = (date: Date | any): string => {
     const dateObj = date instanceof Date ? date : new Date(date);
     return new Intl.DateTimeFormat('he-IL', {
@@ -144,7 +144,7 @@ export default function UserEvents() {
       day: 'numeric',
     }).format(dateObj);
   };
-  
+
   const formatTime = (date: Date | any): string => {
     const dateObj = date instanceof Date ? date : new Date(date);
     return new Intl.DateTimeFormat('he-IL', {
@@ -152,7 +152,7 @@ export default function UserEvents() {
       minute: '2-digit'
     }).format(dateObj);
   };
-  
+
   const getStatusColor = (status: EventStatus) => {
     switch (status) {
       case EventStatus.OPEN:
@@ -165,7 +165,7 @@ export default function UserEvents() {
         return 'default';
     }
   };
-  
+
   const getStatusLabel = (status: EventStatus) => {
     switch (status) {
       case EventStatus.OPEN:
@@ -178,12 +178,12 @@ export default function UserEvents() {
         return status;
     }
   };
-  
+
   const totalEvents = events.length;
   const openEvents = events.filter(e => e.status === EventStatus.OPEN).length;
   const fullEvents = events.filter(e => e.status === EventStatus.FULL).length;
   const endedEvents = events.filter(e => e.status === EventStatus.ENDED).length;
-  
+
   if (loading) {
     return (
       <Box
@@ -198,15 +198,15 @@ export default function UserEvents() {
       </Box>
     );
   }
-  
+
   return (
     <Box sx={{ padding: 2, direction: 'rtl', bgcolor: 'background.default', minHeight: '100vh' }}>
       <Container maxWidth="xl">
         {/* Header */}
         <Box sx={{ mb: 4, textAlign: 'center' }}>
-          <Chip 
-            label="30 הימים הקרובים" 
-            color="primary" 
+          <Chip
+            label="30 הימים הקרובים"
+            color="primary"
             size="small"
             sx={{ mb: 2 }}
           />
@@ -217,7 +217,7 @@ export default function UserEvents() {
             גלו את האירועים המתוכננים במחלקה, הירשמו בקלות ובואו להיות חלק מהקהילה שלנו
           </Typography>
         </Box>
-        
+
         {/* Stats Cards */}
         <Box
           sx={{
@@ -231,7 +231,22 @@ export default function UserEvents() {
           }}
         >
           <Paper sx={{ p: 2.5, textAlign: 'center', bgcolor: 'cardGreen.main' }}>
-            <CalendarIcon sx={{ fontSize: 32, color: 'primary.main', mb: 1 }} />
+            <Box
+              sx={{
+                width: 56,
+                height: 56,
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                bgcolor: 'action.hover',
+                color: 'text.secondary',
+                margin: '0 auto',
+                mb: 1.5,
+              }}
+            >
+              <CalendarIcon sx={{ fontSize: 28 }} />
+            </Box>
             <Typography variant="h4" fontWeight={700}>
               {totalEvents}
             </Typography>
@@ -239,30 +254,75 @@ export default function UserEvents() {
               סך אירועים
             </Typography>
           </Paper>
-          
-          <Paper sx={{ p: 2.5, textAlign: 'center', bgcolor: '#e8f5e9' }}>
-            <CheckCircleIcon sx={{ fontSize: 32, color: 'success.main', mb: 1 }} />
-            <Typography variant="h4" fontWeight={700} color="success.main">
+
+          <Paper sx={{ p: 2.5, textAlign: 'center', bgcolor: 'cardGreen.main' }}>
+            <Box
+              sx={{
+                width: 56,
+                height: 56,
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                bgcolor: 'action.hover',
+                color: 'text.secondary',
+                margin: '0 auto',
+                mb: 1.5,
+              }}
+            >
+              <CheckCircleIcon sx={{ fontSize: 28 }} />
+            </Box>
+            <Typography variant="h4" fontWeight={700}>
               {openEvents}
             </Typography>
             <Typography variant="body2" color="text.secondary">
               אירועים פתוחים
             </Typography>
           </Paper>
-          
-          <Paper sx={{ p: 2.5, textAlign: 'center', bgcolor: '#fff3e0' }}>
-            <PeopleIcon sx={{ fontSize: 32, color: 'warning.main', mb: 1 }} />
-            <Typography variant="h4" fontWeight={700} color="warning.main">
+
+          <Paper sx={{ p: 2.5, textAlign: 'center', bgcolor: 'cardGreen.main' }}>
+            <Box
+              sx={{
+                width: 56,
+                height: 56,
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                bgcolor: 'action.hover',
+                color: 'text.secondary',
+                margin: '0 auto',
+                mb: 1.5,
+              }}
+            >
+              <PeopleIcon sx={{ fontSize: 28 }} />
+            </Box>
+            <Typography variant="h4" fontWeight={700}>
               {fullEvents}
             </Typography>
             <Typography variant="body2" color="text.secondary">
               אירועים מלאים
             </Typography>
           </Paper>
-          
-          <Paper sx={{ p: 2.5, textAlign: 'center', bgcolor: '#f5f5f5' }}>
-            <EventIcon sx={{ fontSize: 32, color: 'text.secondary', mb: 1 }} />
-            <Typography variant="h4" fontWeight={700} color="text.secondary">
+
+          <Paper sx={{ p: 2.5, textAlign: 'center', bgcolor: 'cardGreen.main' }}>
+            <Box
+              sx={{
+                width: 56,
+                height: 56,
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                bgcolor: 'action.hover',
+                color: 'text.secondary',
+                margin: '0 auto',
+                mb: 1.5,
+              }}
+            >
+              <EventIcon sx={{ fontSize: 28 }} />
+            </Box>
+            <Typography variant="h4" fontWeight={700}>
               {endedEvents}
             </Typography>
             <Typography variant="body2" color="text.secondary">
@@ -270,7 +330,7 @@ export default function UserEvents() {
             </Typography>
           </Paper>
         </Box>
-        
+
         {/* Search */}
         <Box sx={{ mb: 3, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
           <TextField
@@ -278,7 +338,7 @@ export default function UserEvents() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             size="small"
-            sx={{ 
+            sx={{
               minWidth: 350,
               bgcolor: 'background.paper',
               '& .MuiOutlinedInput-root': {
@@ -304,7 +364,7 @@ export default function UserEvents() {
             רענן
           </Button>
         </Box>
-        
+
         {/* Events Table Header */}
         <Paper sx={{ mb: 1 }}>
           <Box
@@ -327,7 +387,7 @@ export default function UserEvents() {
             <Typography fontWeight={700} textAlign="center">פעולה</Typography>
           </Box>
         </Paper>
-        
+
         {/* Events List */}
         {filteredEvents.length === 0 ? (
           <Paper sx={{ p: 8, textAlign: 'center' }}>
@@ -373,7 +433,7 @@ export default function UserEvents() {
                     <Typography variant="subtitle1" fontWeight={600} gutterBottom>
                       {event.name}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ 
+                    <Typography variant="body2" color="text.secondary" sx={{
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
                       display: '-webkit-box',
@@ -383,16 +443,16 @@ export default function UserEvents() {
                       {event.description}
                     </Typography>
                   </Box>
-                  
+
                   {/* סוג האירוע */}
                   <Box>
-                    <Chip 
-                      label={event.type} 
+                    <Chip
+                      label={event.type}
                       size="small"
                       sx={{ bgcolor: 'cardGreen.main', fontWeight: 500 }}
                     />
                   </Box>
-                  
+
                   {/* תאריך ושעה */}
                   <Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
@@ -404,7 +464,7 @@ export default function UserEvents() {
                       <Typography variant="body2">{formatTime(event.dateTime)}</Typography>
                     </Box>
                   </Box>
-                  
+
                   {/* מיקום */}
                   <Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
@@ -418,17 +478,17 @@ export default function UserEvents() {
                       </Typography>
                     </Box>
                   </Box>
-                  
+
                   {/* סטטוס */}
                   <Box>
-                    <Chip 
+                    <Chip
                       label={getStatusLabel(event.status)}
                       color={getStatusColor(event.status)}
                       size="small"
                       sx={{ fontWeight: 600 }}
                     />
                   </Box>
-                  
+
                   {/* כפתור הרשמה */}
                   <Box sx={{ textAlign: 'center' }}>
                     <Button
@@ -440,8 +500,8 @@ export default function UserEvents() {
                       onClick={() => handleRegistrationClick(event)}
                       sx={{ fontWeight: 700 }}
                     >
-                      {event.status === EventStatus.OPEN ? 'הרשמה' : 
-                       event.status === EventStatus.FULL ? 'מלא' : 'הסתיים'}
+                      {event.status === EventStatus.OPEN ? 'הרשמה' :
+                        event.status === EventStatus.FULL ? 'מלא' : 'הסתיים'}
                     </Button>
                   </Box>
                 </Box>
@@ -449,10 +509,10 @@ export default function UserEvents() {
             ))}
           </Box>
         )}
-        
+
         {/* Registration Form Dialog */}
-        <Dialog 
-          open={showRegistrationForm} 
+        <Dialog
+          open={showRegistrationForm}
           onClose={() => setShowRegistrationForm(false)}
           maxWidth="sm"
           fullWidth
@@ -465,7 +525,7 @@ export default function UserEvents() {
               </Typography>
             </Box>
           </DialogTitle>
-          
+
           <DialogContent sx={{ mt: 3 }}>
             {selectedEvent && (
               <Box sx={{ mb: 3, p: 2, bgcolor: 'cardGreen.main', borderRadius: 2 }}>
@@ -480,7 +540,7 @@ export default function UserEvents() {
                 </Typography>
               </Box>
             )}
-            
+
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
               <TextField
                 label="שם מלא"
@@ -498,7 +558,7 @@ export default function UserEvents() {
                   ),
                 }}
               />
-              
+
               <TextField
                 label="כתובת אימייל"
                 type="email"
@@ -516,7 +576,7 @@ export default function UserEvents() {
                   ),
                 }}
               />
-              
+
               <Box sx={{ p: 2, bgcolor: 'info.light', borderRadius: 1 }}>
                 <Typography variant="body2" color="info.dark">
                   💡 לאחר ההרשמה, תקבל אישור במייל עם כל הפרטים הרלוונטיים לאירוע.
@@ -524,15 +584,15 @@ export default function UserEvents() {
               </Box>
             </Box>
           </DialogContent>
-          
+
           <DialogActions sx={{ p: 2.5 }}>
-            <Button 
+            <Button
               onClick={() => setShowRegistrationForm(false)}
               variant="outlined"
             >
               ביטול
             </Button>
-            <Button 
+            <Button
               onClick={handleSubmitRegistration}
               variant="contained"
               color="primary"

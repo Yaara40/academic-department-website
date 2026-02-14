@@ -1,8 +1,7 @@
 /**
- * Activity Stats Component - בסגנון הכרטיסים הירוקים שלך
+ * Activity Stats Component - עם עיגולים צבעוניים
  */
 
-import React from 'react';
 import { Box, Card, CardContent, Typography } from '@mui/material';
 import {
   Assessment as AssessmentIcon,
@@ -24,40 +23,54 @@ export const ActivityStatsComponent: React.FC<ActivityStatsProps> = ({ stats }) 
     {
       label: 'סך כל הפעילויות',
       value: stats.totalActivities,
-      icon: <AssessmentIcon sx={{ fontSize: 40 }} />
+      icon: <AssessmentIcon />,
+      colorKey: 'primary.main',
+      bgColor: (theme: any) => theme.palette.mode === 'dark' ? 'rgba(102, 187, 106, 0.2)' : 'rgba(44, 131, 50, 0.1)'
     },
     {
       label: 'צפיות בעמודים',
       value: stats.pageViews,
-      icon: <VisibilityIcon sx={{ fontSize: 40 }} />
+      icon: <VisibilityIcon />,
+      colorKey: 'success.main',
+      bgColor: (theme: any) => theme.palette.mode === 'dark' ? 'rgba(102, 187, 106, 0.2)' : 'rgba(76, 175, 80, 0.1)'
     },
     {
       label: 'קורסים שנצפו',
       value: stats.courseViews,
-      icon: <MenuBookIcon sx={{ fontSize: 40 }} />
+      icon: <MenuBookIcon />,
+      colorKey: 'secondary.main',
+      bgColor: (theme: any) => theme.palette.mode === 'dark' ? 'rgba(156, 204, 101, 0.2)' : 'rgba(139, 195, 74, 0.1)'
     },
     {
       label: 'חיפושים',
       value: stats.searches,
-      icon: <SearchIcon sx={{ fontSize: 40 }} />
+      icon: <SearchIcon />,
+      colorKey: 'warning.main',
+      bgColor: (theme: any) => theme.palette.mode === 'dark' ? 'rgba(255, 167, 38, 0.2)' : 'rgba(255, 152, 0, 0.1)'
     },
     {
       label: 'שימושים במחשבון',
       value: stats.calculatorUses,
-      icon: <CalculateIcon sx={{ fontSize: 40 }} />
+      icon: <CalculateIcon />,
+      colorKey: 'error.main',
+      bgColor: (theme: any) => theme.palette.mode === 'dark' ? 'rgba(244, 67, 54, 0.2)' : 'rgba(244, 67, 54, 0.1)'
     },
     {
       label: 'טפסי יצירת קשר',
       value: stats.contactForms,
-      icon: <EmailIcon sx={{ fontSize: 40 }} />
+      icon: <EmailIcon />,
+      colorKey: 'info.main',
+      bgColor: (theme: any) => theme.palette.mode === 'dark' ? 'rgba(33, 150, 243, 0.2)' : 'rgba(33, 150, 243, 0.1)'
     },
     {
       label: 'הרשמות לאירועים',
       value: stats.eventRegistrations,
-      icon: <EventIcon sx={{ fontSize: 40 }} />
+      icon: <EventIcon />,
+      colorKey: 'success.dark',
+      bgColor: (theme: any) => theme.palette.mode === 'dark' ? 'rgba(56, 142, 60, 0.2)' : 'rgba(56, 142, 60, 0.1)'
     }
   ];
-  
+
   return (
     <Box
       sx={{
@@ -72,9 +85,9 @@ export const ActivityStatsComponent: React.FC<ActivityStatsProps> = ({ stats }) 
       }}
     >
       {statCards.map((card, index) => (
-        <Card 
+        <Card
           key={index}
-          sx={{ 
+          sx={{
             textAlign: 'center',
             bgcolor: 'cardGreen.main',
             transition: 'transform 0.2s, box-shadow 0.2s',
@@ -85,7 +98,21 @@ export const ActivityStatsComponent: React.FC<ActivityStatsProps> = ({ stats }) 
           }}
         >
           <CardContent>
-            <Box sx={{ color: 'primary.main', mb: 1 }}>
+            <Box 
+              sx={{ 
+                width: 56,
+                height: 56,
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                bgcolor: card.bgColor,
+                color: card.colorKey,
+                margin: '0 auto',
+                mb: 2,
+                fontSize: 28
+              }}
+            >
               {card.icon}
             </Box>
             <Typography variant="h3" sx={{ fontWeight: 'bold' }}>

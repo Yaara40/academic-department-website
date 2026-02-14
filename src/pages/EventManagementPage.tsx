@@ -36,7 +36,7 @@ import {
   People as PeopleIcon,
   Event as EventIcon,
 } from '@mui/icons-material';
-import { 
+import {
   getAllEvents,
   createEvent,
   updateEvent,
@@ -60,11 +60,11 @@ export const EventManagementPage = () => {
     targetAudience: TargetAudience.CANDIDATE,
     status: EventStatus.OPEN
   });
-  
+
   useEffect(() => {
     loadEvents();
   }, []);
-  
+
   const loadEvents = async () => {
     setLoading(true);
     try {
@@ -78,7 +78,7 @@ export const EventManagementPage = () => {
       setLoading(false);
     }
   };
-  
+
   const handleSubmit = async () => {
     try {
       if (editingEvent) {
@@ -98,7 +98,7 @@ export const EventManagementPage = () => {
           return;
         }
       }
-      
+
       resetForm();
       loadEvents();
     } catch (error) {
@@ -106,7 +106,7 @@ export const EventManagementPage = () => {
       alert('שגיאה בשמירת האירוע');
     }
   };
-  
+
   const handleEdit = (event: UserEvent) => {
     setEditingEvent(event);
     setFormData({
@@ -122,12 +122,12 @@ export const EventManagementPage = () => {
     });
     setShowForm(true);
   };
-  
+
   const handleDelete = async (eventId: string, eventName: string) => {
     if (!window.confirm(`האם אתה בטוח שברצונך למחוק את האירוע "${eventName}"?`)) {
       return;
     }
-    
+
     try {
       const result = await deleteEvent(eventId);
       if (result.success) {
@@ -141,7 +141,7 @@ export const EventManagementPage = () => {
       alert('שגיאה במחיקת האירוע');
     }
   };
-  
+
   const resetForm = () => {
     setFormData({
       name: '',
@@ -155,7 +155,7 @@ export const EventManagementPage = () => {
     setEditingEvent(null);
     setShowForm(false);
   };
-  
+
   const formatDate = (date: Date | any): string => {
     const dateObj = date instanceof Date ? date : new Date(date);
     return new Intl.DateTimeFormat('he-IL', {
@@ -166,7 +166,7 @@ export const EventManagementPage = () => {
       minute: '2-digit'
     }).format(dateObj);
   };
-  
+
   const getStatusColor = (status: EventStatus): 'success' | 'warning' | 'default' => {
     switch (status) {
       case EventStatus.OPEN: return 'success';
@@ -175,13 +175,13 @@ export const EventManagementPage = () => {
       default: return 'default';
     }
   };
-  
+
   // Calculate stats
   const totalEvents = events.length;
   const openEvents = events.filter(e => e.status === EventStatus.OPEN).length;
   const fullEvents = events.filter(e => e.status === EventStatus.FULL).length;
   const endedEvents = events.filter(e => e.status === EventStatus.ENDED).length;
-  
+
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
@@ -189,7 +189,7 @@ export const EventManagementPage = () => {
       </Box>
     );
   }
-  
+
   return (
     <Box sx={{ padding: 2, direction: 'rtl' }}>
       <Container maxWidth="xl">
@@ -218,7 +218,8 @@ export const EventManagementPage = () => {
             </Button>
           </Box>
         </Box>
-        
+
+        {/* Stats Cards */}
         {/* Stats Cards */}
         <Box
           sx={{
@@ -228,11 +229,26 @@ export const EventManagementPage = () => {
               md: 'repeat(4, 1fr)',
             },
             gap: 2,
-            mb: 4,
+            mb: 3,
           }}
         >
           <Paper sx={{ p: 2.5, textAlign: 'center', bgcolor: 'cardGreen.main' }}>
-            <CalendarIcon sx={{ fontSize: 32, color: 'primary.main', mb: 1 }} />
+            <Box
+              sx={{
+                width: 56,
+                height: 56,
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                bgcolor: 'action.hover',
+                color: 'text.secondary',
+                margin: '0 auto',
+                mb: 1.5,
+              }}
+            >
+              <CalendarIcon sx={{ fontSize: 28 }} />
+            </Box>
             <Typography variant="h4" fontWeight={700}>
               {totalEvents}
             </Typography>
@@ -240,30 +256,75 @@ export const EventManagementPage = () => {
               סך אירועים
             </Typography>
           </Paper>
-          
-          <Paper sx={{ p: 2.5, textAlign: 'center', bgcolor: '#e8f5e9' }}>
-            <CheckCircleIcon sx={{ fontSize: 32, color: 'success.main', mb: 1 }} />
-            <Typography variant="h4" fontWeight={700} color="success.main">
+
+          <Paper sx={{ p: 2.5, textAlign: 'center', bgcolor: 'cardGreen.main' }}>
+            <Box
+              sx={{
+                width: 56,
+                height: 56,
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                bgcolor: 'action.hover',
+                color: 'text.secondary',
+                margin: '0 auto',
+                mb: 1.5,
+              }}
+            >
+              <CheckCircleIcon sx={{ fontSize: 28 }} />
+            </Box>
+            <Typography variant="h4" fontWeight={700}>
               {openEvents}
             </Typography>
             <Typography variant="body2" color="text.secondary">
               אירועים פתוחים
             </Typography>
           </Paper>
-          
-          <Paper sx={{ p: 2.5, textAlign: 'center', bgcolor: '#fff3e0' }}>
-            <PeopleIcon sx={{ fontSize: 32, color: 'warning.main', mb: 1 }} />
-            <Typography variant="h4" fontWeight={700} color="warning.main">
+
+          <Paper sx={{ p: 2.5, textAlign: 'center', bgcolor: 'cardGreen.main' }}>
+            <Box
+              sx={{
+                width: 56,
+                height: 56,
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                bgcolor: 'action.hover',
+                color: 'text.secondary',
+                margin: '0 auto',
+                mb: 1.5,
+              }}
+            >
+              <PeopleIcon sx={{ fontSize: 28 }} />
+            </Box>
+            <Typography variant="h4" fontWeight={700}>
               {fullEvents}
             </Typography>
             <Typography variant="body2" color="text.secondary">
               אירועים מלאים
             </Typography>
           </Paper>
-          
-          <Paper sx={{ p: 2.5, textAlign: 'center', bgcolor: '#f5f5f5' }}>
-            <EventIcon sx={{ fontSize: 32, color: 'text.secondary', mb: 1 }} />
-            <Typography variant="h4" fontWeight={700} color="text.secondary">
+
+          <Paper sx={{ p: 2.5, textAlign: 'center', bgcolor: 'cardGreen.main' }}>
+            <Box
+              sx={{
+                width: 56,
+                height: 56,
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                bgcolor: 'action.hover',
+                color: 'text.secondary',
+                margin: '0 auto',
+                mb: 1.5,
+              }}
+            >
+              <EventIcon sx={{ fontSize: 28 }} />
+            </Box>
+            <Typography variant="h4" fontWeight={700}>
               {endedEvents}
             </Typography>
             <Typography variant="body2" color="text.secondary">
@@ -271,7 +332,6 @@ export const EventManagementPage = () => {
             </Typography>
           </Paper>
         </Box>
-        
         {/* Table */}
         {events.length === 0 ? (
           <Paper sx={{ p: 6, textAlign: 'center' }}>
@@ -319,7 +379,7 @@ export const EventManagementPage = () => {
                       )}
                     </TableCell>
                     <TableCell align="center">
-                      <Chip 
+                      <Chip
                         label={event.status}
                         color={getStatusColor(event.status)}
                         size="small"
@@ -352,10 +412,10 @@ export const EventManagementPage = () => {
             </Table>
           </TableContainer>
         )}
-        
+
         {/* Dialog Form */}
-        <Dialog 
-          open={showForm} 
+        <Dialog
+          open={showForm}
           onClose={resetForm}
           maxWidth="md"
           fullWidth
@@ -368,16 +428,16 @@ export const EventManagementPage = () => {
               <TextField
                 label="שם האירוע"
                 value={formData.name}
-                onChange={(e) => setFormData({...formData, name: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 required
                 fullWidth
               />
-              
+
               <TextField
                 select
                 label="סוג האירוע"
                 value={formData.type}
-                onChange={(e) => setFormData({...formData, type: e.target.value as EventType})}
+                onChange={(e) => setFormData({ ...formData, type: e.target.value as EventType })}
                 required
                 fullWidth
               >
@@ -385,47 +445,47 @@ export const EventManagementPage = () => {
                   <MenuItem key={type} value={type}>{type}</MenuItem>
                 ))}
               </TextField>
-              
+
               <TextField
                 label="תיאור האירוע"
                 value={formData.description}
-                onChange={(e) => setFormData({...formData, description: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 required
                 multiline
                 rows={3}
                 fullWidth
               />
-              
+
               <TextField
                 label="תאריך ושעה"
                 type="datetime-local"
-                value={formData.dateTime instanceof Date 
+                value={formData.dateTime instanceof Date
                   ? formData.dateTime.toISOString().slice(0, 16)
                   : ''}
                 onChange={(e) => setFormData({
-                  ...formData, 
+                  ...formData,
                   dateTime: new Date(e.target.value)
                 })}
                 required
                 fullWidth
                 InputLabelProps={{ shrink: true }}
               />
-              
+
               <TextField
                 label="מיקום / קישור"
                 value={formData.location}
-                onChange={(e) => setFormData({...formData, location: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                 required
                 fullWidth
               />
-              
+
               <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 2 }}>
                 <TextField
                   select
                   label="קהל יעד"
                   value={formData.targetAudience}
                   onChange={(e) => setFormData({
-                    ...formData, 
+                    ...formData,
                     targetAudience: e.target.value as TargetAudience
                   })}
                   required
@@ -435,24 +495,24 @@ export const EventManagementPage = () => {
                     <MenuItem key={audience} value={audience}>{audience}</MenuItem>
                   ))}
                 </TextField>
-                
+
                 <TextField
                   label="מספר מקומות מוגבל"
                   type="number"
                   value={formData.maxParticipants || ''}
                   onChange={(e) => setFormData({
-                    ...formData, 
+                    ...formData,
                     maxParticipants: e.target.value ? parseInt(e.target.value) : undefined
                   })}
                   fullWidth
                 />
-                
+
                 <TextField
                   select
                   label="סטטוס"
                   value={formData.status}
                   onChange={(e) => setFormData({
-                    ...formData, 
+                    ...formData,
                     status: e.target.value as EventStatus
                   })}
                   required
@@ -463,12 +523,12 @@ export const EventManagementPage = () => {
                   ))}
                 </TextField>
               </Box>
-              
+
               <TextField
                 label="קישור להרשמה (אופציונלי)"
                 value={formData.registrationLink || ''}
                 onChange={(e) => setFormData({
-                  ...formData, 
+                  ...formData,
                   registrationLink: e.target.value || undefined
                 })}
                 fullWidth
@@ -477,9 +537,9 @@ export const EventManagementPage = () => {
           </DialogContent>
           <DialogActions sx={{ p: 2 }}>
             <Button onClick={resetForm}>ביטול</Button>
-            <Button 
-              onClick={handleSubmit} 
-              variant="contained" 
+            <Button
+              onClick={handleSubmit}
+              variant="contained"
               color="primary"
             >
               {editingEvent ? 'עדכן אירוע' : 'צור אירוע'}

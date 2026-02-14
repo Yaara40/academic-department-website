@@ -80,6 +80,17 @@ export default function Footer() {
                 קורסים
               </Link>
               <Link
+                href="/user/events"
+                sx={{
+                  color: "white",
+                  textDecoration: "none",
+                  opacity: 0.8,
+                  "&:hover": { opacity: 1, textDecoration: "underline" },
+                }}
+              >
+                אירועים
+              </Link>
+              <Link
                 href="/user/growth"
                 sx={{
                   color: "white",

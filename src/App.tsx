@@ -17,6 +17,7 @@ import CoursesForm from "./features/courses/components/CoursesForm";
 import GrowthManagement from "./pages/GrowthManagement";
 import ContactManagement from "./pages/ContactManagement";
 import HelpManagement from "./pages/HelpManagement";
+import { EventManagementPage } from "./pages/EventManagementPage";  // 👈 חדש
 
 //User Pages
 import UserHome from "./pages/UserHome";
@@ -24,6 +25,7 @@ import UserCourses from "./pages/UserCourses";
 import UserContact from "./pages/UserContact.tsx";
 import HelpUser from "./pages/HelpUser.tsx";
 import UserGrowth from "./pages/UserGrowth.tsx";
+import { PersonalAreaPage } from "./pages/PersonalAreaPage";  // 👈 חדש
 
 const App = () => {
   const location = useLocation();
@@ -61,13 +63,26 @@ const App = () => {
         }}
       >
         <Routes>
+          {/* User Routes */}
           <Route path="/user" element={<UserHome />} />
           <Route path="/" element={<UserHome />} />
           <Route path="/user/courses" element={<UserCourses />} />
           <Route path="/user/contact" element={<UserContact />} />
           <Route path="/user/help" element={<HelpUser />} />
           <Route path="/user/growth" element={<UserGrowth />} />
+          
+          {/* 👇 חדש - אזור אישי */}
+          <Route 
+            path="/user/personal-area" 
+            element={
+              <PersonalAreaPage 
+                userId="temp-user-123"
+                userEmail="candidate@example.com"
+              />
+            } 
+          />
 
+          {/* Admin Routes */}
           <Route
             path="/admin"
             element={
@@ -94,7 +109,6 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/admin/courses/edit/:existingCourseId"
             element={
@@ -103,7 +117,6 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/admin/growth"
             element={
@@ -125,6 +138,16 @@ const App = () => {
             element={
               <ProtectedRoute>
                 <HelpManagement />
+              </ProtectedRoute>
+            }
+          />
+          
+          {/* 👇 חדש - ניהול אירועים */}
+          <Route
+            path="/admin/events"
+            element={
+              <ProtectedRoute>
+                <EventManagementPage />
               </ProtectedRoute>
             }
           />

@@ -15,6 +15,7 @@ import MenuBookIcon from "@mui/icons-material/MenuBook";
 import ContactMailIcon from "@mui/icons-material/ContactMail";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import HelpIcon from "@mui/icons-material/Help";
+import EventIcon from "@mui/icons-material/Event"; // 👈 חדש
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 
 export default function Sidebar() {
@@ -24,6 +25,7 @@ export default function Sidebar() {
   const menuItems = [
     { text: "ניהול דף הבית", icon: <HomeIcon />, path: "/admin" },
     { text: "ניהול קורסים", icon: <MenuBookIcon />, path: "/admin/courses" },
+    { text: "ניהול אירועים", icon: <EventIcon />, path: "/admin/events" }, // 👈 חדש
     { text: "ניהול פניות", icon: <ContactMailIcon />, path: "/admin/contact" },
     { text: "ניהול צמיחה", icon: <TrendingUpIcon />, path: "/admin/growth" },
     { text: "ניהול עזרה", icon: <HelpIcon />, path: "/admin/help" },

@@ -6,6 +6,7 @@ import MenuBookIcon from "@mui/icons-material/MenuBook";
 import ContactMailIcon from "@mui/icons-material/ContactMail";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import HelpIcon from "@mui/icons-material/Help";
+import EventIcon from "@mui/icons-material/Event"; // 👈 חדש
 import LogoutIcon from "@mui/icons-material/Logout";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase/config";
@@ -24,6 +25,7 @@ export default function AdminHeader() {
   const menuItems = [
     { text: "דף הבית", icon: <HomeIcon />, path: "/admin" },
     { text: "ניהול קורסים", icon: <MenuBookIcon />, path: "/admin/courses" },
+    { text: "ניהול אירועים", icon: <EventIcon />, path: "/admin/events" }, // 👈 חדש
     { text: "ניהול פניות", icon: <ContactMailIcon />, path: "/admin/contact" },
     { text: "אפשרויות צמיחה", icon: <TrendingUpIcon />, path: "/admin/growth" },
     { text: "עזרה", icon: <HelpIcon />, path: "/admin/help" },

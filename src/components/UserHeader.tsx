@@ -22,6 +22,7 @@ import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import MenuIcon from "@mui/icons-material/Menu";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import EventIcon from "@mui/icons-material/Event";
 
 export default function UserHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -32,12 +33,13 @@ export default function UserHeader() {
   };
 
   const menuItems = [
-    { text: "דף הבית", icon: <HomeIcon />, path: "/user" },
-    { text: "קורסים", icon: <MenuBookIcon />, path: "/user/courses" },
-    { text: "אפשרויות צמיחה", icon: <TrendingUpIcon />, path: "/user/growth" },
-    { text: "צור קשר", icon: <ContactMailIcon />, path: "/user/contact" },
-    { text: "עזרה", icon: <HelpOutlineIcon />, path: "/user/help" },
-  ];
+  { text: "דף הבית", icon: <HomeIcon />, path: "/user" },
+  { text: "קורסים", icon: <MenuBookIcon />, path: "/user/courses" },
+  { text: "אירועים", icon: <EventIcon />, path: "/user/events" }, // 👈 חדש
+  { text: "אפשרויות צמיחה", icon: <TrendingUpIcon />, path: "/user/growth" },
+  { text: "צור קשר", icon: <ContactMailIcon />, path: "/user/contact" },
+  { text: "עזרה", icon: <HelpOutlineIcon />, path: "/user/help" },
+];
 
   const drawerContent = (
     <Box
